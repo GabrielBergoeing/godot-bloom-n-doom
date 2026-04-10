@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://spaier2bibr8"]
+
+[ext_resource type="Texture2D" uid="uid://d1wayw0k4xlut" path="res://art/sprites/tiles/wall_tiles.png" id="1_kbfbi"]
+[ext_resource type="PackedScene" uid="uid://h1f0qpp72uyw" path="res://nodes/entities/player/player_dave.tscn" id="2_2ydjp"]
+
+[node name="Terrain" type="Node2D" unique_id=1492506008]
+
+[node name="WallTiles" type="Sprite2D" parent="." unique_id=89338350]
+position = Vector2(107, 33)
+texture = ExtResource("1_kbfbi")
+
+[node name="PlayerDave" parent="." unique_id=1865531954 instance=ExtResource("2_2ydjp")]

@@ -1,6 +1,6 @@
 using Godot;
 
-public class PlayerIdleState : EntityState
+public class PlayerIdleState : PlayerNeutralState
 {
 	private Player player;
 
@@ -12,6 +12,7 @@ public class PlayerIdleState : EntityState
 	public override void Update(float delta)
 	{
 		base.Update(delta);
+		player.anim.SetAction("idle");
 
 		if (player.MoveInput != Vector2.Zero)
 		{

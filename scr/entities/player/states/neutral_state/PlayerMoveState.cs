@@ -1,6 +1,6 @@
 using Godot;
 
-public class PlayerMoveState : EntityState
+public class PlayerMoveState : PlayerNeutralState
 {
 	private Player player;
 
@@ -12,13 +12,19 @@ public class PlayerMoveState : EntityState
 	public override void Update(float delta)
 	{
 		base.Update(delta);
+		player.anim.SetAction("move");
 
 		if (player.MoveInput == Vector2.Zero)
 		{
 			stateMachine.ChangeState(player.IdleState);
 			return;
 		}
+		
+		player.SetVelocity(player.MoveInput.Normalized() * player.MoveSpeed);
+	}
 
-		player.Velocity = player.MoveInput.Normalized() * player.MoveSpeed;
+	public override void Exit()
+	{
+		player.SetVelocity(Vector2.Zero);
 	}
 }

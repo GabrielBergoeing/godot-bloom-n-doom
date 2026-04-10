@@ -5,6 +5,8 @@ public partial class Player : Entity
 	[Export] public float MoveSpeed = 200f;
 
 	public Vector2 MoveInput { get; private set; }
+	public Vector2 FacingDir { get; private set; } = Vector2.Down;
+	public PlayerAnim anim { get; private set; }
 
 	// States
 	public PlayerIdleState IdleState { get; private set; }
@@ -16,6 +18,7 @@ public partial class Player : Entity
 
 		IdleState = new PlayerIdleState(this, stateMachine);
 		MoveState = new PlayerMoveState(this, stateMachine);
+		anim = GetNode<PlayerAnim>("AnimatedSprite2D");
 
 		stateMachine.Initialize(IdleState);
 	}
@@ -25,10 +28,19 @@ public partial class Player : Entity
 		base._Process(delta);
 
 		MoveInput = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+		UpdateFacingDir();
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		MoveAndSlide();
+	}
+
+	private void UpdateFacingDir()
+	{
+		if (MoveInput == Vector2.Zero)
+			return;
+
+		FacingDir = MoveInput.Normalized();
 	}
 }

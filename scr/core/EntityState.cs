@@ -25,9 +25,4 @@ public abstract class EntityState
 	}
 
 	public virtual void Exit() { }
-
-	public virtual void AnimationTrigger()
-	{
-		triggerCalled = true;
-	}
 }
