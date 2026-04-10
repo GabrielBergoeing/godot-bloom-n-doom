@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="godot-bloom-n-doom"
-config/features=PackedStringArray("4.6", "Mobile")
+run/main_scene="uid://h1f0qpp72uyw"
+config/features=PackedStringArray("4.6", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [dotnet]
@@ -24,5 +25,6 @@ project/assembly_name="godot-bloom-n-doom"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
