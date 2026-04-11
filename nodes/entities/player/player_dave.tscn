@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bf606ytvi7uc1" path="res://scr/entities/player/components/Player.cs" id="1_olkgx"]
 [ext_resource type="Texture2D" uid="uid://drjsi53jyuk7a" path="res://art/sprites/player/Dave.png" id="2_kwv77"]
 [ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_kwv77"]
+[ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_j4cnn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_olkgx"]
 atlas = ExtResource("2_kwv77")
@@ -161,3 +162,6 @@ shape = SubResource("CapsuleShape2D_eodaa")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=106467747]
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=2100221750]
+
+[node name="PlayerInput" type="Node" parent="." unique_id=446085519]
+script = ExtResource("4_j4cnn")
