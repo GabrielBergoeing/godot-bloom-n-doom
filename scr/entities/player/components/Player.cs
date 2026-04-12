@@ -19,6 +19,7 @@ public partial class Player : Entity
 	public override void _Ready()
 	{
 		base._Ready();
+		AddToGroup("players");
 
 		IdleState = new PlayerIdleState(this, stateMachine);
 		MoveState = new PlayerMoveState(this, stateMachine);
@@ -44,10 +45,7 @@ public partial class Player : Entity
 	public void AssignDevice(int deviceId, string deviceType, int playerId)
 	{
 		PlayerId = playerId;
-
 		input.AssignDevice(deviceId, deviceType, playerId);
-
-		GD.Print($"Player {PlayerId} initialized with {deviceType} ({deviceId})");
 	}
 
 	private void UpdateFacingDir()

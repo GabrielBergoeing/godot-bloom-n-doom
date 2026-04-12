@@ -159,9 +159,7 @@ script = ExtResource("3_kwv77")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=643793127]
 shape = SubResource("CapsuleShape2D_eodaa")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=106467747]
-
-[node name="Marker2D" type="Marker2D" parent="." unique_id=2100221750]
-
 [node name="PlayerInput" type="Node" parent="." unique_id=446085519]
 script = ExtResource("4_j4cnn")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="." unique_id=550742768]

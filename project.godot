@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="godot-bloom-n-doom"
-run/main_scene="uid://spaier2bibr8"
+run/main_scene="uid://t57n4bravpf4"
 config/features=PackedStringArray("4.6", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
-InputDeviceManager="*uid://b1qyhpwkaa46o"
+InputDeviceManager="uid://b1qyhpwkaa46o"
 
 [dotnet]
 

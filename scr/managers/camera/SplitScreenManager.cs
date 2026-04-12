@@ -1,91 +1,96 @@
 using Godot;
-using System.Collections.Generic;
+using System;
 
-public partial class SplitScreenManager : Control
+public partial class SplitScreenManager : Node
 {
-	public static SplitScreenManager Instance;
+    public static SplitScreenManager Instance;
 
-	private List<SubViewportContainer> containers = new();
+    [Export] public PackedScene PlayerCamScene { get; set; }
+    [Export] public string LevelPath { get; set; }
+
+    private GridContainer screenContainer;
+
+    private SubViewport firstSubViewport = null;
+    private Node levelNode = null;
+	public Node LevelNode => levelNode;
+
+	private bool firstPlayerAssigned = false;
 
 	public override void _Ready()
 	{
 		Instance = this;
+		screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
+		AddNewPlayerViewport(null);
 	}
 
-	public void RegisterPlayer(Node player)
-	{
-		var container = new SubViewportContainer();
-		container.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-		container.SizeFlagsVertical = SizeFlags.ExpandFill;
+    public void AddNewPlayerViewport(Player newPlayerNode)
+    {
+        var container = new SubViewportContainer();
+        var subPort = new SubViewport();
 
-		var viewport = new SubViewport();
-		viewport.World2D = GetViewport().World2D;
-		Vector2 size = GetViewportRect().Size;
-		viewport.Size = new Vector2I((int)size.X, (int)size.Y);
+        container.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+        subPort.Disable3D = true;
 
-		container.AddChild(viewport);
+        var cam = PlayerCamScene.Instantiate<Camera2D>();
 
-		player.GetParent().RemoveChild(player);
-		viewport.AddChild(player);
-
-		AddChild(container);
-		containers.Add(container);
-
-		UpdateLayout();
-	}
-
-	private void UpdateLayout()
-	{
-		int total = containers.Count;
-
-		for (int i = 0; i < total; i++)
+		if (!firstPlayerAssigned && firstSubViewport != null)
 		{
-			var container = containers[i];
-
-			// Reset anchors
-			container.AnchorLeft = 0;
-			container.AnchorRight = 1;
-			container.AnchorTop = 0;
-			container.AnchorBottom = 1;
-
-			if (total == 1)
-			{
-				container.SetAnchorsPreset(LayoutPreset.FullRect);
-			}
-			else if (total == 2)
-			{
-				// Split vertically
-				container.AnchorLeft = (i == 0) ? 0 : 0.5f;
-				container.AnchorRight = (i == 0) ? 0.5f : 1;
-				container.AnchorTop = 0;
-				container.AnchorBottom = 1;
-			}
-			else if (total == 3)
-			{
-				if (i < 2)
-				{
-					// Top row
-					container.AnchorLeft = i * 0.5f;
-					container.AnchorRight = (i + 1) * 0.5f;
-					container.AnchorTop = 0;
-					container.AnchorBottom = 0.5f;
-				}
-				else
-				{
-					// Bottom full
-					container.AnchorLeft = 0;
-					container.AnchorRight = 1;
-					container.AnchorTop = 0.5f;
-					container.AnchorBottom = 1;
-				}
-			}
-			else
-			{
-				container.AnchorLeft = (i % 2) * 0.5f;
-				container.AnchorRight = container.AnchorLeft + 0.5f;
-				container.AnchorTop = (i < 2) ? 0 : 0.5f;
-				container.AnchorBottom = container.AnchorTop + 0.5f;
-			}
+			subPort = firstSubViewport;
+			firstPlayerAssigned = true;
+			return;
 		}
-	}
+
+        screenContainer.AddChild(container);
+        container.AddChild(subPort);
+        subPort.AddChild(cam);
+
+        if (firstSubViewport != null)
+            subPort.World2D = firstSubViewport.World2D;
+        else
+        {
+            var levelScene = GD.Load<PackedScene>(LevelPath);
+            levelNode = levelScene.Instantiate<Node>();
+
+            subPort.AddChild(levelNode);
+            firstSubViewport = subPort;
+        }
+		
+		if (newPlayerNode != null)
+		{
+			var remote = newPlayerNode.GetNode<RemoteTransform2D>("RemoteTransform2D");
+			remote.RemotePath = cam.GetPath();
+		}
+
+        UpdateViewportSize();
+    }
+
+    public void UpdateViewportSize()
+    {
+        int count = screenContainer.GetChildCount();
+
+        if (count == 0)
+            return;
+
+        int columns = Mathf.CeilToInt(count / 2.0f);
+        screenContainer.Columns = columns;
+
+        foreach (Node child in screenContainer.GetChildren())
+        {
+            var container = child as SubViewportContainer;
+
+            if (container == null || container.GetChildCount() == 0)
+                continue;
+
+            var subPort = container.GetChild<SubViewport>(0);
+
+            Vector2 size = GetViewport().GetVisibleRect().Size;
+
+            int rows = Mathf.CeilToInt(count / (float)columns);
+
+            subPort.Size = new Vector2I(
+                (int)(size.X / columns),
+                (int)(size.Y / rows)
+            );
+        }
+    }
 }

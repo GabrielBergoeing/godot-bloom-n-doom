@@ -21,7 +21,7 @@ public partial class InputDeviceManager : Node
     public static InputDeviceManager Instance;
     private List<InputDeviceData> devices = new();
 
-    [Export] public PackedScene PlayerScene;
+    private PackedScene playerScene;
 
     [Signal]
     public delegate void InputReceivedEventHandler(int playerId, InputEvent @event);
@@ -29,6 +29,7 @@ public partial class InputDeviceManager : Node
     public override void _Ready()
     {
         Instance = this;
+        playerScene = GD.Load<PackedScene>("res://nodes/entities/player/player_dave.tscn");
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -74,8 +75,6 @@ public partial class InputDeviceManager : Node
     {
         int playerId = devices.Count;
 
-        GD.Print($"Registering {type} → Player {playerId}");
-
         var data = new InputDeviceData(deviceId, type, playerId);
         devices.Add(data);
 
@@ -84,14 +83,14 @@ public partial class InputDeviceManager : Node
 
     private void SpawnPlayer(int playerId, int deviceId, string type)
     {
-        GD.Print($"Spawning Player {playerId} (Device {deviceId}, {type})");
-
-        var node = PlayerScene.Instantiate();
+        var node = playerScene.Instantiate();
         var player = node as Player;
 
-        GetTree().Root.AddChild(player);
+        var world = SplitScreenManager.Instance.LevelNode;
+        world.AddChild(player);
 
         player.AssignDevice(deviceId, type, playerId);
+        SplitScreenManager.Instance?.AddNewPlayerViewport(player);
     }
 
     public void ResetDevices()

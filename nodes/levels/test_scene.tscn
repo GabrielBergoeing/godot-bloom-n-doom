@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://spaier2bibr8"]
+
+[ext_resource type="Texture2D" uid="uid://d1wayw0k4xlut" path="res://art/sprites/tiles/wall_tiles.png" id="1_kbfbi"]
+
+[node name="TestScene" type="Node" unique_id=1205820897]
+
+[node name="World" type="Node2D" parent="." unique_id=237022659]
+
+[node name="WallTiles" type="Sprite2D" parent="World" unique_id=986557860]
+position = Vector2(107, 33)
+texture = ExtResource("1_kbfbi")

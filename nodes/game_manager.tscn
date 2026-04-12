@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://t57n4bravpf4"]
+
+[ext_resource type="Script" uid="uid://bl2i71ohpllxy" path="res://scr/managers/camera/SplitScreenManager.cs" id="1_hneav"]
+[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/player_camera.tscn" id="2_bxhn3"]
+
+[node name="GameManager" type="Node" unique_id=1943421568]
+script = ExtResource("1_hneav")
+PlayerCamScene = ExtResource("2_bxhn3")
+LevelPath = "res://nodes/levels/test_scene.tscn"
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=791644416]
+offset_right = 160.0
+offset_bottom = 90.0
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=929203448]
+offset_right = 160.0
+offset_bottom = 90.0
+
+[node name="GridContainer" type="GridContainer" parent="CenterContainer" unique_id=1393471944]
+layout_mode = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
