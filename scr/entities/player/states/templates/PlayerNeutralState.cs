@@ -29,6 +29,7 @@ public partial class PlayerNeutralState : PlayerState
 
         if (Input.IsActionJustPressed("pickup"))
             stateMachine.ChangeState(player.PickState);
+        */
 
         if (Input.IsActionJustPressed("interact") && !hasInteraction)
         {
@@ -39,6 +40,7 @@ public partial class PlayerNeutralState : PlayerState
                 stateMachine.ChangeState(state);
         }
 
+        /*
         if (Input.IsActionJustPressed("drop"))
             player.DropCurrentItem();
         */
@@ -46,8 +48,8 @@ public partial class PlayerNeutralState : PlayerState
 
     private PlayerState DetermineInteractionState()
     {
-        //if (IsOnHandEmpty())
-            //return player.PrepareGroundState;
+        if (IsOnHandEmpty())
+            return player.PrepareGroundState;
 
         return this;
     }

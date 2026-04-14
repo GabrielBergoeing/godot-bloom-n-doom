@@ -163,3 +163,5 @@ shape = SubResource("CapsuleShape2D_eodaa")
 script = ExtResource("4_j4cnn")
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="." unique_id=550742768]
+
+[node name="onHand" type="Node" parent="." unique_id=1723164980]

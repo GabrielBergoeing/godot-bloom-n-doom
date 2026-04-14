@@ -6,7 +6,7 @@ public abstract partial class PlayerState : EntityState
     protected Player player;
 
     //protected Node sfx;
-    //protected Node tile;
+    protected Node tile;
     //protected Node inventory;
 
     public PlayerState(Player player, StateMachine stateMachine)
@@ -15,7 +15,7 @@ public abstract partial class PlayerState : EntityState
         this.player = player;
 
         //sfx = player.GetNodeOrNull("Player_SFX");
-        //tile = player.GetNodeOrNull("TileInteraction");
+        tile = player.GetNodeOrNull("TileInteraction");
         //inventory = player.GetNodeOrNull("HotbarSystem");
     }
 
@@ -41,7 +41,6 @@ public abstract partial class PlayerState : EntityState
     }
     */
 
-    /*
     public bool IsOnHandEmpty()
     {
         var onHand = player.GetNodeOrNull<Node2D>("OnHand");
@@ -55,5 +54,4 @@ public abstract partial class PlayerState : EntityState
 
         return true;
     }
-    */
 }

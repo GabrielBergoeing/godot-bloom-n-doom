@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://spaier2bibr8"]
 
-[ext_resource type="TileSet" uid="uid://uibwpl1ch1ll" path="res://nodes/tilesets/grass.tres" id="2_2hq3m"]
+[ext_resource type="TileSet" uid="uid://uibwpl1ch1ll" path="res://nodes/tilesets/terrain.tres" id="2_2hq3m"]
 
 [node name="TestScene" type="Node" unique_id=1205820897]
 
