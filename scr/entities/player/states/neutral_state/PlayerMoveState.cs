@@ -2,12 +2,8 @@ using Godot;
 
 public class PlayerMoveState : PlayerNeutralState
 {
-	private Player player;
-
 	public PlayerMoveState(Player player, StateMachine sm) : base(player, sm)
-	{
-		this.player = player;
-	}
+	{}
 
 	public override void Update(float delta)
 	{

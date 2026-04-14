@@ -6,8 +6,7 @@ public partial class PlayerNeutralState : PlayerState
 
     public PlayerNeutralState(Player player, StateMachine sm)
         : base(player, sm)
-    {
-    }
+    {}
 
     public override void Enter()
     {
