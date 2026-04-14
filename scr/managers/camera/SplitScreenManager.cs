@@ -29,7 +29,7 @@ public partial class SplitScreenManager : Node
         var subPort = new SubViewport();
         var cam = PlayerCamScene.Instantiate<Camera2D>();
 
-        SetupViewport(container, subPort, cam);
+        ConfigureViewport(container, subPort, cam);
 
 		if (!firstPlayerAssigned && firstSubViewport != null)
 		{
@@ -46,25 +46,45 @@ public partial class SplitScreenManager : Node
             if (firstSubViewport != null)
                 subPort.World2D = firstSubViewport.World2D;
             else
-            {
-                var levelScene = GD.Load<PackedScene>(LevelPath);
-                levelNode = levelScene.Instantiate<Node>();
-
-                subPort.AddChild(levelNode);
-                firstSubViewport = subPort;
-            }
+                FirstViewportSetup(subPort, cam);
         }
 		
         LinkPlayerCam(newPlayerNode, cam);
         UpdateViewportSize();
     }
 
-    private void SetupViewport(SubViewportContainer container, SubViewport subPort, Camera2D cam)
+    private void ConfigureViewport(SubViewportContainer container, SubViewport subPort, Camera2D cam)
     {
         container.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
         subPort.CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.Nearest;
         subPort.Disable3D = true;
         cam.PositionSmoothingEnabled = false;
+    }
+
+    private void FirstViewportSetup(SubViewport subPort, Camera2D cam)
+    {
+        var levelScene = GD.Load<PackedScene>(LevelPath);
+        levelNode = levelScene.Instantiate<Node>();
+
+        subPort.AddChild(levelNode);
+        firstSubViewport = subPort;
+
+        SetCameraBounds(cam);
+    }
+
+    private void SetCameraBounds(Camera2D cam)
+    {
+        var tilemap = levelNode.GetNode<TileMapLayer>("TileMapLayer");
+        var rect = tilemap.GetUsedRect();
+        var tileSize = tilemap.TileSet.TileSize;
+
+        Vector2 worldPos = rect.Position * tileSize;
+        Vector2 worldSize = rect.Size * tileSize;
+
+        cam.LimitLeft = (int)worldPos.X;
+        cam.LimitTop = (int)worldPos.Y;
+        cam.LimitRight = (int)(worldPos.X + worldSize.X);
+        cam.LimitBottom = (int)(worldPos.Y + worldSize.Y);
     }
 
     private void LinkPlayerCam(Player newPlayerNode, Camera2D cam)
