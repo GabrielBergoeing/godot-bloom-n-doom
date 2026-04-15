@@ -4,6 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://drjsi53jyuk7a" path="res://art/sprites/player/Dave.png" id="2_kwv77"]
 [ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_kwv77"]
 [ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_j4cnn"]
+[ext_resource type="Texture2D" uid="uid://hfk1665xje06" path="res://art/sprites/tiles/Sprite-0001.png" id="5_5mm46"]
+[ext_resource type="Script" uid="uid://cqkecowrtlw5b" path="res://scr/entities/player/components/PlayerTileInteraction.cs" id="6_upsma"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_olkgx"]
 atlas = ExtResource("2_kwv77")
@@ -148,6 +150,7 @@ radius = 15.0
 height = 44.0
 
 [node name="PlayerDave" type="CharacterBody2D" unique_id=1865531954]
+position = Vector2(500, 300)
 script = ExtResource("1_olkgx")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1120389913]
@@ -159,9 +162,14 @@ script = ExtResource("3_kwv77")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=643793127]
 shape = SubResource("CapsuleShape2D_eodaa")
 
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="." unique_id=550742768]
+
 [node name="PlayerInput" type="Node" parent="." unique_id=446085519]
 script = ExtResource("4_j4cnn")
 
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="." unique_id=550742768]
+[node name="OnHand" type="Node" parent="." unique_id=1723164980]
 
-[node name="onHand" type="Node" parent="." unique_id=1723164980]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1161646904]
+scale = Vector2(2, 2)
+texture = ExtResource("5_5mm46")
+script = ExtResource("6_upsma")

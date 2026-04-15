@@ -48,7 +48,8 @@ public partial class SplitScreenManager : Node
             else
                 FirstViewportSetup(subPort, cam);
         }
-		
+
+        SetCameraBounds(cam);
         LinkPlayerCam(newPlayerNode, cam);
         UpdateViewportSize();
     }
@@ -68,8 +69,6 @@ public partial class SplitScreenManager : Node
 
         subPort.AddChild(levelNode);
         firstSubViewport = subPort;
-
-        SetCameraBounds(cam);
     }
 
     private void SetCameraBounds(Camera2D cam)

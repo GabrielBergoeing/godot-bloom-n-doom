@@ -2,11 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class FarmManager : Node
+public partial class FarmManager : TileMapLayer
 {
     public static FarmManager Instance;
 
-    [Export] public TileMapLayer FarmLayer;
     [Export] public TileMapLayer WaterLayer;
     [Export] public Node2D PlantsRoot;
     [Export] public PackedScene PlantScene;
@@ -49,7 +48,7 @@ public partial class FarmManager : Node
         if (clearBefore)
             tileStates.Clear();
 
-        var usedCells = FarmLayer.GetUsedCells();
+        var usedCells = GetUsedCells();
 
         foreach (var cell in usedCells)
         {
@@ -85,7 +84,7 @@ public partial class FarmManager : Node
         if (!tileStates.TryGetValue(cell, out var state) || state != TileState.NotPrepared)
             return;
 
-        FarmLayer.SetCell(cell, PreparedSourceId, PreparedAtlas);
+        SetCell(cell, PreparedSourceId, PreparedAtlas);
         tileStates[cell] = TileState.Prepared;
     }
 
@@ -96,7 +95,7 @@ public partial class FarmManager : Node
 
         tileStates[cell] = TileState.PlantedSeed;
 
-        FarmLayer.SetCell(cell, SeedSourceId, SeedAtlas);
+        SetCell(cell, SeedSourceId, SeedAtlas);
 
         SpawnPlant(cell, playerIndex);
     }
@@ -123,7 +122,7 @@ public partial class FarmManager : Node
 
     private void SpawnPlant(Vector2I cell, int playerIndex)
     {
-        Vector2 worldPos = FarmLayer.MapToLocal(cell);
+        Vector2 worldPos = MapToLocal(cell);
 
         var plantInstance = PlantScene.Instantiate<Node2D>();
         plantInstance.GlobalPosition = worldPos;
@@ -148,7 +147,7 @@ public partial class FarmManager : Node
         plantsByCell.Remove(cell);
         occupiedCells.Remove(cell);
 
-        FarmLayer.SetCell(cell, PreparedSourceId, PreparedAtlas);
+        SetCell(cell, PreparedSourceId, PreparedAtlas);
         tileStates[cell] = TileState.Prepared;
     }
 

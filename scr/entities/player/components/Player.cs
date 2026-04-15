@@ -6,25 +6,24 @@ public partial class Player : Entity
 
 	public Vector2 MoveInput { get; private set; }
 	public Vector2 FacingDir { get; private set; } = Vector2.Down;
+	public int PlayerId { get; private set; }
 
 	public PlayerAnim anim { get; private set; }
 	public PlayerInput input {get; private set;}
 
-	public int PlayerId { get; private set; }
-
 	// States
 	public PlayerIdleState IdleState { get; private set; }
 	public PlayerMoveState MoveState { get; private set; }
+	public PlayerPrepareGroundState PrepareGroundState { get; private set; }
 
 	public override void _Ready()
 	{
 		base._Ready();
 		AddToGroup("players");
 
-		IdleState = new PlayerIdleState(this, stateMachine);
-		MoveState = new PlayerMoveState(this, stateMachine);
 		anim = GetNode<PlayerAnim>("AnimatedSprite2D");
 		input = GetNode<PlayerInput>("PlayerInput");
+		PreparePlayerState();
 		
 		stateMachine.Initialize(IdleState);
 	}
@@ -46,6 +45,13 @@ public partial class Player : Entity
 	{
 		PlayerId = playerId;
 		input.AssignDevice(deviceId, deviceType, playerId);
+	}
+
+	private void PreparePlayerState()
+	{
+		IdleState = new PlayerIdleState(this, stateMachine);
+		MoveState = new PlayerMoveState(this, stateMachine);
+		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 	}
 
 	private void UpdateFacingDir()

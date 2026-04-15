@@ -87,7 +87,7 @@ public partial class InputDeviceManager : Node
         var player = node as Player;
 
         var world = SplitScreenManager.Instance.LevelNode;
-        world.AddChild(player);
+        world.AddChild(player); //Find a way to spawn in a random spot
 
         player.AssignDevice(deviceId, type, playerId);
         SplitScreenManager.Instance?.AddNewPlayerViewport(player);

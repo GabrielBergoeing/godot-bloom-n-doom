@@ -33,17 +33,35 @@ public partial class PlayerInput : Node
         if (playerId != PlayerId)
             return;
 
-        if (@event.IsActionPressed("interact"))
-            InteractPressed = true;
+        if (DeviceType == "Keyboard" && @event is InputEventKey key && key.Pressed)
+        {
+            if (key.Keycode == Key.E)
+                InteractPressed = true;
 
-        if (@event.IsActionPressed("pickup"))
-            PickupPressed = true;
+            if (key.Keycode == Key.Q)
+                PickupPressed = true;
 
-        if (@event.IsActionPressed("drop"))
-            DropPressed = true;
+            if (key.Keycode == Key.G)
+                DropPressed = true;
 
-        if (@event.IsActionPressed("sabotage"))
-            SabotagePressed = true;
+            if (key.Keycode == Key.F)
+                SabotagePressed = true;
+        }
+
+        if (DeviceType == "Controller" && @event is InputEventJoypadButton btn && btn.Pressed)
+        {
+            if (btn.ButtonIndex == JoyButton.A)
+                InteractPressed = true;
+
+            if (btn.ButtonIndex == JoyButton.X)
+                PickupPressed = true;
+
+            if (btn.ButtonIndex == JoyButton.B)
+                DropPressed = true;
+
+            if (btn.ButtonIndex == JoyButton.Y)
+                SabotagePressed = true;
+        }
     }
 
     public override void _Process(double delta)
@@ -72,9 +90,10 @@ public partial class PlayerInput : Node
         }
 
         moveInput = moveInput.Normalized();
+        ClearFrameInput();
     }
 
-    public void ClearFrameInput()
+    private void ClearFrameInput()
     {
         InteractPressed = false;
         PickupPressed = false;

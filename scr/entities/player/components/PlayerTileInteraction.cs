@@ -18,12 +18,15 @@ public partial class PlayerTileInteraction : Node2D
 
     public override void _Ready()
     {
+        Player = GetParent<Player>();
+
+        var level = SplitScreenManager.Instance.LevelNode;
+        farmManager = level.GetNode<FarmManager>("TileMapLayer");
+
         var remote = Player.GetNode<RemoteTransform2D>("RemoteTransform2D");
 
-        if (remote != null && remote.RemotePath != NodePath.Empty)
-        {
+        if (remote != null && !remote.RemotePath.IsEmpty)
             cam = GetNode<Camera2D>(remote.RemotePath);
-        }
     }
 
     public override void _Process(double delta)
@@ -38,12 +41,12 @@ public partial class PlayerTileInteraction : Node2D
 
         Vector2 playerWorldPos = Player.GlobalPosition;
 
-        Vector2I playerCell = farmManager.FarmTileMap.LocalToMap(playerWorldPos);
+        Vector2I playerCell = farmManager.LocalToMap(playerWorldPos);
         Vector2I frontCell = GetCellInFrontOfPlayer(playerCell);
 
         currentCell = frontCell;
 
-        Vector2 cellCenter = farmManager.FarmTileMap.MapToLocal(currentCell);
+        Vector2 cellCenter = farmManager.MapToLocal(currentCell);
 
         if (TileOutlineScene != null)
         {

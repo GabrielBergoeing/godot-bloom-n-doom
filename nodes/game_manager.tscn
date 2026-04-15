@@ -9,13 +9,13 @@ PlayerCamScene = ExtResource("2_bxhn3")
 LevelPath = "res://nodes/levels/test_scene.tscn"
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=791644416]
-offset_right = 1156.0
-offset_bottom = 641.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 color = Color(0, 0, 0, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=929203448]
-offset_right = 1151.0
-offset_bottom = 646.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 
 [node name="GridContainer" type="GridContainer" parent="CenterContainer" unique_id=1393471944]
 layout_mode = 2

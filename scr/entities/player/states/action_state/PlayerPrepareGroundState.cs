@@ -12,10 +12,10 @@ public class PlayerPrepareGroundState : PlayerActionState
 
         if (!IsOnHandEmpty())
         {
-            stateMachine.ChangeState(player.idleState);
+            stateMachine.ChangeState(player.IdleState);
             return;
         }
-
+        /*
         player.StartCoroutine(
             ExecuteAction(player.prepareGroundFrame, player.prepareGroundCooldown, cell => //Define cooldowns in player?
             {
@@ -26,5 +26,6 @@ public class PlayerPrepareGroundState : PlayerActionState
                 }
             })
         );
+        */
     }
 }
