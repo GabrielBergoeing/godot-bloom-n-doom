@@ -5,8 +5,9 @@ public abstract partial class PlayerState : EntityState
 {
     protected Player player;
 
+    protected PlayerAnim anim { get; private set; }
+	protected PlayerTileInteraction tile { get; private set; }
     //protected Node sfx;
-    protected Node tile;
     //protected Node inventory;
 
     public PlayerState(Player player, StateMachine stateMachine)
@@ -14,18 +15,10 @@ public abstract partial class PlayerState : EntityState
     {
         this.player = player;
 
+        anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
+		tile = player.GetNode<PlayerTileInteraction>("PlayerTileInteraction");
         //sfx = player.GetNodeOrNull("Player_SFX");
-        tile = player.GetNodeOrNull("TileInteraction");
         //inventory = player.GetNodeOrNull("HotbarSystem");
-    }
-
-
-    public virtual void UpdateAnimation()
-    {
-        if (player.MoveInput == Vector2.Zero)
-            return;
-
-        //player.Anim.FlipH = player.MoveInput.X < 0;
     }
 
     /*

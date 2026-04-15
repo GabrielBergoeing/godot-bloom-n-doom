@@ -15,17 +15,15 @@ public class PlayerPrepareGroundState : PlayerActionState
             stateMachine.ChangeState(player.IdleState);
             return;
         }
-        /*
-        player.StartCoroutine(
-            ExecuteAction(player.prepareGroundFrame, player.prepareGroundCooldown, cell => //Define cooldowns in player?
+        _ = ExecuteAction(0,0,//player.prepareGroundFrame, player.prepareGroundCooldown,
+            _ =>
             {
-                if (!FarmManager.instance.IsPrepared(cell) || !FarmManager.instance.IsOccupied(cell))
+                if (tile.CanPrepare())
                 {
-                    FarmManager.instance.PrepareTile(cell); //Change to callable fuction
-                    sfx.PlayOnPrepareGround();
+                    tile.PrepareInCell();
+                    //player.Sfx.PlayOnPrepareGround();
                 }
-            })
+            }
         );
-        */
     }
 }

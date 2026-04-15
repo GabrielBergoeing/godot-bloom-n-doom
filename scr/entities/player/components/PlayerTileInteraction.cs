@@ -1,12 +1,11 @@
 using Godot;
 using System;
 
-public partial class PlayerTileInteraction : Node2D
+public partial class PlayerTileInteraction : Sprite2D
 {
     private Camera2D cam;
     private Player Player;
     private FarmManager farmManager;
-    private PackedScene TileOutlineScene;
 
     private Node2D currentOutline;
     private Vector2I currentCell;
@@ -14,6 +13,7 @@ public partial class PlayerTileInteraction : Node2D
 
     [Signal] public delegate void RequestIrrigateEventHandler(Vector2I cell);
     [Signal] public delegate void RequestFertilizeEventHandler(Vector2I cell);
+    [Signal] public delegate void RequestPrepareEventHandler(Vector2I cell);
     [Signal] public delegate void RequestRemoveEventHandler(Vector2I cell, int playerIndex);
 
     public override void _Ready()
@@ -46,18 +46,8 @@ public partial class PlayerTileInteraction : Node2D
 
         currentCell = frontCell;
 
-        Vector2 cellCenter = farmManager.MapToLocal(currentCell);
-
-        if (TileOutlineScene != null)
-        {
-            if (currentOutline == null)
-            {
-                currentOutline = TileOutlineScene.Instantiate<Node2D>();
-                AddChild(currentOutline);
-            }
-
-            currentOutline.GlobalPosition = cellCenter;
-        }
+        Vector2 cellCenter = farmManager.ToGlobal(farmManager.MapToLocal(currentCell));
+        GlobalPosition = cellCenter;
     }
 
     private Vector2I GetCellInFrontOfPlayer(Vector2I playerCell)
@@ -103,6 +93,11 @@ public partial class PlayerTileInteraction : Node2D
     public void IrrigateInCell()
     {
         EmitSignal(SignalName.RequestIrrigate, currentCell);
+    }
+
+    public void PrepareInCell()
+    {
+        EmitSignal(SignalName.RequestPrepare, currentCell);
     }
 
     public void FertilizeInCell()

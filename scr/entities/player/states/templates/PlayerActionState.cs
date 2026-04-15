@@ -27,24 +27,23 @@ public partial class PlayerActionState : PlayerState
             stateMachine.ChangeState(player.IdleState);
     }
 
-    /*
     protected async Task ExecuteAction(
-        float duration,
-        float cooldown,
-        Action<Vector2I> applyAction
-    )
+    float duration,
+    float cooldown,
+    Action<Vector2I> applyAction)
     {
         player.ToggleControl(false);
 
-        applyAction?.Invoke(player.CurrentCell);
+        applyAction?.Invoke(tile.CurrentCell);
 
-        await ToSignal(player.GetTree().CreateTimer(duration), "timeout");
+        // Action duration
+        await ToSignal(player.GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
 
         player.ToggleControl(true);
         isPerformingAction = false;
 
+        // Cooldown (optional, does NOT block state exit)
         if (cooldown > 0)
-            await ToSignal(player.GetTree().CreateTimer(cooldown), "timeout");
+            await ToSignal(player.GetTree().CreateTimer(cooldown), SceneTreeTimer.SignalName.Timeout);
     }
-    */
 }

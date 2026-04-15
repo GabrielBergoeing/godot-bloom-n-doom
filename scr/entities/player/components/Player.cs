@@ -8,8 +8,7 @@ public partial class Player : Entity
 	public Vector2 FacingDir { get; private set; } = Vector2.Down;
 	public int PlayerId { get; private set; }
 
-	public PlayerAnim anim { get; private set; }
-	public PlayerInput input {get; private set;}
+	public PlayerInput input { get; private set; }
 
 	// States
 	public PlayerIdleState IdleState { get; private set; }
@@ -21,10 +20,9 @@ public partial class Player : Entity
 		base._Ready();
 		AddToGroup("players");
 
-		anim = GetNode<PlayerAnim>("AnimatedSprite2D");
 		input = GetNode<PlayerInput>("PlayerInput");
+
 		PreparePlayerState();
-		
 		stateMachine.Initialize(IdleState);
 	}
 

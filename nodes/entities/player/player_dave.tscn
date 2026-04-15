@@ -151,12 +151,14 @@ height = 44.0
 
 [node name="PlayerDave" type="CharacterBody2D" unique_id=1865531954]
 position = Vector2(500, 300)
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_olkgx")
+MoveSpeed = 150.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1120389913]
 position = Vector2(1, -6)
 sprite_frames = SubResource("SpriteFrames_36pct")
-animation = &"move_side"
+animation = &"move_down"
 script = ExtResource("3_kwv77")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=643793127]
