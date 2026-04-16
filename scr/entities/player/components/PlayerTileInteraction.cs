@@ -34,11 +34,6 @@ public partial class PlayerTileInteraction : Sprite2D
         if (!IsInstanceValid(Player))
             return;
 
-        // Assuming your Player has these properties
-        //var canControl = (bool)Player.Get("canControl");
-        //if (!canControl)
-            //return;
-
         Vector2 playerWorldPos = Player.GlobalPosition;
 
         Vector2I playerCell = farmManager.LocalToMap(playerWorldPos);
@@ -65,12 +60,6 @@ public partial class PlayerTileInteraction : Sprite2D
             offset = facing.Y > 0 ? Vector2I.Down : Vector2I.Up;
 
         return playerCell + offset;
-    }
-
-    // Inject FarmManager (Dependency Injection)
-    public void SetFarmManager(FarmManager manager)
-    {
-        farmManager = manager;
     }
 
     public bool CellIsPrepared() => farmManager.IsPrepared(currentCell);

@@ -30,7 +30,7 @@ public partial class PlayerNeutralState : PlayerState
             stateMachine.ChangeState(player.PickState);
         */
 
-        if (player.input.InteractPressed && !hasInteraction)
+        if (input.InteractPressed && !hasInteraction)
         {
             hasInteraction = true;
 

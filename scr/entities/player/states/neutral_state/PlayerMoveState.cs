@@ -8,7 +8,7 @@ public class PlayerMoveState : PlayerNeutralState
 	public override void Update(float delta)
 	{
 		base.Update(delta);
-		player.anim.SetAction("move");
+		anim.SetAction("move");
 
 		if (player.MoveInput == Vector2.Zero)
 		{

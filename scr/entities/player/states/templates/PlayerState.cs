@@ -7,8 +7,9 @@ public abstract partial class PlayerState : EntityState
 
     protected PlayerAnim anim { get; private set; }
 	protected PlayerTileInteraction tile { get; private set; }
-    //protected Node sfx;
-    //protected Node inventory;
+    protected PlayerInput input { get; private set; }
+    //protected Node sfx { get; private set; }
+    //protected Node inventory { get; private set; }
 
     public PlayerState(Player player, StateMachine stateMachine)
         : base(player, stateMachine)
@@ -17,6 +18,7 @@ public abstract partial class PlayerState : EntityState
 
         anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
 		tile = player.GetNode<PlayerTileInteraction>("PlayerTileInteraction");
+        input = player.input;
         //sfx = player.GetNodeOrNull("Player_SFX");
         //inventory = player.GetNodeOrNull("HotbarSystem");
     }

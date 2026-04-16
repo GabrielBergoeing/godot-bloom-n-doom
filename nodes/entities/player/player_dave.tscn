@@ -171,7 +171,7 @@ script = ExtResource("4_j4cnn")
 
 [node name="OnHand" type="Node" parent="." unique_id=1723164980]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1161646904]
+[node name="PlayerTileInteraction" type="Sprite2D" parent="." unique_id=1161646904]
 scale = Vector2(2, 2)
 texture = ExtResource("5_5mm46")
 script = ExtResource("6_upsma")

@@ -9,6 +9,9 @@ public partial class PlayerInput : Node
     private Vector2 moveInput;
     public Vector2 MoveInput => moveInput;
 
+    private bool canControl = true;
+    public bool CanControl => canControl;
+
     public bool InteractPressed { get; private set; }
     public bool PickupPressed { get; private set; }
     public bool DropPressed { get; private set; }
@@ -28,9 +31,14 @@ public partial class PlayerInput : Node
         GD.Print($"Player {PlayerId} assigned → {DeviceType} ({DeviceId})");
     }
 
+    public void ToggleControl()
+	{
+		canControl = !canControl;
+	}
+
     private void OnInputReceived(int playerId, InputEvent @event)
     {
-        if (playerId != PlayerId)
+        if (playerId != PlayerId || !canControl)
             return;
 
         if (DeviceType == "Keyboard" && @event is InputEventKey key && key.Pressed)
@@ -89,6 +97,9 @@ public partial class PlayerInput : Node
                 moveInput = Vector2.Zero;
         }
 
+        if (!canControl)
+            moveInput = Vector2.Zero;
+        
         moveInput = moveInput.Normalized();
         ClearFrameInput();
     }

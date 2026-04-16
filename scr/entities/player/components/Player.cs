@@ -6,9 +6,9 @@ public partial class Player : Entity
 
 	public Vector2 MoveInput { get; private set; }
 	public Vector2 FacingDir { get; private set; } = Vector2.Down;
-	public int PlayerId { get; private set; }
 
 	public PlayerInput input { get; private set; }
+	public int PlayerId { get; private set; }
 
 	// States
 	public PlayerIdleState IdleState { get; private set; }

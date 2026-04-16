@@ -8,7 +8,7 @@ public class PlayerIdleState : PlayerNeutralState
 	public override void Update(float delta)
 	{
 		base.Update(delta);
-		player.anim.SetAction("idle");
+		anim.SetAction("idle");
 
 		if (player.MoveInput != Vector2.Zero)
 		{

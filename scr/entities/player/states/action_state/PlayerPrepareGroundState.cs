@@ -15,7 +15,7 @@ public class PlayerPrepareGroundState : PlayerActionState
             stateMachine.ChangeState(player.IdleState);
             return;
         }
-        _ = ExecuteAction(0,0,//player.prepareGroundFrame, player.prepareGroundCooldown,
+        _ = ExecuteAction(0.5f, 0.5f,//player.prepareGroundFrame, player.prepareGroundCooldown,
             _ =>
             {
                 if (tile.CanPrepare())
