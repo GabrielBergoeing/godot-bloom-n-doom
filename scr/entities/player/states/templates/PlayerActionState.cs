@@ -28,47 +28,20 @@ public partial class PlayerActionState : PlayerState
     }
 
     protected async Task ExecuteAction(
-        float duration,
-        float cooldown,
-        Action<Vector2I> applyAction)
+    float duration,
+    float cooldown,
+    Action<Vector2I> applyAction)
     {
-        GD.Print("ExecuteAction START");
-
         input.ToggleControl();
-        GD.Print("Control disabled");
-
-        GD.Print($"CurrentCell: {tile.CurrentCell}");
 
         applyAction?.Invoke(tile.CurrentCell);
-        GD.Print("Action invoked");
 
-        GD.Print($"Waiting duration: {duration}");
-        
-        await player.ToSignal(
-            player.GetTree().CreateTimer(duration),
-            SceneTreeTimer.SignalName.Timeout
-        );
-
-        GD.Print("Duration finished");
+        await player.ToSignal(player.GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
 
         input.ToggleControl();
-        GD.Print("Control enabled");
-
         isPerformingAction = false;
-        GD.Print("Action completed");
 
         if (cooldown > 0)
-        {
-            GD.Print($"Waiting cooldown: {cooldown}");
-
-            await player.ToSignal(
-                player.GetTree().CreateTimer(cooldown),
-                SceneTreeTimer.SignalName.Timeout
-            );
-
-            GD.Print("Cooldown finished");
-        }
-
-        GD.Print("ExecuteAction END");
+            await player.ToSignal(player.GetTree().CreateTimer(cooldown), SceneTreeTimer.SignalName.Timeout);
     }
 }

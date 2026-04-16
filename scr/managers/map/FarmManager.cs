@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
 public partial class FarmManager : TileMapLayer
@@ -10,27 +9,20 @@ public partial class FarmManager : TileMapLayer
     [Export] public Node2D PlantsRoot;
     [Export] public PackedScene PlantScene;
 
-    [Export] public int PreparedSourceId;
-    [Export] public Vector2I PreparedAtlas;
     [Export] public int SeedSourceId;
     [Export] public Vector2I SeedAtlas;
 
-    private Dictionary<Vector2I, TileState> tileStates = new();
     private Dictionary<Vector2I, Node2D> plantsByCell = new();
     private HashSet<Vector2I> occupiedCells = new();
-
     private Dictionary<int, Node2D> playerPlantRoots = new();
 
-    public enum TileState
-    {
-        NotPrepared,
-        Prepared,
-        PlantedSeed
-    }
+    private FarmHelper helper;
 
     public override void _Ready()
     {
         Instance = this;
+
+        helper = new FarmHelper(this);
 
         if (PlantsRoot == null)
         {
@@ -38,66 +30,73 @@ public partial class FarmManager : TileMapLayer
             PlantsRoot.Name = "Plants";
             AddChild(PlantsRoot);
         }
-
-        InitializeTileStates(true);
     }
-
-
-    public void InitializeTileStates(bool clearBefore = false)
-    {
-        if (clearBefore)
-            tileStates.Clear();
-
-        var usedCells = GetUsedCells();
-
-        foreach (var cell in usedCells)
-        {
-            tileStates[cell] = TileState.NotPrepared;
-        }
-
-        GD.Print("Farm tile states initialized");
-    }
-
 
     public bool IsPrepared(Vector2I cell) =>
-        tileStates.TryGetValue(cell, out var state) && state == TileState.Prepared;
+        helper.IsCellTerrain(cell, FarmHelper.DIRT);
 
     public bool IsOccupied(Vector2I cell) =>
         occupiedCells.Contains(cell);
+    
+    public bool IsWaterTile(Vector2I cell) =>
+        helper.IsCellTerrain(cell, FarmHelper.WATER);
 
     public bool HasPlant(Vector2I cell) =>
         plantsByCell.ContainsKey(cell);
 
     public int? GetPlantOwner(Vector2I cell)
     {
-        if (plantsByCell.TryGetValue(cell, out var plant))
-        {
-            if (plant is Plant p)
-                return p.OwnerPlayerIndex;
-        }
+        if (plantsByCell.TryGetValue(cell, out var plant) && plant is Plant p)
+            return p.OwnerPlayerIndex;
 
         return null;
     }
 
-    public void PrepareTile(Vector2I cell)
+    public void TryPrepareTile(Vector2I cell)
     {
-        if (!tileStates.TryGetValue(cell, out var state) || state != TileState.NotPrepared)
+        if (IsPrepared(cell) || IsOccupied(cell))
             return;
 
-        SetCell(cell, PreparedSourceId, PreparedAtlas);
-        tileStates[cell] = TileState.Prepared;
+        helper.UpdateTerrain(cell, FarmHelper.DIRT);
+
+        GD.Print($"Prepared terrain at {cell}");
     }
 
     public void PlantSeed(Vector2I cell, int playerIndex)
     {
-        if (!tileStates.ContainsKey(cell) || !IsPrepared(cell) || IsOccupied(cell))
+        if (!IsPrepared(cell) || IsOccupied(cell))
             return;
 
-        tileStates[cell] = TileState.PlantedSeed;
-
         SetCell(cell, SeedSourceId, SeedAtlas);
-
         SpawnPlant(cell, playerIndex);
+    }
+
+    public void RemovePlant(Vector2I cell)
+    {
+        if (!plantsByCell.TryGetValue(cell, out var plant))
+            return;
+
+        plant.QueueFree();
+
+        plantsByCell.Remove(cell);
+        occupiedCells.Remove(cell);
+
+        helper.UpdateTerrain(cell, FarmHelper.DIRT);
+    }
+
+    public bool TryRemovePlant(Vector2I cell, int requesterPlayerIndex)
+    {
+        if (!plantsByCell.TryGetValue(cell, out var plant) || plant is not Plant p)
+            return false;
+
+        if (p.OwnerPlayerIndex != requesterPlayerIndex)
+        {
+            GD.Print("Can't remove someone else's plant.");
+            return false;
+        }
+
+        RemovePlant(cell);
+        return true;
     }
 
     public bool TryIrrigatePlant(Vector2I cell)
@@ -137,35 +136,6 @@ public partial class FarmManager : TileMapLayer
         occupiedCells.Add(cell);
     }
 
-    public void RemovePlant(Vector2I cell)
-    {
-        if (!plantsByCell.TryGetValue(cell, out var plant))
-            return;
-
-        plant.QueueFree();
-
-        plantsByCell.Remove(cell);
-        occupiedCells.Remove(cell);
-
-        SetCell(cell, PreparedSourceId, PreparedAtlas);
-        tileStates[cell] = TileState.Prepared;
-    }
-
-    public bool TryRemovePlant(Vector2I cell, int requesterPlayerIndex)
-    {
-        if (!plantsByCell.TryGetValue(cell, out var plant) || plant is not Plant p)
-            return false;
-
-        if (p.OwnerPlayerIndex != requesterPlayerIndex)
-        {
-            GD.Print("Can't remove someone else's plant.");
-            return false;
-        }
-
-        RemovePlant(cell);
-        return true;
-    }
-
     private Node2D GetPlayerPlantRoot(int playerIndex)
     {
         if (!playerPlantRoots.TryGetValue(playerIndex, out var root) || root == null)
@@ -177,15 +147,5 @@ public partial class FarmManager : TileMapLayer
         }
 
         return root;
-    }
-
-    public bool IsWaterTile(Vector2I cell)
-    {
-        var data = WaterLayer.GetCellTileData(cell);
-
-        if (data == null)
-            return false;
-
-        return data.GetCustomData("type").AsString() == "water";
     }
 }

@@ -23,6 +23,11 @@ public partial class PlayerTileInteraction : Sprite2D
         var level = SplitScreenManager.Instance.LevelNode;
         farmManager = level.GetNode<FarmManager>("TileMapLayer");
 
+        Connect(SignalName.RequestPrepare, new Callable(farmManager, nameof(FarmManager.TryPrepareTile)));
+        Connect(SignalName.RequestIrrigate, new Callable(farmManager, nameof(FarmManager.TryIrrigatePlant)));
+        Connect(SignalName.RequestFertilize, new Callable(farmManager, nameof(FarmManager.TryFertilizePlant)));
+        Connect(SignalName.RequestRemove, new Callable(farmManager, nameof(FarmManager.TryRemovePlant)));
+
         var remote = Player.GetNode<RemoteTransform2D>("RemoteTransform2D");
 
         if (remote != null && !remote.RemotePath.IsEmpty)
