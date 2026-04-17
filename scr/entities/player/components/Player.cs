@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 public partial class Player : Entity
 {
@@ -9,6 +10,8 @@ public partial class Player : Entity
 
 	public PlayerInput input { get; private set; }
 	public int PlayerId { get; private set; }
+
+	public List<Pickup> PickupsInRange = new();
 
 	// States
 	public PlayerIdleState IdleState { get; private set; }
@@ -45,6 +48,9 @@ public partial class Player : Entity
 		input.AssignDevice(deviceId, deviceType, playerId);
 	}
 
+	public Pickup GetPickupNearby() =>
+		PickupsInRange.Count > 0 ? PickupsInRange[0] : null;
+
 	private void PreparePlayerState()
 	{
 		IdleState = new PlayerIdleState(this, stateMachine);
@@ -59,4 +65,5 @@ public partial class Player : Entity
 
 		FacingDir = MoveInput.Normalized();
 	}
+	
 }
