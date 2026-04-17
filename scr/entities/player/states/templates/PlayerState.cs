@@ -9,7 +9,7 @@ public abstract partial class PlayerState : EntityState
 	protected PlayerTileInteraction tile { get; private set; }
     protected PlayerInput input { get; private set; }
     //protected Node sfx { get; private set; }
-    //protected Node inventory { get; private set; }
+    protected Node inventory { get; private set; }
 
     public PlayerState(Player player, StateMachine stateMachine)
         : base(player, stateMachine)
@@ -20,7 +20,7 @@ public abstract partial class PlayerState : EntityState
 		tile = player.GetNode<PlayerTileInteraction>("PlayerTileInteraction");
         input = player.input;
         //sfx = player.GetNodeOrNull("Player_SFX");
-        //inventory = player.GetNodeOrNull("HotbarSystem");
+        inventory = player.GetNodeOrNull("HotbarSystem");
     }
 
     /*

@@ -1,5 +1,11 @@
 using Godot;
 
+public struct ItemUseContext
+{
+    public Player Player;
+    public Vector2I Cell;
+}
+
 [GlobalClass]
 public partial class ItemData : Resource
 {
@@ -13,5 +19,5 @@ public partial class ItemData : Resource
 
     [Export] public bool Consumable = false;
 
-    //public virtual void Use(Player player) {}
+    public virtual void Use(ItemUseContext ctx) {}
 }

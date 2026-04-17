@@ -5,19 +5,17 @@ public partial class SeedData : ItemData
 {
     [Export] private PackedScene plantScene;
 
-    public void Use(Player player, Vector2I cell)
+    public override void Use(ItemUseContext ctx)
     {
         var farm = FarmManager.Instance;
         if (farm == null) return;
-        
-        //Vector2I cell = player.GetTargetCell(); // you define this
 
-        if (!farm.IsPrepared(cell) || farm.IsOccupied(cell))
+        if (!farm.IsPrepared(ctx.Cell) || farm.IsOccupied(ctx.Cell))
             return;
 
-        farm.PlantSeed(cell, player.PlayerId);
+        farm.PlantSeed(ctx.Cell, ctx.Player.PlayerId);
 
-        var hotbar = player.GetNodeOrNull<HotbarSystem>("HotbarSystem");
-        hotbar?.RemoveItem(hotbar.GetCurrentSlot(), 1, consume: true);
+        var hotbar = ctx.Player.GetNodeOrNull<HotbarSystem>("HotbarSystem");
+        hotbar?.RemoveItem(hotbar.CurrentSlot, 1, consume: true);
     }
 }
