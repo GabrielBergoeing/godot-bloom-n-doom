@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cibs3fm53my87"]
+
+[ext_resource type="Texture2D" uid="uid://hfk1665xje06" path="res://art/sprites/tiles/Sprite-0001.png" id="1_ahd4t"]
+[ext_resource type="Script" uid="uid://cqkecowrtlw5b" path="res://scr/entities/player/components/PlayerTileInteraction.cs" id="2_ohrqu"]
+
+[node name="PlayerTileInteraction" type="Sprite2D" unique_id=281458921]
+scale = Vector2(2, 2)
+texture = ExtResource("1_ahd4t")
+script = ExtResource("2_ohrqu")

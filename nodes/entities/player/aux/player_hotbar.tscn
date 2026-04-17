@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://clgjc6t6vtj4i"]
+
+[ext_resource type="Script" uid="uid://bh5vxgd1jtwux" path="res://scr/entities/player/components/PlayerHotbar.cs" id="1_80pmv"]
+
+[node name="PlayerHotbar" type="Node" unique_id=867373073]
+script = ExtResource("1_80pmv")
+
+[node name="OnHand" type="Node2D" parent="." unique_id=1518368863]

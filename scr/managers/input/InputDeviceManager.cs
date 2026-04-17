@@ -1,21 +1,6 @@
 using Godot;
 using System.Collections.Generic;
 
-// 🔥 Data container (faster than dictionary)
-public class InputDeviceData
-{
-    public int DeviceId;
-    public string DeviceType;
-    public int PlayerId;
-
-    public InputDeviceData(int deviceId, string type, int playerId)
-    {
-        DeviceId = deviceId;
-        DeviceType = type;
-        PlayerId = playerId;
-    }
-}
-
 public partial class InputDeviceManager : Node
 {
     public static InputDeviceManager Instance;
@@ -29,7 +14,7 @@ public partial class InputDeviceManager : Node
     public override void _Ready()
     {
         Instance = this;
-        playerScene = GD.Load<PackedScene>("res://nodes/entities/player/player_dave.tscn");
+        playerScene = GD.Load<PackedScene>("res://nodes/entities/player/characters/player_dave.tscn");
     }
 
     public override void _UnhandledInput(InputEvent @event)

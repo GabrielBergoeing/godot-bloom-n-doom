@@ -8,6 +8,7 @@ public partial class PlayerInput : Node
 
     private Vector2 moveInput;
     public Vector2 MoveInput => moveInput;
+    public Vector2 FacingDir { get; private set; } = Vector2.Down;
 
     private bool canControl = true;
     public bool CanControl => canControl;
@@ -16,6 +17,7 @@ public partial class PlayerInput : Node
     public bool PickupPressed { get; private set; }
     public bool DropPressed { get; private set; }
     public bool SabotagePressed { get; private set; }
+    public int? SlotPressed { get; private set; }
 
     public override void _Ready()
     {
@@ -54,6 +56,11 @@ public partial class PlayerInput : Node
 
             if (key.Keycode == Key.F)
                 SabotagePressed = true;
+            
+            if (key.Keycode == Key.Key1) SlotPressed = 0;
+            if (key.Keycode == Key.Key2) SlotPressed = 1;
+            if (key.Keycode == Key.Key3) SlotPressed = 2;
+            if (key.Keycode == Key.Key4) SlotPressed = 3;
         }
 
         if (DeviceType == "Controller" && @event is InputEventJoypadButton btn && btn.Pressed)
@@ -69,6 +76,11 @@ public partial class PlayerInput : Node
 
             if (btn.ButtonIndex == JoyButton.Y)
                 SabotagePressed = true;
+
+            if (btn.ButtonIndex == JoyButton.DpadLeft) SlotPressed = 0;
+            if (btn.ButtonIndex == JoyButton.DpadUp) SlotPressed = 1;
+            if (btn.ButtonIndex == JoyButton.DpadRight) SlotPressed = 2;
+            if (btn.ButtonIndex == JoyButton.DpadDown) SlotPressed = 3;
         }
     }
 
@@ -101,8 +113,18 @@ public partial class PlayerInput : Node
             moveInput = Vector2.Zero;
         
         moveInput = moveInput.Normalized();
+
+        UpdateFacingDir();
         ClearFrameInput();
     }
+
+    private void UpdateFacingDir()
+	{
+		if (moveInput == Vector2.Zero)
+			return;
+
+		FacingDir = moveInput;
+	}
 
     private void ClearFrameInput()
     {

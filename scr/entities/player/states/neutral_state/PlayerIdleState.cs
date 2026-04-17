@@ -10,7 +10,7 @@ public class PlayerIdleState : PlayerNeutralState
 		base.Update(delta);
 		anim.SetAction("idle");
 
-		if (player.MoveInput != Vector2.Zero)
+		if (input.MoveInput != Vector2.Zero)
 		{
 			stateMachine.ChangeState(player.MoveState);
 		}

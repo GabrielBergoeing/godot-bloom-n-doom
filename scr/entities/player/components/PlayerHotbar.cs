@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class HotbarSystem : Node
+public partial class PlayerHotbar : Node
 {
     [Export] public int SlotCount = 4;
 
@@ -13,15 +13,15 @@ public partial class HotbarSystem : Node
     public override void _Ready()
     {
         slots = new ItemStack[SlotCount];
-        playerHand = GetNode<Node2D>("../OnHand");
+        playerHand = GetNode<Node2D>("OnHand");
     }
 
-    public override void _Process(double delta)
+    public void HandleInput(PlayerInput input)
     {
-        if (Input.IsActionJustPressed("slot_1")) SelectSlot(0);
-        if (Input.IsActionJustPressed("slot_2")) SelectSlot(1);
-        if (Input.IsActionJustPressed("slot_3")) SelectSlot(2);
-        if (Input.IsActionJustPressed("slot_4")) SelectSlot(3);
+        if (input.SlotPressed.HasValue)
+        {
+            SelectSlot(input.SlotPressed.Value);
+        }
     }
 
     public bool AddItem(ItemData data, int amount = 1)

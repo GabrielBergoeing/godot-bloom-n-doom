@@ -4,13 +4,14 @@ using System.Collections.Generic;
 public partial class Player : Entity
 {
 	[Export] public float MoveSpeed = 200f;
+	[Export] private PackedScene HotbarScene;
+	[Export] private PackedScene TileInteractionScene;
 
-	public Vector2 MoveInput { get; private set; }
-	public Vector2 FacingDir { get; private set; } = Vector2.Down;
+	public PlayerInput Input { get; private set; }
+	public PlayerHotbar Hotbar { get; private set; }
+	public PlayerTileInteraction Tile { get; private set; }
 
-	public PlayerInput input { get; private set; }
 	public int PlayerId { get; private set; }
-
 	public List<Pickup> PickupsInRange = new();
 
 	// States
@@ -23,8 +24,7 @@ public partial class Player : Entity
 		base._Ready();
 		AddToGroup("players");
 
-		input = GetNode<PlayerInput>("PlayerInput");
-
+		GetPlayerSystems();
 		PreparePlayerState();
 		stateMachine.Initialize(IdleState);
 	}
@@ -32,9 +32,7 @@ public partial class Player : Entity
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
-
-		MoveInput = input.MoveInput;
-		UpdateFacingDir();
+		Hotbar.HandleInput(Input);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -45,11 +43,31 @@ public partial class Player : Entity
 	public void AssignDevice(int deviceId, string deviceType, int playerId)
 	{
 		PlayerId = playerId;
-		input.AssignDevice(deviceId, deviceType, playerId);
+		Input.AssignDevice(deviceId, deviceType, playerId);
 	}
+
+	public Vector2 GetFacingDirection() =>
+		Input.FacingDir;
 
 	public Pickup GetPickupNearby() =>
 		PickupsInRange.Count > 0 ? PickupsInRange[0] : null;
+
+	private void GetPlayerSystems() 
+	{
+		Input = GetNode<PlayerInput>("PlayerInput");
+
+		if (HotbarScene != null)
+		{
+			Hotbar = HotbarScene.Instantiate<PlayerHotbar>();
+			AddChild(Hotbar);
+		}
+
+		if (TileInteractionScene != null)
+		{
+			Tile = TileInteractionScene.Instantiate<PlayerTileInteraction>();
+			AddChild(Tile);
+		}
+	}
 
 	private void PreparePlayerState()
 	{
@@ -57,13 +75,4 @@ public partial class Player : Entity
 		MoveState = new PlayerMoveState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 	}
-
-	private void UpdateFacingDir()
-	{
-		if (MoveInput == Vector2.Zero)
-			return;
-
-		FacingDir = MoveInput.Normalized();
-	}
-	
 }

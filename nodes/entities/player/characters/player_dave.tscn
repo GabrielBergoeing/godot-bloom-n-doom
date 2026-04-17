@@ -1,70 +1,70 @@
 [gd_scene format=3 uid="uid://h1f0qpp72uyw"]
 
-[ext_resource type="Script" uid="uid://bf606ytvi7uc1" path="res://scr/entities/player/components/Player.cs" id="1_olkgx"]
-[ext_resource type="Texture2D" uid="uid://drjsi53jyuk7a" path="res://art/sprites/player/Dave.png" id="2_kwv77"]
-[ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_kwv77"]
-[ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_j4cnn"]
-[ext_resource type="Texture2D" uid="uid://hfk1665xje06" path="res://art/sprites/tiles/Sprite-0001.png" id="5_5mm46"]
-[ext_resource type="Script" uid="uid://cqkecowrtlw5b" path="res://scr/entities/player/components/PlayerTileInteraction.cs" id="6_upsma"]
+[ext_resource type="Script" uid="uid://bf606ytvi7uc1" path="res://scr/entities/player/components/Player.cs" id="1_mfldv"]
+[ext_resource type="Texture2D" uid="uid://drjsi53jyuk7a" path="res://art/sprites/player/Dave.png" id="2_jm2a1"]
+[ext_resource type="PackedScene" uid="uid://clgjc6t6vtj4i" path="res://nodes/entities/player/aux/player_hotbar.tscn" id="2_lar61"]
+[ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_lar61"]
+[ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_5bbg0"]
+[ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/aux/player_tile_interaction.tscn" id="5_x768k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_olkgx"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_36pct"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(64, 192, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eodaa"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(0, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_j4cnn"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5mm46"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_upsma"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2c40g"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_miygd"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(0, 192, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_im1f3"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(64, 192, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v6jc6"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(128, 192, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vbqce"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(192, 192, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vdb6o"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(0, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ic1mg"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(64, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uwbic"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(128, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dsqtk"]
-atlas = ExtResource("2_kwv77")
+atlas = ExtResource("2_jm2a1")
 region = Rect2(192, 128, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_36pct"]
@@ -154,14 +154,16 @@ position = Vector2(500, 300)
 scale = Vector2(0.5, 0.5)
 collision_layer = 2
 collision_mask = 3
-script = ExtResource("1_olkgx")
+script = ExtResource("1_mfldv")
 MoveSpeed = 150.0
+HotbarScene = ExtResource("2_lar61")
+TileInteractionScene = ExtResource("5_x768k")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1120389913]
 position = Vector2(1, -6)
 sprite_frames = SubResource("SpriteFrames_36pct")
 animation = &"move_down"
-script = ExtResource("3_kwv77")
+script = ExtResource("3_lar61")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=643793127]
 shape = SubResource("CapsuleShape2D_eodaa")
@@ -169,11 +171,4 @@ shape = SubResource("CapsuleShape2D_eodaa")
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="." unique_id=550742768]
 
 [node name="PlayerInput" type="Node" parent="." unique_id=446085519]
-script = ExtResource("4_j4cnn")
-
-[node name="OnHand" type="Node" parent="." unique_id=1723164980]
-
-[node name="PlayerTileInteraction" type="Sprite2D" parent="." unique_id=1161646904]
-scale = Vector2(2, 2)
-texture = ExtResource("5_5mm46")
-script = ExtResource("6_upsma")
+script = ExtResource("4_5bbg0")

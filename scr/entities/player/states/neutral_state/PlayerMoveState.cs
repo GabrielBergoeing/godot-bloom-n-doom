@@ -10,13 +10,13 @@ public class PlayerMoveState : PlayerNeutralState
 		base.Update(delta);
 		anim.SetAction("move");
 
-		if (player.MoveInput == Vector2.Zero)
+		if (input.MoveInput == Vector2.Zero)
 		{
 			stateMachine.ChangeState(player.IdleState);
 			return;
 		}
 		
-		player.SetVelocity(player.MoveInput.Normalized() * player.MoveSpeed);
+		player.SetVelocity(input.MoveInput * player.MoveSpeed);
 	}
 
 	public override void Exit()

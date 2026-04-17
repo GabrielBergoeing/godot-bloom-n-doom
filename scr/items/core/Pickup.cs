@@ -14,7 +14,7 @@ public partial class Pickup : Area2D
 
     public void Pick(Player player)
     {
-        var hotbar = player.GetNodeOrNull<HotbarSystem>("HotbarSystem");
+        var hotbar = player.GetNodeOrNull<PlayerHotbar>("PlayerHotbar");
 
         if (hotbar != null && hotbar.AddItem(ItemData))
         {

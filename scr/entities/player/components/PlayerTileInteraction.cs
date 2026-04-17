@@ -97,7 +97,7 @@ public partial class PlayerTileInteraction : Sprite2D
 
     private Vector2I GetCellInFrontOfPlayer(Vector2I playerCell)
     {
-        Vector2 facing = (Vector2)Player.Get("FacingDir");
+        Vector2 facing = (Vector2)Player.GetFacingDirection();
 
         if (facing == Vector2.Zero)
             facing = Vector2.Down;

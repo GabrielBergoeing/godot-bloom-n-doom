@@ -9,7 +9,7 @@ public abstract partial class PlayerState : EntityState
 	protected PlayerTileInteraction tile { get; private set; }
     protected PlayerInput input { get; private set; }
     //protected Node sfx { get; private set; }
-    protected Node inventory { get; private set; }
+    protected PlayerHotbar Inventory { get; private set; }
 
     public PlayerState(Player player, StateMachine stateMachine)
         : base(player, stateMachine)
@@ -17,18 +17,25 @@ public abstract partial class PlayerState : EntityState
         this.player = player;
 
         anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
-		tile = player.GetNode<PlayerTileInteraction>("PlayerTileInteraction");
-        input = player.input;
+		tile = player.Tile;
+        input = player.Input;
         //sfx = player.GetNodeOrNull("Player_SFX");
-        inventory = player.GetNodeOrNull("HotbarSystem");
+        Inventory = player.Hotbar;
+    }
+
+    public override void Update(float delta)
+    {
+        base.Update(delta);
+        Inventory.HandleInput(input);
     }
 
     /*
     public virtual T GetItemFromOnHand<T>() where T : Node
     {
-        if (player.Inventory == null) return null;
+        if (Inventory == null) 
+            return null;
 
-        var item = player.Inventory.GetCurrentItem();
+        var item = Inventory.GetCurrentItem();
         if (item != null)
             return item.GetNodeOrNull<T>("");
 

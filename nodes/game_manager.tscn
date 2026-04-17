@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://t57n4bravpf4"]
 
 [ext_resource type="Script" uid="uid://bl2i71ohpllxy" path="res://scr/managers/camera/SplitScreenManager.cs" id="1_hneav"]
-[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/player_camera.tscn" id="2_bxhn3"]
+[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/aux/player_camera.tscn" id="2_bxhn3"]
 
 [node name="GameManager" type="Node" unique_id=1943421568]
 script = ExtResource("1_hneav")

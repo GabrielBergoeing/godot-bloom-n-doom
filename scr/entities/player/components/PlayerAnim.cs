@@ -4,7 +4,7 @@ public partial class PlayerAnim : AnimatedSprite2D
 {
     private Player player;
 
-    private string currentAction = "idle";
+    private string CurrentAction = "idle";
 
     public override void _Ready()
     {
@@ -18,14 +18,14 @@ public partial class PlayerAnim : AnimatedSprite2D
 
     public void SetAction(string action)
     {
-        currentAction = action;
+        CurrentAction = action;
     }
 
     private void UpdateAnimation()
     {
         string direction = GetDirectionString();
 
-        string finalAnim = $"{currentAction}_{direction}";
+        string finalAnim = $"{CurrentAction}_{direction}";
 
         if (Animation != finalAnim)
             Play(finalAnim);
@@ -35,7 +35,7 @@ public partial class PlayerAnim : AnimatedSprite2D
 
     private string GetDirectionString()
     {
-        Vector2 dir = player.FacingDir;
+        Vector2 dir = player.GetFacingDirection();
 
         if (Mathf.Abs(dir.X) > Mathf.Abs(dir.Y))
             return "side";
@@ -46,7 +46,7 @@ public partial class PlayerAnim : AnimatedSprite2D
     private void HandleFlip(string direction)
     {
         if (direction == "side")
-            FlipH = player.FacingDir.X < 0;
+            FlipH = player.GetFacingDirection().X < 0;
         else
             FlipH = false;
     }
