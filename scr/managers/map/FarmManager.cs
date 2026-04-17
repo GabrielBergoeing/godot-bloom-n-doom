@@ -31,6 +31,9 @@ public partial class FarmManager : TileMapLayer
             AddChild(PlantsRoot);
         }
     }
+    
+    public bool IsGrass(Vector2I cell) =>
+        helper.IsCellTerrain(cell, FarmHelper.GRASS);
 
     public bool IsPrepared(Vector2I cell) =>
         helper.IsCellTerrain(cell, FarmHelper.DIRT);

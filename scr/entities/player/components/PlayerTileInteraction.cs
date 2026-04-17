@@ -23,11 +23,7 @@ public partial class PlayerTileInteraction : Sprite2D
         var level = SplitScreenManager.Instance.LevelNode;
         farmManager = level.GetNode<FarmManager>("TileMapLayer");
 
-        Connect(SignalName.RequestPrepare, new Callable(farmManager, nameof(FarmManager.TryPrepareTile)));
-        Connect(SignalName.RequestIrrigate, new Callable(farmManager, nameof(FarmManager.TryIrrigatePlant)));
-        Connect(SignalName.RequestFertilize, new Callable(farmManager, nameof(FarmManager.TryFertilizePlant)));
-        Connect(SignalName.RequestRemove, new Callable(farmManager, nameof(FarmManager.TryRemovePlant)));
-
+        ConnectFarmSignals();
         var remote = Player.GetNode<RemoteTransform2D>("RemoteTransform2D");
 
         if (remote != null && !remote.RemotePath.IsEmpty)
@@ -50,6 +46,55 @@ public partial class PlayerTileInteraction : Sprite2D
         GlobalPosition = cellCenter;
     }
 
+    public void IrrigateInCell() => 
+        EmitSignal(SignalName.RequestIrrigate, currentCell);
+
+    public void PrepareInCell() => 
+        EmitSignal(SignalName.RequestPrepare, currentCell);
+
+    public void FertilizeInCell() => 
+        EmitSignal(SignalName.RequestFertilize, currentCell);
+
+    public void RemoveInCell(int playerIndex) => 
+        EmitSignal(SignalName.RequestRemove, currentCell, playerIndex);
+
+
+    public bool CellIsPrepared() => 
+        farmManager.IsPrepared(currentCell);
+
+    public bool CellIsOccupied() => 
+        farmManager.IsOccupied(currentCell);
+
+    public bool IsCellOwner(int playerIndex) => 
+        playerIndex == farmManager.GetPlantOwner(currentCell);
+
+
+    public bool CanPrepare() => 
+        !CellIsPrepared() && farmManager.IsGrass(currentCell);
+
+    public bool CanPlant() => 
+        CellIsPrepared() && !CellIsOccupied();
+
+    public bool CanIrrigate() => 
+        CellIsOccupied();
+
+    public bool CanRemove(int playerIndex) => 
+        CellIsOccupied() && IsCellOwner(playerIndex);
+
+    public bool CanSabotage(int playerIndex) => 
+        CellIsOccupied() && !IsCellOwner(playerIndex);
+
+    public bool CanRefillWater() => 
+        farmManager.IsWaterTile(currentCell);
+
+    private void ConnectFarmSignals()
+    {
+        Connect(SignalName.RequestPrepare, new Callable(farmManager, nameof(FarmManager.TryPrepareTile)));
+        Connect(SignalName.RequestIrrigate, new Callable(farmManager, nameof(FarmManager.TryIrrigatePlant)));
+        Connect(SignalName.RequestFertilize, new Callable(farmManager, nameof(FarmManager.TryFertilizePlant)));
+        Connect(SignalName.RequestRemove, new Callable(farmManager, nameof(FarmManager.TryRemovePlant)));
+    }
+
     private Vector2I GetCellInFrontOfPlayer(Vector2I playerCell)
     {
         Vector2 facing = (Vector2)Player.Get("FacingDir");
@@ -65,42 +110,5 @@ public partial class PlayerTileInteraction : Sprite2D
             offset = facing.Y > 0 ? Vector2I.Down : Vector2I.Up;
 
         return playerCell + offset;
-    }
-
-    public bool CellIsPrepared() => farmManager.IsPrepared(currentCell);
-    public bool CellIsOccupied() => farmManager.IsOccupied(currentCell);
-
-    public bool IsCellOwner(int playerIndex)
-        => playerIndex == farmManager.GetPlantOwner(currentCell);
-
-    public bool CanPrepare() => !CellIsPrepared() && !CellIsOccupied();
-    public bool CanPlant() => CellIsPrepared() && !CellIsOccupied();
-    public bool CanIrrigate() => CellIsOccupied();
-    public bool CanRemove(int playerIndex)
-        => CellIsOccupied() && IsCellOwner(playerIndex);
-
-    public bool CanSabotage(int playerIndex)
-        => CellIsOccupied() && !IsCellOwner(playerIndex);
-
-    public bool CanRefillWater() => farmManager.IsWaterTile(currentCell);
-
-    public void IrrigateInCell()
-    {
-        EmitSignal(SignalName.RequestIrrigate, currentCell);
-    }
-
-    public void PrepareInCell()
-    {
-        EmitSignal(SignalName.RequestPrepare, currentCell);
-    }
-
-    public void FertilizeInCell()
-    {
-        EmitSignal(SignalName.RequestFertilize, currentCell);
-    }
-
-    public void RemoveInCell(int playerIndex)
-    {
-        EmitSignal(SignalName.RequestRemove, currentCell, playerIndex);
     }
 }

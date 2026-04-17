@@ -152,6 +152,8 @@ height = 44.0
 [node name="PlayerDave" type="CharacterBody2D" unique_id=1865531954]
 position = Vector2(500, 300)
 scale = Vector2(0.5, 0.5)
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_olkgx")
 MoveSpeed = 150.0
 

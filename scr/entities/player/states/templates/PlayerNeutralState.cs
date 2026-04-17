@@ -47,7 +47,7 @@ public partial class PlayerNeutralState : PlayerState
 
     private PlayerState DetermineInteractionState()
     {
-        if (IsOnHandEmpty())
+        if (IsOnHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
 
         return this;
