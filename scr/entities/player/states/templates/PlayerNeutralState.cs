@@ -47,11 +47,11 @@ public partial class PlayerNeutralState : PlayerState
 
     private PlayerState DetermineInteractionState()
     {
+        if(player.TryPickupNearby())
+            return this;
+
         if (IsOnHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
-        
-        //if()
-
         return this;
     }
 

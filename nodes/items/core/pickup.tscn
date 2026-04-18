@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cqpde2tqmbcng"]
+
+[ext_resource type="Script" uid="uid://c775abysmnwh6" path="res://scr/items/core/Pickup.cs" id="1_0ej65"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_d48sc"]
+radius = 16.0
+
+[node name="Pickup" type="Area2D" unique_id=605201135]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_0ej65")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1156668556]
+shape = SubResource("CircleShape2D_d48sc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=729610973]

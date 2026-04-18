@@ -1,27 +1,50 @@
 using Godot;
+using System;
 
 public partial class PlayerHotbar : Node
 {
+    public Action OnSlotChanged;
+
     [Export] public int SlotCount = 4;
 
     private ItemStack[] slots;
     private int currentSlot = 0;
     public int CurrentSlot => currentSlot;
 
-    private Node2D playerHand;
+    public Player Player { get; private set; }
 
     public override void _Ready()
     {
         slots = new ItemStack[SlotCount];
-        playerHand = GetNode<Node2D>("OnHand");
+        Player = GetParent<Player>();
     }
 
     public void HandleInput(PlayerInput input)
     {
         if (input.SlotPressed.HasValue)
-        {
             SelectSlot(input.SlotPressed.Value);
+    }
+
+    public bool CanAddItem(ItemData data, int amount = 1)
+    {
+        // Check stacking
+        if (data.Stackable)
+        {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i] != null && slots[i].Data == data && !slots[i].IsFull())
+                    return true;
+            }
         }
+
+        // Check empty slot
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == null)
+                return true;
+        }
+
+        return false;
     }
 
     public bool AddItem(ItemData data, int amount = 1)
@@ -45,6 +68,7 @@ public partial class PlayerHotbar : Node
             if (slots[i] == null)
             {
                 slots[i] = new ItemStack(data, amount);
+                SelectSlot(i);
                 return true;
             }
         }
@@ -72,20 +96,8 @@ public partial class PlayerHotbar : Node
 
     private void SelectSlot(int index)
     {
-        //if (slots[currentSlot] != null)
-            //slots[currentSlot].Visible = false;
-
         currentSlot = index;
-
-        //if (slots[currentSlot] != null)
-        //{
-            //var item = slots[currentSlot];
-            
-            //Attatch to Pickup script
-            //item.Visible = true;
-            //item.Reparent(playerHand);
-            //item.Position = Vector2.Zero;
-        //}
+        OnSlotChanged?.Invoke();
     }
 
     private void DropItem(ItemData data)

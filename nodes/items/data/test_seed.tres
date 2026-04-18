@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SeedData" format=3 uid="uid://dikswkja8j3k1"]
+
+[ext_resource type="Texture2D" uid="uid://do0rp7osdkdt6" path="res://art/sprites/tiles/arid_tiles.png" id="1_aqvu8"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="2_euh76"]
+[ext_resource type="Script" uid="uid://y1a16h7gfqvy" path="res://scr/items/consumable/SeedData.cs" id="2_k6e30"]
+
+[resource]
+script = ExtResource("2_k6e30")
+ItemId = "test_seed"
+ItemName = "Test Seed"
+Icon = ExtResource("1_aqvu8")
+MaxStack = 2
+PickupScene = ExtResource("2_euh76")
+Consumable = true
+metadata/_custom_type_script = "uid://y1a16h7gfqvy"

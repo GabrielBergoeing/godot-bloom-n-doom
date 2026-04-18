@@ -49,8 +49,35 @@ public partial class Player : Entity
 	public Vector2 GetFacingDirection() =>
 		Input.FacingDir;
 
-	public Pickup GetPickupNearby() =>
-		PickupsInRange.Count > 0 ? PickupsInRange[0] : null;
+	public Pickup GetPickupNearby()
+	{
+		Pickup closest = null;
+		float minDist = float.MaxValue;
+
+		foreach (var p in PickupsInRange)
+		{
+			float dist = GlobalPosition.DistanceTo(p.GlobalPosition);
+			if (dist < minDist)
+			{
+				minDist = dist;
+				closest = p;
+			}
+		}
+
+		return closest;
+	}
+
+	public bool TryPickupNearby()
+	{
+		var pickup = GetPickupNearby();
+		if (pickup == null) return false;
+
+		if (!Hotbar.CanAddItem(pickup.ItemData))
+			return false;
+
+		pickup.Pick(this);
+		return true;
+	}
 
 	private void GetPlayerSystems() 
 	{

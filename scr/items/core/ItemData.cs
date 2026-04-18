@@ -9,6 +9,7 @@ public struct ItemUseContext
 [GlobalClass]
 public partial class ItemData : Resource
 {
+    [Export] public string ItemId;
     [Export] public string ItemName;
     [Export] public Texture2D Icon;
 

@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://clgjc6t6vtj4i"]
 
 [ext_resource type="Script" uid="uid://bh5vxgd1jtwux" path="res://scr/entities/player/components/PlayerHotbar.cs" id="1_80pmv"]
+[ext_resource type="Script" uid="uid://cldm31pjpd4ai" path="res://scr/entities/player/components/PlayerOnHand.cs" id="2_aqfl2"]
 
 [node name="PlayerHotbar" type="Node" unique_id=867373073]
 script = ExtResource("1_80pmv")
 
-[node name="OnHand" type="Node2D" parent="." unique_id=1518368863]
+[node name="PlayerOnHand" type="Node2D" parent="." unique_id=1518368863]
+script = ExtResource("2_aqfl2")
