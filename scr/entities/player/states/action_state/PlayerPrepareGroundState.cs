@@ -10,11 +10,6 @@ public class PlayerPrepareGroundState : PlayerActionState
     {
         base.Enter();
 
-        if (!IsOnHandEmpty())
-        {
-            stateMachine.ChangeState(player.IdleState);
-            return;
-        }
         _ = ExecuteAction(2f, 0.5f,//player.prepareGroundFrame, player.prepareGroundCooldown,
             _ =>
             {

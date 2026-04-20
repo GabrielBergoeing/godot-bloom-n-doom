@@ -47,8 +47,11 @@ public partial class PlayerNeutralState : PlayerState
         if(player.TryPickupNearby())
             return this;
 
-        if (IsOnHandEmpty() && tile.CanPrepare())
+        if (IsHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
+
+        if (HasItemType(ItemType.Seed))
+            return this;
         return this;
     }
 

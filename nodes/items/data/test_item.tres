@@ -6,12 +6,13 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_itif1"]
 atlas = ExtResource("1_ke1wn")
-region = Rect2(50, 18, 12, 14)
+region = Rect2(51, 48, 10, 15)
 
 [resource]
 script = ExtResource("3_7iy51")
 ItemId = "test_item"
 ItemName = "Test Item"
+Type = 3
 Icon = SubResource("AtlasTexture_itif1")
 MaxStack = 10
 PickupScene = ExtResource("2_itif1")

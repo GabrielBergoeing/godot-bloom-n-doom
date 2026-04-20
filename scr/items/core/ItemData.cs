@@ -6,11 +6,20 @@ public struct ItemUseContext
     public Vector2I Cell;
 }
 
+public enum ItemType
+{
+    None,
+    Seed,
+    Tool,
+    Resource
+}
+
 [GlobalClass]
 public partial class ItemData : Resource
 {
     [Export] public string ItemId;
     [Export] public string ItemName;
+    [Export] public ItemType Type;
     [Export] public Texture2D Icon;
 
     [Export] public bool Stackable = true;

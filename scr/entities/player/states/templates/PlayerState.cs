@@ -29,31 +29,15 @@ public abstract partial class PlayerState : EntityState
         Inventory.HandleInput(Input);
     }
 
-    /*
-    public virtual T GetItemFromOnHand<T>() where T : Node
+    public bool HasItemType(ItemType type)
     {
-        if (Inventory == null) 
-            return null;
-
-        var item = Inventory.GetCurrentItem();
-        if (item != null)
-            return item.GetNodeOrNull<T>("");
-
-        return null;
+        var stack = Inventory?.GetCurrentStack();
+        return stack?.Data?.Type == type;
     }
-    */
 
-    public bool IsOnHandEmpty()
+    public bool IsHandEmpty()
     {
-        var onHand = player.GetNodeOrNull<Node2D>("OnHand");
-        if (onHand == null) return true;
-
-        foreach (Node child in onHand.GetChildren())
-        {
-            if (child is CanvasItem canvasItem && canvasItem.Visible)
-                return false;
-        }
-
-        return true;
+        var stack = Inventory?.GetCurrentStack();
+        return stack == null || stack?.Data == null;
     }
 }

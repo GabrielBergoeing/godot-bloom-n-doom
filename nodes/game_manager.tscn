@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://t57n4bravpf4"]
 
 [ext_resource type="Script" uid="uid://bl2i71ohpllxy" path="res://scr/managers/camera/SplitScreenManager.cs" id="1_hneav"]
-[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/aux/player_camera.tscn" id="2_bxhn3"]
+[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/components/player_camera.tscn" id="2_bxhn3"]
 [ext_resource type="PackedScene" uid="uid://caqlo6t4bucho" path="res://nodes/ui/ui_player_hotbar.tscn" id="3_o4i5i"]
 
 [node name="GameManager" type="Node" unique_id=1943421568]
@@ -11,13 +11,13 @@ UIPlayerHotbarScene = ExtResource("3_o4i5i")
 LevelPath = "res://nodes/levels/test_scene.tscn"
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=791644416]
-offset_right = 1920.0
-offset_bottom = 1080.0
+offset_right = 1152.0
+offset_bottom = 648.0
 color = Color(0, 0, 0, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=929203448]
-offset_right = 1920.0
-offset_bottom = 1080.0
+offset_right = 1152.0
+offset_bottom = 648.0
 
 [node name="GridContainer" type="GridContainer" parent="CenterContainer" unique_id=1393471944]
 layout_mode = 2

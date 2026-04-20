@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://bf606ytvi7uc1" path="res://scr/entities/player/components/Player.cs" id="1_mfldv"]
 [ext_resource type="Texture2D" uid="uid://drjsi53jyuk7a" path="res://art/sprites/player/Dave.png" id="2_jm2a1"]
-[ext_resource type="PackedScene" uid="uid://clgjc6t6vtj4i" path="res://nodes/entities/player/aux/player_hotbar.tscn" id="2_lar61"]
+[ext_resource type="PackedScene" uid="uid://clgjc6t6vtj4i" path="res://nodes/entities/player/components/player_hotbar.tscn" id="2_lar61"]
 [ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_lar61"]
 [ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_5bbg0"]
-[ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/aux/player_tile_interaction.tscn" id="5_x768k"]
+[ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/components/player_tile_interaction.tscn" id="5_x768k"]
 [ext_resource type="Script" uid="uid://cldm31pjpd4ai" path="res://scr/entities/player/components/PlayerOnHand.cs" id="6_lar61"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_olkgx"]

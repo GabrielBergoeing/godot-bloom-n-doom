@@ -4,6 +4,7 @@
 [ext_resource type="TileSet" uid="uid://uibwpl1ch1ll" path="res://nodes/tilesets/terrain.tres" id="2_2hq3m"]
 [ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="3_6safa"]
 [ext_resource type="Resource" uid="uid://n3d0n4dduspg" path="res://nodes/items/data/test_item.tres" id="4_6safa"]
+[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/test_seed.tres" id="4_w52lu"]
 
 [node name="TestScene" type="Node" unique_id=1205820897]
 
@@ -16,8 +17,12 @@ script = ExtResource("2_0hknr")
 
 [node name="Pickup" parent="." unique_id=605201135 instance=ExtResource("3_6safa")]
 position = Vector2(512, 264)
-ItemData = ExtResource("4_6safa")
+ItemData = ExtResource("4_w52lu")
 
 [node name="Pickup2" parent="." unique_id=186716149 instance=ExtResource("3_6safa")]
 position = Vector2(608, 280)
+ItemData = ExtResource("4_w52lu")
+
+[node name="Pickup3" parent="." unique_id=1233387506 instance=ExtResource("3_6safa")]
+position = Vector2(555, 319)
 ItemData = ExtResource("4_6safa")

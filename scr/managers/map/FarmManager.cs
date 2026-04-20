@@ -65,13 +65,13 @@ public partial class FarmManager : TileMapLayer
         GD.Print($"Prepared terrain at {cell}");
     }
 
-    public void PlantSeed(Vector2I cell, int playerIndex)
+    public void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
     {
         if (!IsPrepared(cell) || IsOccupied(cell))
             return;
 
         SetCell(cell, SeedSourceId, SeedAtlas);
-        SpawnPlant(cell, playerIndex);
+        SpawnPlant(cell, playerIndex, data);
     }
 
     public void RemovePlant(Vector2I cell)
@@ -122,7 +122,7 @@ public partial class FarmManager : TileMapLayer
         return false;
     }
 
-    private void SpawnPlant(Vector2I cell, int playerIndex)
+    private void SpawnPlant(Vector2I cell, int playerIndex, SeedData data)
     {
         Vector2 worldPos = MapToLocal(cell);
 
@@ -133,7 +133,7 @@ public partial class FarmManager : TileMapLayer
         parent.AddChild(plantInstance);
 
         if (plantInstance is Plant p)
-            p.Init(playerIndex, cell);
+            p.Init(playerIndex, cell, data);
 
         plantsByCell[cell] = plantInstance;
         occupiedCells.Add(cell);
