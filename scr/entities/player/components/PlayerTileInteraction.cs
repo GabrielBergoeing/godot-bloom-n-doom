@@ -75,10 +75,7 @@ public partial class PlayerTileInteraction : Sprite2D
     public bool CanPlant() => 
         CellIsPrepared() && !CellIsOccupied();
 
-    public bool CanIrrigate() => 
-        CellIsOccupied();
-
-    public bool CanRemove(int playerIndex) => 
+    public bool CanInteractPlant(int playerIndex) => 
         CellIsOccupied() && IsCellOwner(playerIndex);
 
     public bool CanSabotage(int playerIndex) => 

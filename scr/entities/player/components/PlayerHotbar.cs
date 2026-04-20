@@ -81,18 +81,19 @@ public partial class PlayerHotbar : Node
         var stack = slots[slotIndex];
         if (stack == null) return;
 
-        stack.Amount -= amount;
+        int removeAmount = Mathf.Min(amount, stack.Amount);
 
-        if (stack.Amount <= 0)
+        for (int i = 0; i < removeAmount; i++)
         {
             if (!consume)
                 DropItem(stack.Data);
-
-            slots[slotIndex] = null;
         }
-        else if (!consume)
-            DropItem(stack.Data);
-        
+
+        stack.Amount -= removeAmount;
+
+        if (stack.Amount <= 0)
+            slots[slotIndex] = null;
+
         OnSlotChanged?.Invoke();
     }
 
@@ -104,23 +105,44 @@ public partial class PlayerHotbar : Node
         return slots[index];
     }
 
+    public void DropCurrentItem()
+    {
+        var stack = GetCurrentStack();
+        if (stack == null) return;
+
+        DropItem(stack.Data);
+
+        stack.Amount--;
+
+        if (stack.Amount <= 0)
+            slots[currentSlot] = null;
+
+        OnSlotChanged?.Invoke();
+    }
+
     private void SelectSlot(int index)
     {
         currentSlot = index;
         OnSlotChanged?.Invoke();
     }
 
+    //SPAWN ISSUE TO FIX
     private void DropItem(ItemData data)
     {
-        if (data.PickupScene == null) return;
+        if (data?.PickupScene == null)
+            return;
 
-        var pickup = data.PickupScene.Instantiate<Node2D>();
+        var pickup = data.PickupScene.Instantiate<Pickup>();
+        if (pickup == null)
+        {
+            GD.PrintErr("PickupScene is not a Pickup!");
+            return;
+        }
+
         GetTree().CurrentScene.AddChild(pickup);
 
-        pickup.GlobalPosition = GetParent<Node2D>().GlobalPosition;
-
-        var pickupScript = pickup as Pickup;
-        pickupScript?.SetItemData(data);
+        pickup.GlobalPosition = Player.GlobalPosition;
+        pickup.SetItemData(data);
     }
 
     public ItemStack GetCurrentStack()

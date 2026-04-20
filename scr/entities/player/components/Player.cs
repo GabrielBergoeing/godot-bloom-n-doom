@@ -68,18 +68,6 @@ public partial class Player : Entity
 		return closest;
 	}
 
-	public bool TryPickupNearby()
-	{
-		var pickup = GetPickupNearby();
-		if (pickup == null) return false;
-
-		if (!Hotbar.CanAddItem(pickup.ItemData))
-			return false;
-
-		pickup.Pick(this);
-		return true;
-	}
-
 	private void GetPlayerSystems() 
 	{
 		Input = GetNode<PlayerInput>("PlayerInput");

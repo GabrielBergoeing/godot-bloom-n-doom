@@ -18,14 +18,14 @@ public partial class PlayerNeutralState : PlayerState
     {
         base.Update(delta);
   
-        /*
-        if (Input.IsActionJustPressed("sabotage"))
+        if (Input.SabotagePressed && !hasInteraction)
         {
+            hasInteraction = true;
+
             var state = DetermineDisruptionState();
             if (state != null)
                 stateMachine.ChangeState(state);
         }
-        */
 
         if (Input.InteractPressed && !hasInteraction)
         {
@@ -44,11 +44,14 @@ public partial class PlayerNeutralState : PlayerState
 
     private PlayerState DetermineInteractionState()
     {
-        if(player.TryPickupNearby())
+        if(TryPickupNearby())
             return this;
 
         if (IsHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
+
+        if (IsHandEmpty() && tile.CanInteractPlant(player.PlayerId))
+            return this; //player.WaterState;
 
         if (HasItemType(ItemType.Seed) && tile.CanPlant())
             return player.PlantState;
@@ -58,8 +61,9 @@ public partial class PlayerNeutralState : PlayerState
 
     private PlayerState DetermineDisruptionState()
     {
-        //if (IsOnHandEmpty())
-            //return player.RemoveState;
+        //TODO: Sabotage and Removal
+        if (TryDroppingItem())
+            return this;
 
         return this;
     }

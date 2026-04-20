@@ -14,8 +14,6 @@ public partial class PlayerInput : Node
     public bool CanControl => canControl;
 
     public bool InteractPressed { get; private set; }
-    public bool PickupPressed { get; private set; }
-    public bool DropPressed { get; private set; }
     public bool SabotagePressed { get; private set; }
     public int? SlotPressed { get; private set; }
 
@@ -49,12 +47,6 @@ public partial class PlayerInput : Node
                 InteractPressed = true;
 
             if (key.Keycode == Key.Q)
-                PickupPressed = true;
-
-            if (key.Keycode == Key.G)
-                DropPressed = true;
-
-            if (key.Keycode == Key.F)
                 SabotagePressed = true;
             
             if (key.Keycode == Key.Key1) SlotPressed = 0;
@@ -68,13 +60,7 @@ public partial class PlayerInput : Node
             if (btn.ButtonIndex == JoyButton.A)
                 InteractPressed = true;
 
-            if (btn.ButtonIndex == JoyButton.X)
-                PickupPressed = true;
-
             if (btn.ButtonIndex == JoyButton.B)
-                DropPressed = true;
-
-            if (btn.ButtonIndex == JoyButton.Y)
                 SabotagePressed = true;
 
             if (btn.ButtonIndex == JoyButton.DpadLeft) SlotPressed = 0;
@@ -129,8 +115,6 @@ public partial class PlayerInput : Node
     private void ClearFrameInput()
     {
         InteractPressed = false;
-        PickupPressed = false;
-        DropPressed = false;
         SabotagePressed = false;
     }
 }

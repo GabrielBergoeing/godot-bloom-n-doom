@@ -31,13 +31,35 @@ public abstract partial class PlayerState : EntityState
 
     public bool HasItemType(ItemType type)
     {
-        var stack = Inventory?.GetCurrentStack();
+        var stack = Inventory.GetCurrentStack();
         return stack?.Data?.Type == type;
     }
 
     public bool IsHandEmpty()
     {
-        var stack = Inventory?.GetCurrentStack();
+        var stack = Inventory.GetCurrentStack();
         return stack == null || stack?.Data == null;
     }
+
+    protected bool TryPickupNearby()
+	{
+		var pickup = player.GetPickupNearby();
+		if (pickup == null) 
+            return false;
+
+		if (!Inventory.CanAddItem(pickup.ItemData))
+			return false;
+
+		pickup.Pick(player);
+		return true;
+	}
+
+	protected bool TryDroppingItem()
+	{
+        if (IsHandEmpty())
+            return false;
+        
+		Inventory.DropCurrentItem();
+        return true;
+	}
 }
