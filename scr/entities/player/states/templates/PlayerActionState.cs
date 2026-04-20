@@ -32,13 +32,13 @@ public partial class PlayerActionState : PlayerState
     float cooldown,
     Action<Vector2I> applyAction)
     {
-        input.ToggleControl();
+        Input.ToggleControl();
 
         applyAction?.Invoke(tile.CurrentCell);
 
         await player.ToSignal(player.GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
 
-        input.ToggleControl();
+        Input.ToggleControl();
         isPerformingAction = false;
 
         if (cooldown > 0)

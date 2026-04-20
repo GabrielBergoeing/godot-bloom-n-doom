@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://c5usf0aevb3iu"]
+
+[ext_resource type="Texture2D" uid="uid://kwguemfgdolh" path="res://art/ui/InventoryUI.png" id="1_63bh5"]
+[ext_resource type="Script" uid="uid://c2q54jnlnk3w5" path="res://scr/ui/UIPlayerHotbarSlot.cs" id="2_2anpu"]
+
+[node name="UIPlayerHotbarSlot" type="Control" unique_id=2043182943]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 150.0
+offset_bottom = 150.0
+script = ExtResource("2_2anpu")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1789776931]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 150.0
+texture = ExtResource("1_63bh5")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="." unique_id=1992790712]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 20.0
+offset_right = 125.0
+offset_bottom = 120.0
+expand_mode = 1
+
+[node name="Stack" type="Label" parent="." unique_id=1743012339]
+layout_mode = 0
+offset_left = 55.0
+offset_top = 130.0
+offset_right = 95.0
+offset_bottom = 153.0

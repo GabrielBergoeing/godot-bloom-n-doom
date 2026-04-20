@@ -5,9 +5,9 @@ public abstract partial class PlayerState : EntityState
 {
     protected Player player;
 
-    protected PlayerAnim anim { get; private set; }
+    protected PlayerAnim Anim { get; private set; }
 	protected PlayerTileInteraction tile { get; private set; }
-    protected PlayerInput input { get; private set; }
+    protected PlayerInput Input { get; private set; }
     //protected Node sfx { get; private set; }
     protected PlayerHotbar Inventory { get; private set; }
 
@@ -16,9 +16,9 @@ public abstract partial class PlayerState : EntityState
     {
         this.player = player;
 
-        anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
+        Anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
 		tile = player.Tile;
-        input = player.Input;
+        Input = player.Input;
         //sfx = player.GetNodeOrNull("Player_SFX");
         Inventory = player.Hotbar;
     }
@@ -26,7 +26,7 @@ public abstract partial class PlayerState : EntityState
     public override void Update(float delta)
     {
         base.Update(delta);
-        Inventory.HandleInput(input);
+        Inventory.HandleInput(Input);
     }
 
     /*

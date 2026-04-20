@@ -8,15 +8,15 @@ public class PlayerMoveState : PlayerNeutralState
 	public override void Update(float delta)
 	{
 		base.Update(delta);
-		anim.SetAction("move");
+		Anim.SetAction("move");
 
-		if (input.MoveInput == Vector2.Zero)
+		if (Input.MoveInput == Vector2.Zero)
 		{
 			stateMachine.ChangeState(player.IdleState);
 			return;
 		}
 		
-		player.SetVelocity(input.MoveInput * player.MoveSpeed);
+		player.SetVelocity(Input.MoveInput * player.MoveSpeed);
 	}
 
 	public override void Exit()

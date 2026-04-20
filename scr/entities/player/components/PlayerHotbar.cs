@@ -94,6 +94,14 @@ public partial class PlayerHotbar : Node
             DropItem(stack.Data);
     }
 
+    public ItemStack GetStackAt(int index)
+    {
+        if (index < 0 || index >= slots.Length)
+            return null;
+
+        return slots[index];
+    }
+
     private void SelectSlot(int index)
     {
         currentSlot = index;

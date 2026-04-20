@@ -25,12 +25,9 @@ public partial class PlayerNeutralState : PlayerState
             if (state != null)
                 stateMachine.ChangeState(state);
         }
-
-        if (Input.IsActionJustPressed("pickup"))
-            stateMachine.ChangeState(player.PickState);
         */
 
-        if (input.InteractPressed && !hasInteraction)
+        if (Input.InteractPressed && !hasInteraction)
         {
             hasInteraction = true;
 

@@ -6,6 +6,7 @@ public partial class SplitScreenManager : Node
     public static SplitScreenManager Instance;
 
     [Export] public PackedScene PlayerCamScene { get; set; }
+    [Export] public PackedScene UIPlayerHotbarScene { get; set; }
     [Export] public string LevelPath { get; set; }
 
     private GridContainer screenContainer;
@@ -51,6 +52,7 @@ public partial class SplitScreenManager : Node
 
         SetCameraBounds(cam);
         LinkPlayerCam(newPlayerNode, cam);
+        LinkPlayerUI(newPlayerNode, subPort);
         UpdateViewportSize();
     }
 
@@ -117,6 +119,22 @@ public partial class SplitScreenManager : Node
 
             subPort.Size = SetSubPortSize(count, columns, size);
         }
+    }
+
+    private void LinkPlayerUI(Player newPlayerNode, SubViewport subPort)
+    {
+        if (UIPlayerHotbarScene == null || newPlayerNode == null)
+            return;
+
+        var canvasLayer = new CanvasLayer();
+        canvasLayer.Layer = 10;
+        subPort.AddChild(canvasLayer);
+
+        var ui = UIPlayerHotbarScene.Instantiate<UIPlayerHotbar>();
+        canvasLayer.AddChild(ui);
+
+        var hotbar = newPlayerNode.GetNode<PlayerHotbar>("PlayerHotbar");
+        ui.Bind(hotbar);
     }
 
     private Vector2I SetSubPortSize(int count, int columns, Vector2 size)
