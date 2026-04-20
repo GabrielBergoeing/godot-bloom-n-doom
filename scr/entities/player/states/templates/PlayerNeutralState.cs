@@ -50,8 +50,9 @@ public partial class PlayerNeutralState : PlayerState
         if (IsHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
 
-        if (HasItemType(ItemType.Seed))
-            return this;
+        if (HasItemType(ItemType.Seed) && tile.CanPlant())
+            return player.PlantState;
+    
         return this;
     }
 

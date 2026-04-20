@@ -17,6 +17,7 @@ public partial class Player : Entity
 	// States
 	public PlayerIdleState IdleState { get; private set; }
 	public PlayerMoveState MoveState { get; private set; }
+	public PlayerPlantState PlantState { get; private set; }
 	public PlayerPrepareGroundState PrepareGroundState { get; private set; }
 
 	public override void _Ready()
@@ -103,6 +104,7 @@ public partial class Player : Entity
 	{
 		IdleState = new PlayerIdleState(this, stateMachine);
 		MoveState = new PlayerMoveState(this, stateMachine);
+		PlantState = new PlayerPlantState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 	}
 }

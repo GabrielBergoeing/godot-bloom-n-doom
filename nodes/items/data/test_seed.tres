@@ -29,6 +29,7 @@ GrowingTexture = SubResource("AtlasTexture_kcuc8")
 MatureTexture = SubResource("AtlasTexture_pvfn2")
 ItemId = "test_seed"
 ItemName = "Test Seed"
+Type = 1
 Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("2_euh76")

@@ -21,7 +21,7 @@ public partial class SeedData : ItemData
 
         farm.PlantSeed(ctx.Cell, ctx.Player.PlayerId, this);
 
-        var hotbar = ctx.Player.GetNodeOrNull<PlayerHotbar>("PlayerHotbar");
-        hotbar?.RemoveItem(hotbar.CurrentSlot, 1, consume: true);
+        var Inv = ctx.Player.Hotbar;
+        Inv.RemoveItem(Inv.CurrentSlot, 1, consume: true);
     }
 }
