@@ -23,7 +23,7 @@ region = Rect2(18, 7, 12, 9)
 
 [resource]
 script = ExtResource("2_k6e30")
-plantScene = ExtResource("3_euh76")
+PlantScene = ExtResource("3_euh76")
 SeedTexture = SubResource("AtlasTexture_71u2h")
 GrowingTexture = SubResource("AtlasTexture_kcuc8")
 MatureTexture = SubResource("AtlasTexture_pvfn2")

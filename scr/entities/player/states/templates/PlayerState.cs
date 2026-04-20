@@ -29,12 +29,6 @@ public abstract partial class PlayerState : EntityState
         Inventory.HandleInput(Input);
     }
 
-    public override void Exit()
-    {
-        GD.Print($"Exiting {this.GetType().Name} state");
-        base.Exit();
-    }
-
     public bool HasItemType(ItemType type)
     {
         var stack = Inventory?.GetCurrentStack();

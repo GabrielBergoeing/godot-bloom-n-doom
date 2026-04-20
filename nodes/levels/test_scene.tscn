@@ -17,7 +17,7 @@ script = ExtResource("2_0hknr")
 
 [node name="Pickup" parent="." unique_id=605201135 instance=ExtResource("3_6safa")]
 position = Vector2(512, 264)
-ItemData = ExtResource("4_w52lu")
+ItemData = ExtResource("4_6safa")
 
 [node name="Pickup2" parent="." unique_id=186716149 instance=ExtResource("3_6safa")]
 position = Vector2(608, 280)
@@ -25,4 +25,4 @@ ItemData = ExtResource("4_w52lu")
 
 [node name="Pickup3" parent="." unique_id=1233387506 instance=ExtResource("3_6safa")]
 position = Vector2(555, 319)
-ItemData = ExtResource("4_6safa")
+ItemData = ExtResource("4_w52lu")

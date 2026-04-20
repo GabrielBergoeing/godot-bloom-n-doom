@@ -23,7 +23,7 @@ public partial class Plant : Node2D
     public override void _Ready()
     {
         sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
-        collision = GetNodeOrNull<CollisionShape2D>("Collision");
+        collision = GetNodeOrNull<CollisionShape2D>("StaticBody2D/Collision");
     }
 
     public void Init(int playerIndex, Vector2I cell, SeedData seedData)

@@ -7,10 +7,6 @@ public partial class FarmManager : TileMapLayer
 
     [Export] public TileMapLayer WaterLayer;
     [Export] public Node2D PlantsRoot;
-    [Export] public PackedScene PlantScene;
-
-    [Export] public int SeedSourceId;
-    [Export] public Vector2I SeedAtlas;
 
     private Dictionary<Vector2I, Node2D> plantsByCell = new();
     private HashSet<Vector2I> occupiedCells = new();
@@ -70,7 +66,6 @@ public partial class FarmManager : TileMapLayer
         if (!IsPrepared(cell) || IsOccupied(cell))
             return;
 
-        SetCell(cell, SeedSourceId, SeedAtlas);
         SpawnPlant(cell, playerIndex, data);
     }
 
@@ -126,7 +121,7 @@ public partial class FarmManager : TileMapLayer
     {
         Vector2 worldPos = MapToLocal(cell);
 
-        var plantInstance = PlantScene.Instantiate<Node2D>();
+        var plantInstance = data.PlantScene.Instantiate<Plant>();
         plantInstance.GlobalPosition = worldPos;
 
         var parent = GetPlayerPlantRoot(playerIndex);

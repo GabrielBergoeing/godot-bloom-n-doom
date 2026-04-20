@@ -3,7 +3,7 @@ using Godot;
 [GlobalClass]
 public partial class SeedData : ItemData
 {
-    [Export] private PackedScene plantScene;
+    [Export] public PackedScene PlantScene;
     [Export] public Texture2D SeedTexture;
     [Export] public Texture2D GrowingTexture;
 	[Export] public Texture2D MatureTexture;
