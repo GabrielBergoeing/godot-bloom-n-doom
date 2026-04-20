@@ -4,13 +4,13 @@ public partial class PlayerOnHand : Node2D
 {
     [Export] private float distanceFromPlayer = 16f;
 
+    private Player Player;
     private PlayerHotbar Hotbar;
-    private Node2D currentVisual;
+    private Sprite2D ItemImage;
 
     public override void _Ready()
     {
-        Hotbar = GetParent<PlayerHotbar>();
-        Hotbar.OnSlotChanged += UpdateVisual;
+        ItemImage = GetNode<Sprite2D>("Sprite2D");
     }
 
     public override void _Process(double delta)
@@ -18,44 +18,40 @@ public partial class PlayerOnHand : Node2D
         UpdatePosition();
     }
 
+    public void Initialize(Player player, PlayerHotbar hotbar)
+    {
+        Player = player;
+        Hotbar = hotbar;
+
+        Hotbar.OnSlotChanged += UpdateVisual;
+        UpdateVisual();
+    }
+
     public void UpdateVisual()
     {
+        if (Hotbar == null)
+            return;
+
         var stack = Hotbar.GetCurrentStack();
 
-        if (stack == null || stack.Data.PickupScene == null)
+        if (stack == null || stack.Data == null || stack.Data.Icon == null)
         {
-            ClearVisual();
+            ItemImage.Visible = false;
             return;
         }
 
-        if (currentVisual != null && currentVisual.Name == stack.Data.ItemName)
-            return;
-        ClearVisual();
-
-        var instance = stack.Data.PickupScene.Instantiate<Node2D>();
-        instance.Name = stack.Data.ItemName;
-
-        AddChild(instance);
-        instance.Position = Vector2.Zero;
-
-        currentVisual = instance;
+        ItemImage.Texture = stack.Data.Icon;
+        ItemImage.Visible = true;
+        ItemImage.ZIndex = 10;
     }
 
     private void UpdatePosition()
     {
-        Vector2 dir = Hotbar.Player.GetFacingDirection();
+        Vector2 dir = Player.GetFacingDirection();
+
         if (dir == Vector2.Zero)
             return;
 
         Position = dir.Normalized() * distanceFromPlayer;
-    }
-
-    private void ClearVisual()
-    {
-        if (currentVisual != null)
-        {
-            currentVisual.QueueFree();
-            currentVisual = null;
-        }
     }
 }

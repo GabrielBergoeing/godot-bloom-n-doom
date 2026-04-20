@@ -94,6 +94,9 @@ public partial class Player : Entity
 			Tile = TileInteractionScene.Instantiate<PlayerTileInteraction>();
 			AddChild(Tile);
 		}
+
+		var onHand = GetNode<PlayerOnHand>("PlayerOnHand");
+    	onHand?.Initialize(this, Hotbar);
 	}
 
 	private void PreparePlayerState()

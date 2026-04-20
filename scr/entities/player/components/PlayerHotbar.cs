@@ -92,6 +92,8 @@ public partial class PlayerHotbar : Node
         }
         else if (!consume)
             DropItem(stack.Data);
+        
+        OnSlotChanged?.Invoke();
     }
 
     public ItemStack GetStackAt(int index)
@@ -121,5 +123,11 @@ public partial class PlayerHotbar : Node
         pickupScript?.SetItemData(data);
     }
 
-    public ItemStack GetCurrentStack() => slots[currentSlot];
+    public ItemStack GetCurrentStack()
+    {
+        if (slots == null || currentSlot < 0 || currentSlot >= slots.Length)
+            return null;
+
+        return slots[currentSlot];
+}
 }

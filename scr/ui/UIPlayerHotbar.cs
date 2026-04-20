@@ -30,19 +30,18 @@ public partial class UIPlayerHotbar : Control
             containter.AddChild(slot);
         }
     }
-
+    
     private void AnchorToViewport()
     {
-        var viewport = GetViewport();
-        Size = viewport.GetVisibleRect().Size;
-
-        AnchorLeft   = 0f;
-        AnchorRight  = 1f;
+        AnchorLeft   = 0.5f;
+        AnchorRight  = 0.5f;
         AnchorTop    = 1f;
         AnchorBottom = 1f;
 
-        OffsetTop    = -200;
-        //OffsetRight = 200;
+        OffsetLeft   = -212.5f;
+        OffsetRight  = 212.5f;
+        OffsetTop    = -110;
+        OffsetBottom = 0;
     }
 
     private void UpdateUI()

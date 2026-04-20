@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_lar61"]
 [ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_5bbg0"]
 [ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/aux/player_tile_interaction.tscn" id="5_x768k"]
+[ext_resource type="Script" uid="uid://cldm31pjpd4ai" path="res://scr/entities/player/components/PlayerOnHand.cs" id="6_lar61"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_olkgx"]
 atlas = ExtResource("2_jm2a1")
@@ -169,6 +170,12 @@ script = ExtResource("3_lar61")
 shape = SubResource("CapsuleShape2D_eodaa")
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="." unique_id=550742768]
+
+[node name="PlayerOnHand" type="Node2D" parent="." unique_id=1836661960]
+scale = Vector2(2, 2)
+script = ExtResource("6_lar61")
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerOnHand" unique_id=589415125]
 
 [node name="PlayerInput" type="Node" parent="." unique_id=446085519]
 script = ExtResource("4_5bbg0")
