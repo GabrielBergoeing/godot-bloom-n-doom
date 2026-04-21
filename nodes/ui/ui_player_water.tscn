@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://be1nrcleotctn" path="res://scr/ui/UIPlayerWater.cs" id="1_y27eq"]
 [ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="2_evv6e"]
 [ext_resource type="Texture2D" uid="uid://kvd80cwok2ry" path="res://art/ui/bar.png" id="2_in310"]
-[ext_resource type="Texture2D" uid="uid://b52xlgmjucc0w" path="res://art/sprites/vfx/light.png" id="4_evv6e"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_syjwo"]
 atlas = ExtResource("2_evv6e")
@@ -48,6 +47,3 @@ offset_left = 10.0
 offset_top = 5.0
 offset_right = 390.0
 offset_bottom = 20.0
-texture_under = ExtResource("4_evv6e")
-texture_over = ExtResource("4_evv6e")
-texture_progress = ExtResource("4_evv6e")

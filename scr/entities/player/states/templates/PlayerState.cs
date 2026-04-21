@@ -9,6 +9,7 @@ public abstract partial class PlayerState : EntityState
 	protected PlayerTileInteraction tile { get; private set; }
     protected PlayerInput Input { get; private set; }
     protected PlayerWater Water { get; private set; }
+    protected PlayerWaterFX WaterFX { get; private set; }
     //protected Node sfx { get; private set; }
     protected PlayerHotbar Inventory { get; private set; }
 
@@ -21,6 +22,7 @@ public abstract partial class PlayerState : EntityState
 		tile = player.Tile;
         Input = player.Input;
         Water = player.Water;
+        WaterFX = player.WaterFX;
         //sfx = player.GetNodeOrNull("Player_SFX");
         Inventory = player.Hotbar;
     }

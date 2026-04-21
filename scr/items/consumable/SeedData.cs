@@ -11,6 +11,10 @@ public partial class SeedData : ItemData
     [Export] public int InteractionsToMature = 2;
     [Export] public bool BlocksMovement = false;
 
+    //Future gameplay balance each plant restore x ammount of health
+    [Export(PropertyHint.Range, "0, 25, or_greater")] public float MaxHealth = 10;
+    [Export(PropertyHint.Range, "0, 100, or_greater")] public float WitheringTime = 30f;
+
     public override void Use(ItemUseContext ctx)
     {
         var farm = FarmManager.Instance;

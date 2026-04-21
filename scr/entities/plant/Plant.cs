@@ -17,13 +17,18 @@ public partial class Plant : Node2D
     public int OwnerPlayerIndex = -1;
     public Vector2I CellPos;
 
-    private Sprite2D sprite;
-    private CollisionShape2D collision;
+    private Sprite2D Sprite;
+    private PlantHealth Health;
+    private CollisionShape2D Collision;
 
     public override void _Ready()
     {
-        sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
-        collision = GetNodeOrNull<CollisionShape2D>("StaticBody2D/Collision");
+        Sprite = GetNode<Sprite2D>("Sprite2D");
+        Health = GetNode<PlantHealth>("PlantHealth");
+
+        Collision = GetNodeOrNull<CollisionShape2D>("StaticBody2D/Collision");
+        if (Collision != null)
+            Collision.Disabled = !data.BlocksMovement;
     }
 
     public void Init(int playerIndex, Vector2I cell, SeedData seedData)
@@ -33,10 +38,7 @@ public partial class Plant : Node2D
         data = seedData;
 
         currentInteractions = 0;
-
-        if (collision != null)
-            collision.Disabled = !data.BlocksMovement;
-
+        Health?.Init(data);
         SetStage(GrowthStage.Seed);
     }
 
@@ -48,19 +50,20 @@ public partial class Plant : Node2D
 
     private void UpdateVisual()
     {
-        if (sprite == null || data == null) return;
+        if (Sprite == null || data == null) return;
 
-        sprite.Texture = stage switch
+        Sprite.Texture = stage switch
         {
             GrowthStage.Seed => data.SeedTexture,
             GrowthStage.Growing => data.GrowingTexture,
             GrowthStage.Mature => data.MatureTexture,
-            _ => sprite.Texture
+            _ => Sprite.Texture
         };
     }
 
     public void WaterPlant()
     {
+        Health.ResetWitherTimer();
         if (stage == GrowthStage.Mature)
             return;
 

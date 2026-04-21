@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_lar61"]
 [ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_5bbg0"]
 [ext_resource type="PackedScene" uid="uid://dwb5xqqjbq8mf" path="res://nodes/entities/player/components/player_water.tscn" id="4_x768k"]
+[ext_resource type="PackedScene" uid="uid://v5b2ixv8ly5u" path="res://nodes/vfx/player_water_fx.tscn" id="5_x38ru"]
 [ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/components/player_tile_interaction.tscn" id="5_x768k"]
 [ext_resource type="Script" uid="uid://cldm31pjpd4ai" path="res://scr/entities/player/components/PlayerOnHand.cs" id="6_lar61"]
 
@@ -160,6 +161,7 @@ script = ExtResource("1_mfldv")
 HotbarScene = ExtResource("2_lar61")
 TileInteractionScene = ExtResource("5_x768k")
 WaterScene = ExtResource("4_x768k")
+WaterFXScene = ExtResource("5_x38ru")
 MoveSpeed = 150.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1120389913]

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b3wa2pgo4rklm"]
 
 [ext_resource type="Script" uid="uid://dkn5v1a3icwjg" path="res://scr/entities/plant/Plant.cs" id="1_8iw4l"]
+[ext_resource type="Script" uid="uid://ji2xbv2jfocv" path="res://scr/entities/plant/PlantHealth.cs" id="2_wpua4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8iw4l"]
 
@@ -13,3 +14,6 @@ script = ExtResource("1_8iw4l")
 
 [node name="Collision" type="CollisionShape2D" parent="StaticBody2D" unique_id=805022113]
 shape = SubResource("CircleShape2D_8iw4l")
+
+[node name="PlantHealth" type="Node" parent="." unique_id=483656052]
+script = ExtResource("2_wpua4")

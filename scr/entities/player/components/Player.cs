@@ -6,11 +6,13 @@ public partial class Player : Entity
 	[Export] private PackedScene HotbarScene;
 	[Export] private PackedScene TileInteractionScene;
 	[Export] private PackedScene WaterScene;
+	[Export] private PackedScene WaterFXScene;
 
 	public PlayerInput Input { get; private set; }
 	public PlayerHotbar Hotbar { get; private set; }
 	public PlayerTileInteraction Tile { get; private set; }
 	public PlayerWater Water { get; private set; }
+	public PlayerWaterFX WaterFX { get; private set; }
 
 	public int PlayerId { get; private set; }
 	public List<Pickup> PickupsInRange = new();
@@ -114,6 +116,12 @@ public partial class Player : Entity
 		{
 			Water = WaterScene.Instantiate<PlayerWater>();
 			AddChild(Water);
+		}
+
+		if (WaterFXScene != null)
+		{
+			WaterFX = WaterFXScene.Instantiate<PlayerWaterFX>();
+			AddChild(WaterFX);
 		}
 
 		var onHand = GetNode<PlayerOnHand>("PlayerOnHand");
