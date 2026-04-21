@@ -86,7 +86,7 @@ public partial class PlayerHotbar : Node
         for (int i = 0; i < removeAmount; i++)
         {
             if (!consume)
-                DropItem(stack.Data);
+                Player.SpawnPickup(stack.Data);
         }
 
         stack.Amount -= removeAmount;
@@ -110,7 +110,7 @@ public partial class PlayerHotbar : Node
         var stack = GetCurrentStack();
         if (stack == null) return;
 
-        DropItem(stack.Data);
+        Player.SpawnPickup(stack.Data);
 
         stack.Amount--;
 
@@ -124,25 +124,6 @@ public partial class PlayerHotbar : Node
     {
         currentSlot = index;
         OnSlotChanged?.Invoke();
-    }
-
-    //SPAWN ISSUE TO FIX
-    private void DropItem(ItemData data)
-    {
-        if (data?.PickupScene == null)
-            return;
-
-        var pickup = data.PickupScene.Instantiate<Pickup>();
-        if (pickup == null)
-        {
-            GD.PrintErr("PickupScene is not a Pickup!");
-            return;
-        }
-
-        GetTree().CurrentScene.AddChild(pickup);
-
-        pickup.GlobalPosition = Player.GlobalPosition;
-        pickup.SetItemData(data);
     }
 
     public ItemStack GetCurrentStack()

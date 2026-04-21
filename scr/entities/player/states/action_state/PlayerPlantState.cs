@@ -9,11 +9,7 @@ public partial class PlayerPlantState : PlayerActionState
 	public override void Enter()
 	{
 		base.Enter();
-
-		GD.Print("Enters State");
-
 		var item = Inventory.GetCurrentStack().Data;
-		GD.Print("Gets Stack");
 
 		_ = ExecuteAction(
 			duration: 2f,
@@ -27,7 +23,5 @@ public partial class PlayerPlantState : PlayerActionState
 					});
 			}
 		);
-
-		GD.Print("Execute Action");
 	}
 }

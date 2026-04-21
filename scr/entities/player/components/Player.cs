@@ -68,6 +68,30 @@ public partial class Player : Entity
 		return closest;
 	}
 
+	public void SpawnPickup(ItemData data)
+	{
+		if (data?.PickupScene == null)
+			return;
+
+		var pickup = data.PickupScene.Instantiate<Pickup>();
+		if (pickup == null)
+		{
+			GD.PrintErr("PickupScene is not a Pickup!");
+			return;
+		}
+
+		var level = SplitScreenManager.Instance?.LevelNode;
+		if (level == null)
+		{
+			GD.PrintErr("LevelNode not found!");
+			return;
+		}
+
+		level.AddChild(pickup);
+		pickup.GlobalPosition = GlobalPosition;
+		pickup.SetItemData(data);
+	}
+
 	private void GetPlayerSystems() 
 	{
 		Input = GetNode<PlayerInput>("PlayerInput");

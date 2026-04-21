@@ -57,8 +57,6 @@ public partial class FarmManager : TileMapLayer
             return;
 
         helper.UpdateTerrain(cell, FarmHelper.DIRT);
-
-        GD.Print($"Prepared terrain at {cell}");
     }
 
     public void PlantSeed(Vector2I cell, int playerIndex, SeedData data)

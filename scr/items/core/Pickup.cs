@@ -6,13 +6,14 @@ public partial class Pickup : Area2D
     [Export] public ItemData ItemData;
 
     public Action<Player> OnPickup;
+    private Sprite2D Sprite;
 
     public override void _Ready()
     {
-        var sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+        Sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 
-        if (sprite != null && ItemData?.Icon != null)
-            sprite.Texture = ItemData.Icon;
+        if (Sprite != null && ItemData?.Icon != null)
+            Sprite.Texture = ItemData.Icon;
 
         BodyEntered += OnBodyEntered;
         BodyExited += OnBodyExited;
@@ -21,6 +22,7 @@ public partial class Pickup : Area2D
     public void SetItemData(ItemData data)
     {
         ItemData = data;
+        UpdateVisual();
     }
 
     public void Pick(Player player)
@@ -44,5 +46,19 @@ public partial class Pickup : Area2D
     {
         if (body is Player player)
             player.PickupsInRange.Remove(this);
+    }
+
+
+    private void UpdateVisual()
+    {
+        if (Sprite == null) return;
+
+        if (ItemData?.Icon != null)
+        {
+            Sprite.Texture = ItemData.Icon;
+            Sprite.Visible = true;
+        }
+        else
+            Sprite.Visible = false;
     }
 }

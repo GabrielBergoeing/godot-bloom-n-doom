@@ -27,8 +27,6 @@ public partial class PlayerInput : Node
         DeviceId = deviceId;
         DeviceType = type;
         PlayerId = playerId;
-
-        GD.Print($"Player {PlayerId} assigned → {DeviceType} ({DeviceId})");
     }
 
     public void ToggleControl()
