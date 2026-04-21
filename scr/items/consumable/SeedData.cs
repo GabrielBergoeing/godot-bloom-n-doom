@@ -14,6 +14,7 @@ public partial class SeedData : ItemData
     //Future gameplay balance each plant restore x ammount of health
     [Export(PropertyHint.Range, "0, 25, or_greater")] public float MaxHealth = 10;
     [Export(PropertyHint.Range, "0, 100, or_greater")] public float WitheringTime = 30f;
+    [Export(PropertyHint.Range, "0, 100, or_greater")] public float WitheringTickRate = 50f;
 
     public override void Use(ItemUseContext ctx)
     {

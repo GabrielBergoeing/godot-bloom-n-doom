@@ -27,6 +27,7 @@ PlantScene = ExtResource("3_euh76")
 SeedTexture = SubResource("AtlasTexture_71u2h")
 GrowingTexture = SubResource("AtlasTexture_kcuc8")
 MatureTexture = SubResource("AtlasTexture_pvfn2")
+WitheringTickRate = 50.0
 ItemId = "test_seed"
 ItemName = "Test Seed"
 Type = 1

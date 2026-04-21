@@ -47,6 +47,12 @@ public partial class PlayerNeutralState : PlayerState
         if(TryPickupNearby())
             return this;
 
+        if(IsHandEmpty() && tile.CanRefillWater())
+        {
+            Water.Refill();
+            return this;
+        }
+
         if (IsHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
 
