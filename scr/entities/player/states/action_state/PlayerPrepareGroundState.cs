@@ -10,14 +10,13 @@ public class PlayerPrepareGroundState : PlayerActionState
     {
         base.Enter();
 
-        _ = ExecuteAction(2f, 0.5f,//player.prepareGroundFrame, player.prepareGroundCooldown,
+        _ = ExecuteAction(
+            2f, //player.prepareGroundFrame,
+            0.5f, //player.prepareGroundCooldown,
             _ =>
             {
-                if (tile.CanPrepare())
-                {
-                    tile.PrepareInCell();
-                    //sfx.PlayOnPrepareGround();
-                }
+                tile.PrepareInCell();
+                //sfx.PlayOnPrepareGround();
             }
         );
     }

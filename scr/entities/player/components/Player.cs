@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 public partial class Player : Entity
 {
-	[Export] public float MoveSpeed = 200f;
 	[Export] private PackedScene HotbarScene;
 	[Export] private PackedScene TileInteractionScene;
+	[Export] private PackedScene WaterScene;
 
 	public PlayerInput Input { get; private set; }
 	public PlayerHotbar Hotbar { get; private set; }
 	public PlayerTileInteraction Tile { get; private set; }
+	public PlayerWater Water { get; private set; }
 
 	public int PlayerId { get; private set; }
 	public List<Pickup> PickupsInRange = new();
@@ -18,6 +19,7 @@ public partial class Player : Entity
 	public PlayerIdleState IdleState { get; private set; }
 	public PlayerMoveState MoveState { get; private set; }
 	public PlayerPlantState PlantState { get; private set; }
+	public PlayerIrrigateState IrrigateState { get; private set; }
 	public PlayerPrepareGroundState PrepareGroundState { get; private set; }
 
 	public override void _Ready()
@@ -108,6 +110,12 @@ public partial class Player : Entity
 			AddChild(Tile);
 		}
 
+		if (WaterScene != null)
+		{
+			Water = WaterScene.Instantiate<PlayerWater>();
+			AddChild(Water);
+		}
+
 		var onHand = GetNode<PlayerOnHand>("PlayerOnHand");
     	onHand?.Initialize(this, Hotbar);
 	}
@@ -117,6 +125,7 @@ public partial class Player : Entity
 		IdleState = new PlayerIdleState(this, stateMachine);
 		MoveState = new PlayerMoveState(this, stateMachine);
 		PlantState = new PlayerPlantState(this, stateMachine);
+		IrrigateState = new PlayerIrrigateState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 	}
 }

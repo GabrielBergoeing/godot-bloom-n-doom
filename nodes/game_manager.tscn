@@ -3,11 +3,13 @@
 [ext_resource type="Script" uid="uid://bl2i71ohpllxy" path="res://scr/managers/camera/SplitScreenManager.cs" id="1_hneav"]
 [ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/components/player_camera.tscn" id="2_bxhn3"]
 [ext_resource type="PackedScene" uid="uid://caqlo6t4bucho" path="res://nodes/ui/ui_player_hotbar.tscn" id="3_o4i5i"]
+[ext_resource type="PackedScene" uid="uid://btb3b2xftq5o8" path="res://nodes/ui/ui_player_water.tscn" id="4_hc161"]
 
 [node name="GameManager" type="Node" unique_id=1943421568]
 script = ExtResource("1_hneav")
 PlayerCamScene = ExtResource("2_bxhn3")
 UIPlayerHotbarScene = ExtResource("3_o4i5i")
+UIPlayerWaterScene = ExtResource("4_hc161")
 LevelPath = "res://nodes/levels/test_scene.tscn"
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=791644416]

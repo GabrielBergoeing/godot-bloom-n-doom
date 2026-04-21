@@ -12,15 +12,12 @@ public partial class PlayerPlantState : PlayerActionState
 		var item = Inventory.GetCurrentStack().Data;
 
 		_ = ExecuteAction(
-			duration: 2f,
-			cooldown: 0.5f,
-			applyAction: (cell) =>
+			item.Duration,
+			item.Cooldown,
+			(cell) =>
 			{
-					item.Use(new ItemUseContext
-					{
-						Player = player,
-						Cell = cell
-					});
+				var ctx = new ItemUseContext(player, cell);
+				item.Use(ctx);
 			}
 		);
 	}

@@ -7,6 +7,7 @@ public partial class SplitScreenManager : Node
 
     [Export] public PackedScene PlayerCamScene { get; set; }
     [Export] public PackedScene UIPlayerHotbarScene { get; set; }
+    [Export] public PackedScene UIPlayerWaterScene { get; set; }
     [Export] public string LevelPath { get; set; }
 
     private GridContainer screenContainer;
@@ -130,11 +131,15 @@ public partial class SplitScreenManager : Node
         canvasLayer.Layer = 10;
         subPort.AddChild(canvasLayer);
 
-        var ui = UIPlayerHotbarScene.Instantiate<UIPlayerHotbar>();
-        canvasLayer.AddChild(ui);
-
+        var uihotbar = UIPlayerHotbarScene.Instantiate<UIPlayerHotbar>();
         var hotbar = newPlayerNode.GetNode<PlayerHotbar>("PlayerHotbar");
-        ui.Bind(hotbar);
+        canvasLayer.AddChild(uihotbar);
+        uihotbar.Bind(hotbar);
+
+        var uiwater = UIPlayerWaterScene.Instantiate<UIPlayerWater>();
+        var water = newPlayerNode.GetNode<PlayerWater>("PlayerWater");
+        canvasLayer.AddChild(uiwater);
+        uiwater.Bind(water);
     }
 
     private Vector2I SetSubPortSize(int count, int columns, Vector2 size)

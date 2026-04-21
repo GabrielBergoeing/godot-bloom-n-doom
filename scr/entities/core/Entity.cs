@@ -2,6 +2,7 @@ using Godot;
 
 public partial class Entity : CharacterBody2D
 {
+	[Export] public float MoveSpeed = 200f;
 	protected StateMachine stateMachine;
 
 	public override void _Ready()

@@ -4,6 +4,12 @@ public struct ItemUseContext
 {
     public Player Player;
     public Vector2I Cell;
+
+    public ItemUseContext(Player player, Vector2I cell)
+    {
+        Player = player;
+        Cell = cell;
+    }
 }
 
 public enum ItemType
@@ -28,6 +34,9 @@ public partial class ItemData : Resource
     [Export] public PackedScene PickupScene;
 
     [Export] public bool Consumable = false;
+
+    [Export(PropertyHint.Range, "0, 10, or_greater")] public int Duration;
+    [Export(PropertyHint.Range, "0, 10, or_greater")] public int Cooldown;
 
     public virtual void Use(ItemUseContext ctx) {}
 }

@@ -50,8 +50,8 @@ public partial class PlayerNeutralState : PlayerState
         if (IsHandEmpty() && tile.CanPrepare())
             return player.PrepareGroundState;
 
-        if (IsHandEmpty() && tile.CanInteractPlant(player.PlayerId))
-            return this; //player.WaterState;
+        if (IsHandEmpty() && tile.CanInteractPlant(player.PlayerId) && Water.CanWater())
+            return player.IrrigateState;
 
         if (HasItemType(ItemType.Seed) && tile.CanPlant())
             return player.PlantState;

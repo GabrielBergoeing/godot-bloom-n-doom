@@ -34,4 +34,6 @@ Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("2_euh76")
 Consumable = true
+Duration = 2
+Cooldown = 1
 metadata/_custom_type_script = "uid://y1a16h7gfqvy"

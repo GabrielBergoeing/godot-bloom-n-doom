@@ -8,6 +8,7 @@ public abstract partial class PlayerState : EntityState
     protected PlayerAnim Anim { get; private set; }
 	protected PlayerTileInteraction tile { get; private set; }
     protected PlayerInput Input { get; private set; }
+    protected PlayerWater Water { get; private set; }
     //protected Node sfx { get; private set; }
     protected PlayerHotbar Inventory { get; private set; }
 
@@ -19,6 +20,7 @@ public abstract partial class PlayerState : EntityState
         Anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
 		tile = player.Tile;
         Input = player.Input;
+        Water = player.Water;
         //sfx = player.GetNodeOrNull("Player_SFX");
         Inventory = player.Hotbar;
     }
