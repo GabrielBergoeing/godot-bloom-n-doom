@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="3_6safa"]
 [ext_resource type="Resource" uid="uid://n3d0n4dduspg" path="res://nodes/items/data/test_item.tres" id="4_6safa"]
 [ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/test_seed.tres" id="4_w52lu"]
+[ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="6_dfrvx"]
 
 [node name="TestScene" type="Node" unique_id=1205820897]
 
@@ -26,3 +27,7 @@ ItemData = ExtResource("4_w52lu")
 [node name="Pickup3" parent="." unique_id=1233387506 instance=ExtResource("3_6safa")]
 position = Vector2(555, 319)
 ItemData = ExtResource("4_w52lu")
+
+[node name="Pickup4" parent="." unique_id=1333946314 instance=ExtResource("3_6safa")]
+position = Vector2(664, 344)
+ItemData = ExtResource("6_dfrvx")

@@ -33,12 +33,6 @@ public abstract partial class PlayerState : EntityState
         Inventory.HandleInput(Input);
     }
 
-    public bool HasItemType(ItemType type)
-    {
-        var stack = Inventory.GetCurrentStack();
-        return stack?.Data?.Type == type;
-    }
-
     public bool IsHandEmpty()
     {
         var stack = Inventory.GetCurrentStack();
