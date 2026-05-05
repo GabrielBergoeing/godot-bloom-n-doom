@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using Godot;
 
-public partial class PlayerPlantState : PlayerActionState
+public partial class PlayerUseItemState : PlayerActionState
 {
-	public PlayerPlantState(Player player, StateMachine sm)
-		: base(player, sm) {}
+	public PlayerUseItemState(Player player, StateMachine sm): base(player, sm) 
+	{}
 
 	public override void Enter()
 	{
@@ -14,9 +14,9 @@ public partial class PlayerPlantState : PlayerActionState
 		_ = ExecuteAction(
 			item.Duration,
 			item.Cooldown,
-			(cell) =>
+			() =>
 			{
-				var ctx = new ItemUseContext(player, cell);
+				var ctx = new ItemUseContext(player, tile);
 				item.Use(ctx);
 			}
 		);

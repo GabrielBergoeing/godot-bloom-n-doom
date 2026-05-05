@@ -13,7 +13,7 @@ public class PlayerPrepareGroundState : PlayerActionState
         _ = ExecuteAction(
             2f, //player.prepareGroundFrame,
             0.5f, //player.prepareGroundCooldown,
-            _ =>
+            () =>
             {
                 tile.PrepareInCell();
                 //sfx.PlayOnPrepareGround();

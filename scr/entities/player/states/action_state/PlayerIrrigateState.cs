@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 public partial class PlayerIrrigateState : PlayerActionState
 {
-    public PlayerIrrigateState(Player player, StateMachine sm)
-        : base(player, sm)
+    public PlayerIrrigateState(Player player, StateMachine sm): base(player, sm)
     {}
 
     public override async void Enter()
@@ -14,7 +13,7 @@ public partial class PlayerIrrigateState : PlayerActionState
         await ExecuteAction(
             Water.Duration,
             Water.Cooldown,
-            (cell) =>
+            () =>
             {
                 if (!Water.TryConsumeWater())
                     return;

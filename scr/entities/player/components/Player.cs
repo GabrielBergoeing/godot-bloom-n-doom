@@ -20,7 +20,8 @@ public partial class Player : Entity
 	// States
 	public PlayerIdleState IdleState { get; private set; }
 	public PlayerMoveState MoveState { get; private set; }
-	public PlayerPlantState PlantState { get; private set; }
+	public PlayerUseItemState UseItemState { get; private set; }
+	public PlayerRemoveState RemoveState { get; private set; }
 	public PlayerIrrigateState IrrigateState { get; private set; }
 	public PlayerPrepareGroundState PrepareGroundState { get; private set; }
 
@@ -132,7 +133,8 @@ public partial class Player : Entity
 	{
 		IdleState = new PlayerIdleState(this, stateMachine);
 		MoveState = new PlayerMoveState(this, stateMachine);
-		PlantState = new PlayerPlantState(this, stateMachine);
+		UseItemState = new PlayerUseItemState(this, stateMachine);
+		RemoveState = new PlayerRemoveState(this, stateMachine);
 		IrrigateState = new PlayerIrrigateState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 	}

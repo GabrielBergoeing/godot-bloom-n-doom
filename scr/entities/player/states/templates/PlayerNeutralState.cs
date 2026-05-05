@@ -4,8 +4,7 @@ public partial class PlayerNeutralState : PlayerState
 {
     private bool hasInteraction = false;
 
-    public PlayerNeutralState(Player player, StateMachine sm)
-        : base(player, sm)
+    public PlayerNeutralState(Player player, StateMachine sm): base(player, sm)
     {}
 
     public override void Enter()
@@ -36,10 +35,6 @@ public partial class PlayerNeutralState : PlayerState
                 stateMachine.ChangeState(state);
         }
 
-        /*
-        if (Input.IsActionJustPressed("drop"))
-            player.DropCurrentItem();
-        */
     }
 
     private PlayerState DetermineInteractionState()
@@ -59,18 +54,28 @@ public partial class PlayerNeutralState : PlayerState
         if (IsHandEmpty() && tile.CanInteractPlant(player.PlayerId) && Water.CanWater())
             return player.IrrigateState;
 
-        if (HasItemType(ItemType.Seed) && tile.CanPlant())
-            return player.PlantState;
-    
+        if (CanUseItem())
+            return player.UseItemState;
+
         return this;
+    }
+
+    private bool CanUseItem()
+    {
+        var stack = Inventory?.GetCurrentStack();
+        var ctx = new ItemUseContext(player, tile);
+
+        return stack.Data.CanUse(ctx);
     }
 
     private PlayerState DetermineDisruptionState()
     {
-        //TODO: Sabotage and Removal
         if (TryDroppingItem())
             return this;
 
+        if(tile.CanInteractPlant(player.PlayerId))
+            return player.RemoveState;
+        
         return this;
     }
 }

@@ -25,10 +25,7 @@ public partial class Plant : Node2D
     {
         Sprite = GetNode<Sprite2D>("Sprite2D");
         Health = GetNode<PlantHealth>("PlantHealth");
-
         Collision = GetNodeOrNull<CollisionShape2D>("StaticBody2D/Collision");
-        if (Collision != null)
-            Collision.Disabled = !data.BlocksMovement;
     }
 
     public void Init(int playerIndex, Vector2I cell, SeedData seedData)
@@ -36,6 +33,9 @@ public partial class Plant : Node2D
         OwnerPlayerIndex = playerIndex;
         CellPos = cell;
         data = seedData;
+
+        if (Collision != null)
+            Collision.Disabled = !data.BlocksMovement;
 
         currentInteractions = 0;
         Health?.Init(data);

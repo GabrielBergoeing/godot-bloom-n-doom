@@ -5,10 +5,23 @@ public struct ItemUseContext
     public Player Player;
     public Vector2I Cell;
 
-    public ItemUseContext(Player player, Vector2I cell)
+    public bool CanPlant;
+    public bool CanPrepare;
+    public bool CanInteractPlant;
+    public bool CanRefillWater;
+    public bool HasWater;
+
+    public ItemUseContext(Player player, PlayerTileInteraction tile)
     {
         Player = player;
-        Cell = cell;
+        Cell = tile.CurrentCell;
+
+        CanPlant = tile.CanPlant();
+        CanPrepare = tile.CanPrepare();
+        CanInteractPlant = tile.CanInteractPlant(player.PlayerId);
+        CanRefillWater = tile.CanRefillWater();
+
+        HasWater = player.Water?.CanWater() ?? false;
     }
 }
 
@@ -38,5 +51,10 @@ public partial class ItemData : Resource
     [Export(PropertyHint.Range, "0, 10, or_greater")] public int Duration;
     [Export(PropertyHint.Range, "0, 10, or_greater")] public int Cooldown;
 
+    public virtual bool CanUse(ItemUseContext ctx) 
+    {
+        return false;
+    }
+    
     public virtual void Use(ItemUseContext ctx) {}
 }

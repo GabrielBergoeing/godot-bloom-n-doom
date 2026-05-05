@@ -7,8 +7,9 @@ public partial class PlantHealth : Node
     private SeedData Data;
     private Timer TickTimer;
 
-    private float Health;
-    private float Timer;
+    private float currentHealth;
+    private float witherTimeRemaining;
+
     private bool isOnFire = false;
     private float fireDps = 1f;
 
@@ -18,11 +19,25 @@ public partial class PlantHealth : Node
         CreateTimer();
     }
 
+    public override void _Process(double delta)
+    {
+        if (Data == null || Plant == null)
+            return;
+
+        witherTimeRemaining -= (float)delta;
+
+        ModulateHealth();
+
+        if (witherTimeRemaining <= 0f || currentHealth <= 0f)
+            Die();
+    }
+
     public void Init(SeedData seedData)
     {
         Data = seedData;
-        Health = Data.MaxHealth;
-        Timer = Data.WitheringTickRate;
+
+        currentHealth = Data.MaxHealth;
+        witherTimeRemaining = Data.WitheringTime;
 
         TickTimer.WaitTime = Data.WitheringTickRate;
         TickTimer.Start();
@@ -30,16 +45,17 @@ public partial class PlantHealth : Node
 
     public void ResetWitherTimer()
     {
-        if (Data == null) 
+        if (Data == null)
             return;
-        Timer = Data.WitheringTime;
+
+        witherTimeRemaining = Data.WitheringTime;
     }
 
     public void TakeDamage(float amount)
     {
-        Health -= amount;
+        currentHealth -= amount;
 
-        if (Health <= 0f)
+        if (currentHealth <= 0f)
             Die();
     }
 
@@ -48,7 +64,7 @@ public partial class PlantHealth : Node
         if (Data == null || Data.MaxHealth <= 0)
             return 0f;
 
-        return Mathf.Clamp(Health / Data.MaxHealth, 0f, 1f);
+        return Mathf.Clamp(currentHealth / Data.MaxHealth, 0f, 1f);
     }
 
     public float GetWitherRatio()
@@ -56,7 +72,7 @@ public partial class PlantHealth : Node
         if (Data == null || Data.WitheringTime <= 0)
             return 0f;
 
-        return Mathf.Clamp(Timer / Data.WitheringTime, 0f, 1f);
+        return Mathf.Clamp(witherTimeRemaining / Data.WitheringTime, 0f, 1f);
     }
 
     private void CreateTimer()
@@ -73,14 +89,12 @@ public partial class PlantHealth : Node
     {
         if (Data == null || Plant == null)
             return;
-        
-        //if (isOnFire)
-            //Health -= fireDps * Data.WitheringTickRate;
 
-        Timer -= Data.WitheringTickRate;
-        ModulateHealth();
+        // Future: fire system
+        if (isOnFire)
+            currentHealth -= fireDps * Data.WitheringTickRate;
 
-        if (Timer <= 0f || Health <= 0f)
+        if (currentHealth <= 0f)
             Die();
     }
 
@@ -98,6 +112,8 @@ public partial class PlantHealth : Node
     private void ModulateHealth()
     {
         float ratio = GetWitherRatio();
-        Plant.Modulate = new Color(1f, ratio, ratio);
+
+        // White → Red as it withers
+        Plant.Modulate = Colors.White.Lerp(Colors.Red, 1f - ratio);
     }
 }

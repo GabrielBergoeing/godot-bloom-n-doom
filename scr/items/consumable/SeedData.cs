@@ -16,6 +16,11 @@ public partial class SeedData : ItemData
     [Export(PropertyHint.Range, "0, 100, or_greater")] public float WitheringTime = 30f;
     [Export(PropertyHint.Range, "0, 100, or_greater")] public float WitheringTickRate = 50f;
 
+    public override bool CanUse(ItemUseContext ctx)
+    {
+        return ctx.CanPlant;
+    }
+
     public override void Use(ItemUseContext ctx)
     {
         var farm = FarmManager.Instance;
