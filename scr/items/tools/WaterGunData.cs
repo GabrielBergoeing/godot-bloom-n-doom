@@ -13,7 +13,7 @@ public partial class WaterGunData : ToolData
     public override bool CanUse(ItemUseContext ctx)
     {
         return ProjectileScene != null
-            && ctx.CanWater;
+            && ctx.Player.Water.CanWater();
     }
 
     public override void BeginUse(ItemUseContext ctx)

@@ -120,17 +120,22 @@ public partial class PlayerHotbar : Node
         OnSlotChanged?.Invoke();
     }
 
-    private void SelectSlot(int index)
-    {
-        currentSlot = index;
-        OnSlotChanged?.Invoke();
-    }
-
     public ItemStack GetCurrentStack()
     {
         if (slots == null || currentSlot < 0 || currentSlot >= slots.Length)
             return null;
 
         return slots[currentSlot];
-}
+    }
+
+    public void ConsumeCurrentStack()
+    {
+        RemoveItem(currentSlot, 1, consume: true);
+    }
+
+    private void SelectSlot(int index)
+    {
+        currentSlot = index;
+        OnSlotChanged?.Invoke();
+    }
 }

@@ -5,7 +5,7 @@ public partial class ScissorsData : ItemData
 {
     public override bool CanUse(ItemUseContext ctx)
     {
-        return ctx.CanSabotage;
+        return ctx.Tile.CanSabotage(ctx.PlayerId);
     }
 
     public override void Use(ItemUseContext ctx)
@@ -13,7 +13,7 @@ public partial class ScissorsData : ItemData
         var farm = FarmManager.Instance;
         if (farm == null) return;
 
-        if (farm.IsOccupied(ctx.Cell))
-            farm.RemovePlant(ctx.Cell);
+        if (farm.IsOccupied(ctx.Tile.CurrentCell))
+            farm.RemovePlant(ctx.Tile.CurrentCell);
     }
 }

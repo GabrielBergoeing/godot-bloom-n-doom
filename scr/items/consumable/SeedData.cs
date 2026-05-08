@@ -18,20 +18,12 @@ public partial class SeedData : ItemData
 
     public override bool CanUse(ItemUseContext ctx)
     {
-        return ctx.CanPlant;
+        return ctx.Tile.CanPlant();
     }
 
     public override void Use(ItemUseContext ctx)
     {
-        var farm = FarmManager.Instance;
-        if (farm == null) return;
-
-        if (!farm.IsPrepared(ctx.Cell) || farm.IsOccupied(ctx.Cell))
-            return;
-
-        farm.PlantSeed(ctx.Cell, ctx.Player.PlayerId, this);
-
-        var Inv = ctx.Player.Hotbar;
-        Inv.RemoveItem(Inv.CurrentSlot, 1, consume: true);
+        ctx.Tile.PlantInCell(ctx.PlayerId, this);
+        ctx.Player.Hotbar.ConsumeCurrentStack();
     }
 }

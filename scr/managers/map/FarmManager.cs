@@ -59,7 +59,13 @@ public partial class FarmManager : TileMapLayer
         helper.UpdateTerrain(cell, FarmHelper.DIRT);
     }
 
-    public void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
+    public bool TryPlantSeed(Vector2I cell, int playerIndex, SeedData data)
+    {
+        PlantSeed(cell, playerIndex, data);
+        return true;
+    }
+
+    private void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
     {
         if (!IsPrepared(cell) || IsOccupied(cell))
             return;

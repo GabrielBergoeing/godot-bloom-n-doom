@@ -35,7 +35,7 @@ public partial class TelemetryLogger : Node
 
         DirAccess.MakeDirAbsolute(
             ProjectSettings.GlobalizePath(
-                "res://Telemetry"
+                "res://telemetry"
             )
         );
 

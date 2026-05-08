@@ -12,8 +12,9 @@ public partial class PlayerTileInteraction : Sprite2D
     public Vector2I CurrentCell => currentCell;
 
     [Signal] public delegate void RequestIrrigateEventHandler(Vector2I cell);
-    [Signal] public delegate void RequestFertilizeEventHandler(Vector2I cell);
     [Signal] public delegate void RequestPrepareEventHandler(Vector2I cell);
+    [Signal] public delegate void RequestPlantEventHandler(Vector2I cell, int playerIndex, SeedData seed);
+    [Signal] public delegate void RequestFertilizeEventHandler(Vector2I cell);
     [Signal] public delegate void RequestRemoveEventHandler(Vector2I cell, int playerIndex);
 
     public override void _Ready()
@@ -52,6 +53,9 @@ public partial class PlayerTileInteraction : Sprite2D
     public void PrepareInCell() => 
         EmitSignal(SignalName.RequestPrepare, currentCell);
 
+    public void PlantInCell(int playerIndex, SeedData seed) =>
+        EmitSignal(SignalName.RequestPlant, currentCell, playerIndex, seed);
+
     public void FertilizeInCell() => 
         EmitSignal(SignalName.RequestFertilize, currentCell);
 
@@ -86,8 +90,9 @@ public partial class PlayerTileInteraction : Sprite2D
 
     private void ConnectFarmSignals()
     {
-        Connect(SignalName.RequestPrepare, new Callable(farmManager, nameof(FarmManager.TryPrepareTile)));
         Connect(SignalName.RequestIrrigate, new Callable(farmManager, nameof(FarmManager.TryIrrigatePlant)));
+        Connect(SignalName.RequestPrepare, new Callable(farmManager, nameof(FarmManager.TryPrepareTile)));
+        Connect(SignalName.RequestPlant, new Callable(farmManager, nameof(FarmManager.TryPlantSeed)));
         Connect(SignalName.RequestFertilize, new Callable(farmManager, nameof(FarmManager.TryFertilizePlant)));
         Connect(SignalName.RequestRemove, new Callable(farmManager, nameof(FarmManager.TryRemovePlant)));
     }

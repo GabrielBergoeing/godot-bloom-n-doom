@@ -2,5 +2,9 @@
    "files.associations": {
       "*.embeddedhtml": "html",
       "plyconfig.json": "jsonc"
+   },
+   "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#1e4e8c",
+    "activityBar.background": "#1e4e8c"
    }
 }

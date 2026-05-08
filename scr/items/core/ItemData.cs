@@ -3,22 +3,14 @@ using Godot;
 public struct ItemUseContext
 {
     public Player Player;
-    public Vector2I Cell;
-
-    public bool CanPlant;
-    public bool CanWater;
-    public bool CanSabotage;
-    public bool CanInteractPlant;
+    public PlayerTileInteraction Tile;
+    public int PlayerId;
 
     public ItemUseContext(Player player, PlayerTileInteraction tile)
     {
         Player = player;
-        Cell = tile.CurrentCell;
-
-        CanPlant = tile.CanPlant();
-        CanWater = Player.Water.CanWater();
-        CanSabotage = tile.CanSabotage(player.PlayerId);
-        CanInteractPlant = tile.CanInteractPlant(player.PlayerId);
+        Tile = tile;
+        PlayerId = player.PlayerId;
     }
 }
 
