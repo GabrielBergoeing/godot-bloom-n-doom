@@ -19,7 +19,7 @@ public partial class PlayerActionState : PlayerState
     {
         base.Update(delta);
 
-        player.SetVelocity(Vector2.Zero);
+        player.SetMoveVelocity(Vector2.Zero);
 
         if (!isPerformingAction)
             stateMachine.ChangeState(player.IdleState);

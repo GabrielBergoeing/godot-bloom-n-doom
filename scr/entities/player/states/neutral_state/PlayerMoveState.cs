@@ -16,11 +16,11 @@ public class PlayerMoveState : PlayerNeutralState
 			return;
 		}
 		
-		player.SetVelocity(Input.MoveInput * player.MoveSpeed);
+		player.SetMoveVelocity(Input.MoveInput * player.MoveSpeed);
 	}
 
 	public override void Exit()
 	{
-		player.SetVelocity(Vector2.Zero);
+		player.SetMoveVelocity(Vector2.Zero);
 	}
 }

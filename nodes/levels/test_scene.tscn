@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/test_seed.tres" id="4_w52lu"]
 [ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="6_dfrvx"]
 [ext_resource type="Resource" uid="uid://5vli7hpg6g6p" path="res://nodes/items/data/flamethrower_data.tres" id="7_hbg45"]
+[ext_resource type="Resource" uid="uid://ctvjba2f6s5nw" path="res://nodes/items/data/watergun_data.tres" id="8_1jtob"]
 
 [node name="TestScene" type="Node" unique_id=1205820897]
 
@@ -36,3 +37,7 @@ ItemData = ExtResource("6_dfrvx")
 [node name="Pickup5" parent="." unique_id=1041120932 instance=ExtResource("3_6safa")]
 position = Vector2(504, 392)
 ItemData = ExtResource("7_hbg45")
+
+[node name="Pickup6" parent="." unique_id=1961496090 instance=ExtResource("3_6safa")]
+position = Vector2(448, 368)
+ItemData = ExtResource("8_1jtob")

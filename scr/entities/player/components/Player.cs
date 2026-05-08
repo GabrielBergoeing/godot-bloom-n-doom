@@ -42,11 +42,6 @@ public partial class Player : Entity
 		Hotbar.HandleInput(Input);
 	}
 
-	public override void _PhysicsProcess(double delta)
-	{
-		MoveAndSlide();
-	}
-
 	public void AssignDevice(int deviceId, string deviceType, int playerId)
 	{
 		PlayerId = playerId;

@@ -8,7 +8,7 @@
 offsets = PackedFloat32Array(0, 0, 1)
 colors = PackedColorArray(1, 1, 0, 1, 1, 0.64705884, 0, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_lr7ru"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_svpd1"]
 gradient = SubResource("Gradient_svpd1")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qcjk8"]
@@ -20,7 +20,7 @@ initial_velocity_min = 80.0
 initial_velocity_max = 100.0
 gravity = Vector3(0, 98, 0)
 scale_max = 3.0
-color_ramp = SubResource("GradientTexture1D_lr7ru")
+color_ramp = SubResource("GradientTexture1D_svpd1")
 
 [node name="Fire" type="Node2D" unique_id=913831653]
 script = ExtResource("1_lr7ru")

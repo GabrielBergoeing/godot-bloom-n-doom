@@ -10,7 +10,7 @@ public partial class PlantHealth : Node
     private float currentHealth;
     private float witherTimeRemaining;
 
-    private bool isOnFire = false;
+    public bool isOnFire { get; private set; } = false;
     private float fireDps = 1f;
 
     public override void _Ready()

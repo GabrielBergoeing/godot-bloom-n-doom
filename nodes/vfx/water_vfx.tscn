@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://cbwhj482d4ol2"]
+
+[ext_resource type="Script" uid="uid://cp763axljrwf" path="res://scr/entities/player/vfx/WaterProjectile.cs" id="1_rx134"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4eaq0"]
+
+[sub_resource type="Gradient" id="Gradient_rx134"]
+offsets = PackedFloat32Array(0, 0.56956524, 1)
+colors = PackedColorArray(0, 0, 1, 1, 0.6784314, 0.84705883, 0.9019608, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lr7ru"]
+gradient = SubResource("Gradient_rx134")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_h5nm4"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(0, 15, 0)
+direction = Vector3(0, -1, 0)
+spread = 18.0
+initial_velocity_min = 80.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 98, 0)
+scale_max = 3.0
+color_ramp = SubResource("GradientTexture1D_lr7ru")
+
+[node name="Water" type="Node2D" unique_id=1091657360]
+script = ExtResource("1_rx134")
+PushForce = 1000.0
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1772450920]
+collision_mask = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1587172812]
+shape = SubResource("CircleShape2D_4eaq0")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=1208479725]
+amount = 32
+lifetime = 0.35000000000000003
+process_material = SubResource("ParticleProcessMaterial_h5nm4")

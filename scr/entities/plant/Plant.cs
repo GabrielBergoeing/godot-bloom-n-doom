@@ -26,36 +26,6 @@ public partial class Plant : Node2D
         Sprite = GetNode<Sprite2D>("Sprite2D");
         Health = GetNode<PlantHealth>("PlantHealth");
         Collision = GetNodeOrNull<CollisionShape2D>("StaticBody2D/Collision");
-
-        var bodies = GetChildren();
-
-        foreach (var child in bodies)
-        {
-            GD.Print($"Child: {child.Name} ({child.GetType()})");
-
-            if (child is CollisionObject2D obj)
-            {
-                GD.Print($"Layer: {obj.CollisionLayer}");
-                GD.Print($"Mask: {obj.CollisionMask}");
-            }
-
-            if (child is Area2D area)
-            {
-                var shape = area.GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
-
-                GD.Print($"Area Shape Exists: {shape?.Shape != null}");
-                GD.Print($"Area Monitoring: {area.Monitoring}");
-                GD.Print($"Area Monitorable: {area.Monitorable}");
-            }
-
-            if (child is PhysicsBody2D body)
-            {
-                var shape = body.GetNodeOrNull<CollisionShape2D>("Collision");
-
-                GD.Print($"Body Shape Exists: {shape?.Shape != null}");
-                GD.Print($"Body Shape Disabled: {shape?.Disabled}");
-            }
-        }
     }
 
     public void Init(int playerIndex, Vector2I cell, SeedData seedData)
@@ -70,7 +40,6 @@ public partial class Plant : Node2D
         currentInteractions = 0;
         Health?.Init(data);
         SetStage(GrowthStage.Seed);
-        GD.Print($"Plant: {Name} at {GlobalPosition}");
     }
 
     private void SetStage(GrowthStage newStage)
@@ -94,6 +63,12 @@ public partial class Plant : Node2D
 
     public void WaterPlant()
     {
+        if (Health.isOnFire)
+        {
+            ExtinguishFire();
+            return;
+        }
+        
         Health.ResetWitherTimer();
         if (stage == GrowthStage.Mature)
             return;
@@ -118,7 +93,6 @@ public partial class Plant : Node2D
     public void Ignite()
     {
         Health?.Ignite();
-        GD.Print("iM BURNING");
     }
 
     public void ExtinguishFire()
