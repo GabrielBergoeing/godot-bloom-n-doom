@@ -17,6 +17,7 @@ public partial class SplitScreenManager : Node
 	public Node LevelNode => levelNode;
 
 	private bool firstPlayerAssigned = false;
+    private float baseHeight = 162;
 
 	public override void _Ready()
 	{
@@ -119,6 +120,12 @@ public partial class SplitScreenManager : Node
             Vector2 size = GetViewport().GetVisibleRect().Size;
 
             subPort.Size = SetSubPortSize(count, columns, size);
+            
+            var cam = subPort.GetNodeOrNull<Camera2D>("PlayerCamera");
+
+            if (cam == null) continue;
+            float scale = subPort.Size.Y / baseHeight;
+            cam.Zoom = new Vector2(scale, scale);
         }
     }
 

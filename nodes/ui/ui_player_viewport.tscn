@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://cb4lm3b8uy24r"]
+
+[ext_resource type="Script" uid="uid://d0m1xbae31ft4" path="res://scr/ui/UIPlayerViewport.cs" id="1_uq11f"]
+[ext_resource type="PackedScene" uid="uid://caqlo6t4bucho" path="res://nodes/ui/ui_player_hotbar.tscn" id="2_nktoy"]
+[ext_resource type="PackedScene" uid="uid://btb3b2xftq5o8" path="res://nodes/ui/ui_player_water.tscn" id="3_a21n4"]
+[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/components/player_camera.tscn" id="4_ypfjy"]
+
+[node name="UIPlayerViewport" type="Control" unique_id=914358973]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uq11f")
+HotbarScene = ExtResource("2_nktoy")
+WaterScene = ExtResource("3_a21n4")
+CameraScene = ExtResource("4_ypfjy")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1281604065]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=902561238]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1549142305]
