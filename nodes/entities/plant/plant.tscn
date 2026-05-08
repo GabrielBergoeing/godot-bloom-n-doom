@@ -3,17 +3,28 @@
 [ext_resource type="Script" uid="uid://dkn5v1a3icwjg" path="res://scr/entities/plant/Plant.cs" id="1_8iw4l"]
 [ext_resource type="Script" uid="uid://ji2xbv2jfocv" path="res://scr/entities/plant/PlantHealth.cs" id="2_wpua4"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_wpua4"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_8iw4l"]
 
 [node name="Plant" type="Node2D" unique_id=966622925]
 script = ExtResource("1_8iw4l")
 
+[node name="PlantHealth" type="Node" parent="." unique_id=483656052]
+script = ExtResource("2_wpua4")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1887496994]
+collision_layer = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=695385946]
+shape = SubResource("CircleShape2D_wpua4")
+debug_color = Color(0.43728498, 0.59966743, 0.032098975, 0.41960785)
+
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=898617489]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=691920494]
+collision_layer = 8
+collision_mask = 3
 
 [node name="Collision" type="CollisionShape2D" parent="StaticBody2D" unique_id=805022113]
 shape = SubResource("CircleShape2D_8iw4l")
-
-[node name="PlantHealth" type="Node" parent="." unique_id=483656052]
-script = ExtResource("2_wpua4")

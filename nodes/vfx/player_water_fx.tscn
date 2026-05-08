@@ -1,11 +1,21 @@
 [gd_scene format=3 uid="uid://v5b2ixv8ly5u"]
 
 [ext_resource type="Script" uid="uid://bqmgnw8d562uu" path="res://scr/entities/player/vfx/PlayerWaterFX.cs" id="1_763ss"]
-[ext_resource type="Texture2D" uid="uid://b52xlgmjucc0w" path="res://art/sprites/vfx/light.png" id="1_b7xqr"]
+
+[sub_resource type="Gradient" id="Gradient_b7xqr"]
+colors = PackedColorArray(0, 0, 1, 1, 0.3747016, 0.38210505, 0.9411932, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_763ss"]
+gradient = SubResource("Gradient_b7xqr")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b7xqr"]
 particle_flag_disable_z = true
+spread = 30.0
+initial_velocity_min = 30.0
+initial_velocity_max = 60.0
 gravity = Vector3(0, 98, 0)
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_763ss")
 
 [node name="PlayerWaterFX" type="Node2D" unique_id=1430927520]
 script = ExtResource("1_763ss")
@@ -13,7 +23,6 @@ script = ExtResource("1_763ss")
 [node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=1201013978]
 emitting = false
 amount = 30
-texture = ExtResource("1_b7xqr")
 lifetime = 0.5
 one_shot = true
 speed_scale = 1.5

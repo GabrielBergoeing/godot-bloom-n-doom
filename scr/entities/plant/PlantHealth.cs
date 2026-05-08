@@ -59,20 +59,23 @@ public partial class PlantHealth : Node
             Die();
     }
 
-    public float GetHealthRatio()
-    {
-        if (Data == null || Data.MaxHealth <= 0)
-            return 0f;
-
-        return Mathf.Clamp(currentHealth / Data.MaxHealth, 0f, 1f);
-    }
-
     public float GetWitherRatio()
     {
         if (Data == null || Data.WitheringTime <= 0)
             return 0f;
 
         return Mathf.Clamp(witherTimeRemaining / Data.WitheringTime, 0f, 1f);
+    }
+
+    public void Ignite()
+    {
+        isOnFire = true;
+    }
+
+    public void Extinguish()
+    {
+        isOnFire = false;
+        Plant.Modulate = Colors.White;
     }
 
     private void CreateTimer()
@@ -90,7 +93,6 @@ public partial class PlantHealth : Node
         if (Data == null || Plant == null)
             return;
 
-        // Future: fire system
         if (isOnFire)
             currentHealth -= fireDps * Data.WitheringTickRate;
 
@@ -113,7 +115,19 @@ public partial class PlantHealth : Node
     {
         float ratio = GetWitherRatio();
 
-        // White → Red as it withers
-        Plant.Modulate = Colors.White.Lerp(Colors.Red, 1f - ratio);
+        Color baseColor =
+            Colors.White.Lerp(Colors.SaddleBrown, 1f - ratio);
+
+        if (isOnFire)
+        {
+            float flicker =
+                Mathf.Abs(Mathf.Sin(
+                    (float)Time.GetTicksMsec() * 0.02f));
+
+            baseColor =
+                baseColor.Lerp(Colors.OrangeRed, flicker);
+        }
+
+        Plant.Modulate = baseColor;
     }
 }

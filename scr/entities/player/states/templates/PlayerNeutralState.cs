@@ -35,6 +35,13 @@ public partial class PlayerNeutralState : PlayerState
                 stateMachine.ChangeState(state);
         }
 
+        if (Input.ShootPressed && !hasInteraction)
+        {
+            hasInteraction = true;
+
+            if (CanGoToShootState())
+                stateMachine.ChangeState(player.ShootState);
+        }
     }
 
     private PlayerState DetermineInteractionState()
@@ -60,14 +67,6 @@ public partial class PlayerNeutralState : PlayerState
         return this;
     }
 
-    private bool CanUseItem()
-    {
-        var stack = Inventory?.GetCurrentStack();
-        var ctx = new ItemUseContext(player, tile);
-
-        return stack.Data.CanUse(ctx);
-    }
-
     private PlayerState DetermineDisruptionState()
     {
         if (TryDroppingItem())
@@ -77,5 +76,22 @@ public partial class PlayerNeutralState : PlayerState
             return player.RemoveState;
         
         return this;
+    }
+
+    private bool CanGoToShootState()
+    {
+        var stack = Inventory?.GetCurrentStack();
+        if (stack?.Data is not ToolData tool)
+            return false;
+
+        return true;
+    }
+
+    private bool CanUseItem()
+    {
+        var stack = Inventory?.GetCurrentStack();
+        var ctx = new ItemUseContext(player, tile);
+
+        return stack.Data.CanUse(ctx);
     }
 }

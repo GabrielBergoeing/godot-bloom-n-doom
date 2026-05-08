@@ -24,6 +24,7 @@ public partial class Player : Entity
 	public PlayerRemoveState RemoveState { get; private set; }
 	public PlayerIrrigateState IrrigateState { get; private set; }
 	public PlayerPrepareGroundState PrepareGroundState { get; private set; }
+	public PlayerShootState ShootState { get; private set; }
 
 	public override void _Ready()
 	{
@@ -137,5 +138,6 @@ public partial class Player : Entity
 		RemoveState = new PlayerRemoveState(this, stateMachine);
 		IrrigateState = new PlayerIrrigateState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
+		ShootState = new PlayerShootState(this, stateMachine);
 	}
 }

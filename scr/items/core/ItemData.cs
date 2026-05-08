@@ -6,6 +6,7 @@ public struct ItemUseContext
     public Vector2I Cell;
 
     public bool CanPlant;
+    public bool CanWater;
     public bool CanSabotage;
     public bool CanInteractPlant;
 
@@ -15,6 +16,7 @@ public struct ItemUseContext
         Cell = tile.CurrentCell;
 
         CanPlant = tile.CanPlant();
+        CanWater = Player.Water.CanWater();
         CanSabotage = tile.CanSabotage(player.PlayerId);
         CanInteractPlant = tile.CanInteractPlant(player.PlayerId);
     }
@@ -43,6 +45,4 @@ public partial class ItemData : Resource
     }
     
     public virtual void Use(ItemUseContext ctx) {}
-    public virtual void StartUse(ItemUseContext ctx) {}
-    public virtual void StopUse(ItemUseContext ctx) {}
 }

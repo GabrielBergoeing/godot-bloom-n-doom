@@ -25,7 +25,7 @@ public partial class PlayerWaterFX : Node2D
         if (dir == Vector2.Zero)
             dir = Vector2.Down;
 
-        Rotation = dir.Angle();
+        Rotation = dir.Angle() - Mathf.Pi / 2f;
         Particles.Restart();
     }
 }

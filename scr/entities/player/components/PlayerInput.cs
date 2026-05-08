@@ -17,6 +17,12 @@ public partial class PlayerInput : Node
     public bool SabotagePressed { get; private set; }
     public int? SlotPressed { get; private set; }
 
+    public bool ShootPressed { get; private set; }
+    public bool ShootHeld { get; private set; }
+    public bool ShootReleased { get; private set; }
+
+    private bool previousShootHeld;
+
     public override void _Ready()
     {
         InputDeviceManager.Instance.InputReceived += OnInputReceived;
@@ -30,9 +36,9 @@ public partial class PlayerInput : Node
     }
 
     public void ToggleControl()
-	{
-		canControl = !canControl;
-	}
+    {
+        canControl = !canControl;
+    }
 
     private void OnInputReceived(int playerId, InputEvent @event)
     {
@@ -46,7 +52,7 @@ public partial class PlayerInput : Node
 
             if (key.Keycode == Key.Q)
                 SabotagePressed = true;
-            
+
             if (key.Keycode == Key.Key1) SlotPressed = 0;
             if (key.Keycode == Key.Key2) SlotPressed = 1;
             if (key.Keycode == Key.Key3) SlotPressed = 2;
@@ -69,6 +75,14 @@ public partial class PlayerInput : Node
     }
 
     public override void _Process(double delta)
+    {
+        HandleMovement();
+        HandleShoot();
+        UpdateFacingDir();
+        ClearFrameInput();
+    }
+
+    private void HandleMovement()
     {
         if (DeviceType == "Keyboard")
         {
@@ -95,24 +109,42 @@ public partial class PlayerInput : Node
 
         if (!canControl)
             moveInput = Vector2.Zero;
-        
-        moveInput = moveInput.Normalized();
 
-        UpdateFacingDir();
-        ClearFrameInput();
+        moveInput = moveInput.Normalized();
+    }
+
+    private void HandleShoot()
+    {
+        previousShootHeld = ShootHeld;
+
+        if (DeviceType == "Keyboard")
+        {
+            ShootHeld = Input.IsKeyPressed(Key.Space);
+        }
+        else if (DeviceType == "Controller")
+        {
+            ShootHeld = Input.IsJoyButtonPressed(
+                DeviceId,
+                JoyButton.RightShoulder
+            );
+        }
+
+        ShootPressed = ShootHeld && !previousShootHeld;
+        ShootReleased = !ShootHeld && previousShootHeld;
     }
 
     private void UpdateFacingDir()
-	{
-		if (moveInput == Vector2.Zero)
-			return;
+    {
+        if (moveInput == Vector2.Zero)
+            return;
 
-		FacingDir = moveInput;
-	}
+        FacingDir = moveInput;
+    }
 
     private void ClearFrameInput()
     {
         InteractPressed = false;
         SabotagePressed = false;
+        SlotPressed = null;
     }
 }
