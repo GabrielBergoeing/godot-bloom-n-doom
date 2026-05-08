@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://gevwx1e4sb5g"]
+
+[ext_resource type="Script" uid="uid://ck6kt8a2fe1st" path="res://scr/managers/telemetry/TelemetryLogger.cs" id="1_6xjv2"]
+
+[node name="TelemetryLogger" type="Node" unique_id=1451852597]
+script = ExtResource("1_6xjv2")
