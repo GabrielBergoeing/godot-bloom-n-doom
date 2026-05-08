@@ -5,159 +5,111 @@ public partial class SplitScreenManager : Node
 {
     public static SplitScreenManager Instance;
 
-    [Export] public PackedScene PlayerCamScene { get; set; }
-    [Export] public PackedScene UIPlayerHotbarScene { get; set; }
-    [Export] public PackedScene UIPlayerWaterScene { get; set; }
+    [Export] public PackedScene UIPlayerViewportScene { get; set; }
     [Export] public string LevelPath { get; set; }
 
     private GridContainer screenContainer;
-
     private SubViewport firstSubViewport = null;
+    private UIPlayerViewport bootstrapViewport;
+
     private Node levelNode = null;
 	public Node LevelNode => levelNode;
 
-	private bool firstPlayerAssigned = false;
     private float baseHeight = 162;
 
-	public override void _Ready()
-	{
-		Instance = this;
-		screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
-		AddNewPlayerViewport(null);
-	}
+    public override void _Ready()
+    {
+        Instance = this;
+
+        screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
+        bootstrapViewport = UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
+
+        AddChild(bootstrapViewport);
+        FirstViewportSetup(bootstrapViewport);
+
+        firstSubViewport = bootstrapViewport.GetSubViewport();
+    }
 
     public void AddNewPlayerViewport(Player newPlayerNode)
     {
-        var container = new SubViewportContainer();
-        var subPort = new SubViewport();
-        var cam = PlayerCamScene.Instantiate<Camera2D>();
+        var container = UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
 
-        ConfigureViewport(container, subPort, cam);
+        screenContainer.AddChild(container);
+        container.SetSubPortWorld(firstSubViewport.World2D);
 
-		if (!firstPlayerAssigned && firstSubViewport != null)
-		{
-			subPort = firstSubViewport;
-			firstPlayerAssigned = true;
-            cam = subPort.GetNode<Camera2D>("PlayerCamera");
-		}
-        else
+        if (levelNode != null)
         {
-            screenContainer.AddChild(container);
-            container.AddChild(subPort);
-            subPort.AddChild(cam);
+            var tilemap = levelNode.GetNode<TileMapLayer>("TileMapLayer");
 
-            if (firstSubViewport != null)
-                subPort.World2D = firstSubViewport.World2D;
-            else
-                FirstViewportSetup(subPort, cam);
+            container.SetCameraBounds(
+                tilemap.GetUsedRect(),
+                tilemap.TileSet.TileSize
+            );
         }
 
-        SetCameraBounds(cam);
-        LinkPlayerCam(newPlayerNode, cam);
-        LinkPlayerUI(newPlayerNode, subPort);
+        container.LinkPlayer(newPlayerNode);
+        container.LinkPlayerUI(newPlayerNode);
+
         UpdateViewportSize();
+        RemoveBootstrapViewport();
     }
 
-    private void ConfigureViewport(SubViewportContainer container, SubViewport subPort, Camera2D cam)
-    {
-        container.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
-        subPort.CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.Nearest;
-        subPort.Disable3D = true;
-        cam.PositionSmoothingEnabled = false;
-    }
-
-    private void FirstViewportSetup(SubViewport subPort, Camera2D cam)
+    private void FirstViewportSetup(UIPlayerViewport container)
     {
         var levelScene = GD.Load<PackedScene>(LevelPath);
         levelNode = levelScene.Instantiate<Node>();
-
-        subPort.AddChild(levelNode);
-        firstSubViewport = subPort;
-    }
-
-    private void SetCameraBounds(Camera2D cam)
-    {
-        var tilemap = levelNode.GetNode<TileMapLayer>("TileMapLayer");
-        var rect = tilemap.GetUsedRect();
-        var tileSize = tilemap.TileSet.TileSize;
-
-        Vector2 worldPos = rect.Position * tileSize;
-        Vector2 worldSize = rect.Size * tileSize;
-
-        cam.LimitLeft = (int)worldPos.X;
-        cam.LimitTop = (int)worldPos.Y;
-        cam.LimitRight = (int)(worldPos.X + worldSize.X);
-        cam.LimitBottom = (int)(worldPos.Y + worldSize.Y);
-    }
-
-    private void LinkPlayerCam(Player newPlayerNode, Camera2D cam)
-    {
-        if (newPlayerNode != null && cam != null)
-		{
-			var remote = newPlayerNode.GetNode<RemoteTransform2D>("RemoteTransform2D");
-			remote.RemotePath = cam.GetPath();
-		}
+        container.GetSubViewport().AddChild(levelNode);
     }
 
     private void UpdateViewportSize()
     {
         int count = screenContainer.GetChildCount();
-
         if (count == 0)
             return;
 
         int columns = Mathf.CeilToInt(count / 2.0f);
         screenContainer.Columns = columns;
 
+        Vector2 size = GetViewport().GetVisibleRect().Size;
         foreach (Node child in screenContainer.GetChildren())
         {
-            var container = child as SubViewportContainer;
+            var container = child as UIPlayerViewport;
 
-            if (container == null || container.GetChildCount() == 0)
+            if (container == null)
                 continue;
 
-            var subPort = container.GetChild<SubViewport>(0);
-            Vector2 size = GetViewport().GetVisibleRect().Size;
-
-            subPort.Size = SetSubPortSize(count, columns, size);
-            
-            var cam = subPort.GetNodeOrNull<Camera2D>("PlayerCamera");
-
-            if (cam == null) continue;
-            float scale = subPort.Size.Y / baseHeight;
-            cam.Zoom = new Vector2(scale, scale);
+            Vector2I subPortSize = SetSubPortSize(count, columns, size);
+            container.UpdateViewportSize(subPortSize, baseHeight);
         }
     }
 
-    private void LinkPlayerUI(Player newPlayerNode, SubViewport subPort)
+    private void RemoveBootstrapViewport()
     {
-        if (UIPlayerHotbarScene == null || newPlayerNode == null)
+        if (bootstrapViewport == null)
             return;
 
-        var canvasLayer = new CanvasLayer();
-        canvasLayer.Layer = 10;
-        subPort.AddChild(canvasLayer);
+        if (screenContainer.GetChildCount() > 0)
+        {
+            bootstrapViewport.Visible = false;
+            var subPort = bootstrapViewport.GetSubViewport();
 
-        var uihotbar = UIPlayerHotbarScene.Instantiate<UIPlayerHotbar>();
-        var hotbar = newPlayerNode.GetNode<PlayerHotbar>("PlayerHotbar");
-        canvasLayer.AddChild(uihotbar);
-        uihotbar.Bind(hotbar);
-
-        var uiwater = UIPlayerWaterScene.Instantiate<UIPlayerWater>();
-        var water = newPlayerNode.GetNode<PlayerWater>("PlayerWater");
-        canvasLayer.AddChild(uiwater);
-        uiwater.Bind(water);
+            if (subPort != null)
+            {
+                subPort.RenderTargetUpdateMode =
+                    SubViewport.UpdateMode.Disabled;
+            }
+        }
     }
 
     private Vector2I SetSubPortSize(int count, int columns, Vector2 size)
     {
         int rows = Mathf.CeilToInt(count / (float)columns);
+
         int width = (int)(size.X / columns);
         int height = (int)(size.Y / rows);
 
         width -= width % 2;
         height -= height % 2;
-
         return new Vector2I(width, height);
     }
 }

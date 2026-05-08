@@ -1,16 +1,12 @@
 [gd_scene format=3 uid="uid://t57n4bravpf4"]
 
 [ext_resource type="Script" uid="uid://bl2i71ohpllxy" path="res://scr/managers/camera/SplitScreenManager.cs" id="1_hneav"]
-[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/components/player_camera.tscn" id="2_bxhn3"]
-[ext_resource type="PackedScene" uid="uid://caqlo6t4bucho" path="res://nodes/ui/ui_player_hotbar.tscn" id="3_o4i5i"]
-[ext_resource type="PackedScene" uid="uid://btb3b2xftq5o8" path="res://nodes/ui/ui_player_water.tscn" id="4_hc161"]
+[ext_resource type="PackedScene" uid="uid://cb4lm3b8uy24r" path="res://nodes/ui/ui_player_viewport.tscn" id="2_o4i5i"]
 [ext_resource type="PackedScene" uid="uid://gevwx1e4sb5g" path="res://nodes/telemetry_logger.tscn" id="5_qpxn3"]
 
 [node name="GameManager" type="Node" unique_id=1943421568]
 script = ExtResource("1_hneav")
-PlayerCamScene = ExtResource("2_bxhn3")
-UIPlayerHotbarScene = ExtResource("3_o4i5i")
-UIPlayerWaterScene = ExtResource("4_hc161")
+UIPlayerViewportScene = ExtResource("2_o4i5i")
 LevelPath = "res://nodes/levels/test_scene.tscn"
 
 [node name="TelemetryLogger" parent="." unique_id=1451852597 instance=ExtResource("5_qpxn3")]
