@@ -5,7 +5,6 @@ public partial class FarmManager : TileMapLayer
 {
     public static FarmManager Instance;
 
-    [Export] public TileMapLayer WaterLayer;
     [Export] public Node2D PlantsRoot;
 
     private Dictionary<Vector2I, Node2D> plantsByCell = new();
@@ -61,16 +60,11 @@ public partial class FarmManager : TileMapLayer
 
     public bool TryPlantSeed(Vector2I cell, int playerIndex, SeedData data)
     {
+        if (!IsPrepared(cell) || IsOccupied(cell))
+            return false;
+
         PlantSeed(cell, playerIndex, data);
         return true;
-    }
-
-    private void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
-    {
-        if (!IsPrepared(cell) || IsOccupied(cell))
-            return;
-
-        SpawnPlant(cell, playerIndex, data);
     }
 
     public void RemovePlant(Vector2I cell)
@@ -121,7 +115,28 @@ public partial class FarmManager : TileMapLayer
         return false;
     }
 
-    private void SpawnPlant(Vector2I cell, int playerIndex, SeedData data)
+    public Dictionary<int, int> GetAllPlantScores()
+    {
+        Dictionary<int, int> scores = new();
+        foreach (Node2D playerRoot in playerPlantRoots.Values)
+        {
+            foreach (Node child in playerRoot.GetChildren())
+            {
+                if (child is not Plant plant)
+                    continue;
+
+                int score = plant.GetScore();
+                int playerId = plant.OwnerPlayerIndex;
+                
+                if (!scores.ContainsKey(playerId))
+                    scores[playerId] = 0;
+                scores[playerId] += score;
+            }
+        }
+        return scores;
+    }
+
+    private void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
     {
         Vector2 worldPos = MapToLocal(cell);
 

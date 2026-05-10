@@ -40,7 +40,7 @@ public partial class SplitScreenManager : Node
 
         if (levelNode != null)
         {
-            var tilemap = levelNode.GetNode<TileMapLayer>("TileMapLayer");
+            var tilemap = levelNode.GetNode<TileMapLayer>("World");
 
             container.SetCameraBounds(
                 tilemap.GetUsedRect(),

@@ -22,7 +22,7 @@ public partial class PlayerTileInteraction : Sprite2D
         Player = GetParent<Player>();
 
         var level = SplitScreenManager.Instance.LevelNode;
-        farmManager = level.GetNode<FarmManager>("TileMapLayer");
+        farmManager = level.GetNode<FarmManager>("World");
 
         ConnectFarmSignals();
         var remote = Player.GetNode<RemoteTransform2D>("RemoteTransform2D");

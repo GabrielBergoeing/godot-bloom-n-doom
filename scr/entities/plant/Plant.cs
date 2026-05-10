@@ -101,4 +101,21 @@ public partial class Plant : Node2D
     }
 
     public bool IsMature() => stage == GrowthStage.Mature;
+
+    public int GetScore()
+    {
+        if (data == null)
+            return 0;
+
+        int score = 0;
+        score += data.BaseScore;
+
+        if (stage == GrowthStage.Growing)
+            score += data.GrowingBonus;
+
+        if (stage == GrowthStage.Mature)
+            score += data.MatureBonus;
+
+        return score;
+    }
 }
