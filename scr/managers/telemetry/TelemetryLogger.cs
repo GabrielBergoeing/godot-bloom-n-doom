@@ -3,20 +3,60 @@ using System;
 
 public partial class TelemetryLogger : Node
 {
-    [Export]
-    public float SampleInterval = 0.25f;
+    [Export] public float SampleInterval = 0.25f;
+    [Export] public bool SetRecording = false;
 
-    private FileAccess _file;
-    private float _timer = 0f;
+    private FileAccess File;
+    private float Timer = 0f;
 
-    private bool _isCapturing = false;
+    private bool IsCapturing = false;
 
-    private string _captureName;
-    private string _absolutePath;
+    private string CaptureName;
+    private string AbsolutePath;
 
     public override void _Ready()
     {
-        StartCapture();
+        if (SetRecording)
+            StartCapture();
+    }
+
+    public override void _Process(double delta)
+    {
+        if (!IsCapturing || File == null || !SetRecording)
+            return;
+
+        if (CheckTimerDesync(delta))
+            return;
+
+        string row = GetLatestRowData();
+
+        File.StoreLine(row);
+        File.Flush();
+    }
+
+    public override void _ExitTree()
+    {
+        StopCapture();
+    }
+
+    // Manual stop function
+    public void StopCapture()
+    {
+        if (!IsCapturing)
+            return;
+
+        IsCapturing = false;
+
+        if (File != null)
+        {
+            File.Flush();
+            File.Close();
+            File = null;
+        }
+
+        GD.Print(
+            $"Telemetry capture ended: {CaptureName}"
+        );
     }
 
     private void StartCapture()
@@ -25,12 +65,12 @@ public partial class TelemetryLogger : Node
             "yyyyMMdd_HHmmss"
         );
 
-        _captureName = $"match_{timestamp}";
+        CaptureName = $"match_{timestamp}";
 
         string relativePath =
-            $"res://telemetry/{_captureName}.txt";
+            $"res://telemetry/{CaptureName}.txt";
 
-        _absolutePath =
+        AbsolutePath =
             ProjectSettings.GlobalizePath(relativePath);
 
         DirAccess.MakeDirAbsolute(
@@ -39,22 +79,22 @@ public partial class TelemetryLogger : Node
             )
         );
 
-        _file = FileAccess.Open(
-            _absolutePath,
+        File = FileAccess.Open(
+            AbsolutePath,
             FileAccess.ModeFlags.Write
         );
 
-        if (_file == null)
+        if (File == null)
         {
             GD.PrintErr(
-                $"Failed to create telemetry file: {_absolutePath}"
+                $"Failed to create telemetry file: {AbsolutePath}"
             );
 
             return;
         }
 
         // CSV Header
-        _file.StoreLine(
+        File.StoreLine(
             "timestamp," +
             "fps," +
             "frame_time_ms," +
@@ -66,25 +106,25 @@ public partial class TelemetryLogger : Node
             "draw_calls"
         );
 
-        _isCapturing = true;
+        IsCapturing = true;
 
         GD.Print(
-            $"Telemetry capture started: {_absolutePath}"
+            $"Telemetry capture started: {AbsolutePath}"
         );
     }
 
-    public override void _Process(double delta)
+    private bool CheckTimerDesync(double delta)
     {
-        if (!_isCapturing || _file == null)
-            return;
+        Timer += (float)delta;
+        if (Timer < SampleInterval)
+            return false;
 
-        _timer += (float)delta;
+        Timer = 0f;
+        return true;
+    }
 
-        if (_timer < SampleInterval)
-            return;
-
-        _timer = 0f;
-
+    private string GetLatestRowData()
+    {
         ulong timestamp = Time.GetTicksMsec();
 
         float fps = (float)Performance.GetMonitor(
@@ -103,10 +143,10 @@ public partial class TelemetryLogger : Node
             Performance.Monitor.TimePhysicsProcess
         );
 
-        double memoryMb =
-            (double)Performance.GetMonitor(
-                Performance.Monitor.MemoryStatic
-            ) / (1024.0 * 1024.0);
+        double memoryMb = (double)Performance.GetMonitor(
+            Performance.Monitor.MemoryStatic) / 
+            (1024.0 * 1024.0
+        );
 
         float objectCount = (float)Performance.GetMonitor(
             Performance.Monitor.ObjectCount
@@ -120,7 +160,7 @@ public partial class TelemetryLogger : Node
             Performance.Monitor.RenderTotalDrawCallsInFrame
         );
 
-        string row =
+        return
             $"{timestamp}," +
             $"{fps}," +
             $"{frameTime:F2}," +
@@ -130,35 +170,5 @@ public partial class TelemetryLogger : Node
             $"{objectCount}," +
             $"{nodeCount}," +
             $"{drawCalls}";
-
-        _file.StoreLine(row);
-
-        // Safer for crash recovery
-        _file.Flush();
-    }
-
-    // Manual stop function
-    public void StopCapture()
-    {
-        if (!_isCapturing)
-            return;
-
-        _isCapturing = false;
-
-        if (_file != null)
-        {
-            _file.Flush();
-            _file.Close();
-            _file = null;
-        }
-
-        GD.Print(
-            $"Telemetry capture ended: {_captureName}"
-        );
-    }
-
-    public override void _ExitTree()
-    {
-        StopCapture();
     }
 }

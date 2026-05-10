@@ -7,6 +7,10 @@ public partial class UIPlayerViewport : SubViewportContainer
     [Export] public PackedScene UIPlayerHotbarScene { get; set; }
     [Export] public PackedScene UIPlayerWaterScene { get; set; }
 
+    [ExportGroup("Debug Camera")]
+    [Export] public bool DebugWorldCam = false;
+    [Export] public float DebugCameraScale = 1f;
+
     private SubViewport SubPort;
     private CanvasLayer Layer;
 
@@ -56,7 +60,6 @@ public partial class UIPlayerViewport : SubViewportContainer
             return;
 
 		var remote = newPlayerNode.GetNode<RemoteTransform2D>("RemoteTransform2D");
-
 		remote.RemotePath = Cam.GetPath();
     }
 
@@ -78,17 +81,21 @@ public partial class UIPlayerViewport : SubViewportContainer
         }
     }
 
-    public void UpdateViewportSize(Vector2I size, float baseHeight)
+    public void UpdateViewportSize(Vector2I size, float baseHeight, int gridSpaces)
     {
         if (SubPort == null)
             return;
 
         SubPort.Size = size;
-        if (Cam == null)
-            return;
-
         float scale = SubPort.Size.Y / baseHeight;
-        Cam.Zoom = new Vector2(scale, scale);
+
+        if (Cam != null)
+            Cam.Zoom = new Vector2(scale, scale);
+        
+        if (DebugWorldCam)
+            Cam.Zoom = new Vector2(DebugCameraScale, DebugCameraScale);
+        
+        ScaleUI(1f / gridSpaces);
     }
 
     private void SetPackedScenes()
@@ -119,5 +126,14 @@ public partial class UIPlayerViewport : SubViewportContainer
         TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
         SubPort.CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.Nearest;
         SubPort.Disable3D = true;
+    }
+
+    private void ScaleUI(float scale)
+    {
+        foreach (Node child in Layer.GetChildren())
+        {
+            if (child is Control control)
+                control.Scale = new Vector2(scale, scale);
+        }
     }
 }

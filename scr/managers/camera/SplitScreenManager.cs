@@ -7,6 +7,7 @@ public partial class SplitScreenManager : Node
 
     [Export] public PackedScene UIPlayerViewportScene { get; set; }
     [Export] public string LevelPath { get; set; }
+    [Export] public int MaxPlayerCount = 4;
 
     private GridContainer screenContainer;
     private SubViewport firstSubViewport = null;
@@ -79,7 +80,7 @@ public partial class SplitScreenManager : Node
                 continue;
 
             Vector2I subPortSize = SetSubPortSize(count, columns, size);
-            container.UpdateViewportSize(subPortSize, baseHeight);
+            container.UpdateViewportSize(subPortSize, baseHeight, count);
         }
     }
 
