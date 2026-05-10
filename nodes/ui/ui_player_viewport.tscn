@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://caqlo6t4bucho" path="res://nodes/ui/ui_player_hotbar.tscn" id="2_nktoy"]
 [ext_resource type="PackedScene" uid="uid://btb3b2xftq5o8" path="res://nodes/ui/ui_player_water.tscn" id="3_a21n4"]
 [ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/components/player_camera.tscn" id="4_ypfjy"]
+[ext_resource type="PackedScene" uid="uid://dql46fbloc7rh" path="res://nodes/ui/ui_player_timer.tscn" id="5_a21n4"]
 
 [node name="UIPlayerViewport" type="SubViewportContainer" unique_id=1065729657]
 offset_right = 40.0
@@ -12,6 +13,7 @@ script = ExtResource("1_uq11f")
 PlayerCamScene = ExtResource("4_ypfjy")
 UIPlayerHotbarScene = ExtResource("2_nktoy")
 UIPlayerWaterScene = ExtResource("3_a21n4")
+UIPlayerTimerScene = ExtResource("5_a21n4")
 DebugWorldCam = true
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=183737098]

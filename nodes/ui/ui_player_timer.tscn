@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dql46fbloc7rh"]
+
+[ext_resource type="FontFile" uid="uid://e6r32tv6dpcb" path="res://art/fonts/Curse Casual.ttf" id="1_wq3nc"]
+[ext_resource type="Script" uid="uid://dcpr18j7s1oqx" path="res://scr/ui/UIPlayerTimer.cs" id="2_b7kke"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_b7kke"]
+font = ExtResource("1_wq3nc")
+font_size = 32
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.95686275)
+
+[node name="UIPlayerTimer" type="Label" unique_id=726282916]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_b7kke")
+script = ExtResource("2_b7kke")

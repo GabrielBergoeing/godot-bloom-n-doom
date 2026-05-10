@@ -6,6 +6,7 @@ public partial class UIPlayerViewport : SubViewportContainer
     [Export] public PackedScene PlayerCamScene { get; set; }
     [Export] public PackedScene UIPlayerHotbarScene { get; set; }
     [Export] public PackedScene UIPlayerWaterScene { get; set; }
+    [Export] public PackedScene UIPlayerTimerScene { get; set; }
 
     [ExportGroup("Debug Camera")]
     [Export] public bool DebugWorldCam = false;
@@ -17,6 +18,7 @@ public partial class UIPlayerViewport : SubViewportContainer
     private Camera2D Cam;
     private UIPlayerHotbar UIHotbar;
     private UIPlayerWater UIWater;
+    private UIPlayerTimer UIPlayerTimer;
 
     public override void _Ready()
 	{
@@ -119,6 +121,11 @@ public partial class UIPlayerViewport : SubViewportContainer
 			UIWater = UIPlayerWaterScene.Instantiate<UIPlayerWater>();
 			Layer.AddChild(UIWater);
 		}
+        if (UIPlayerTimerScene != null)
+        {
+            UIPlayerTimer = UIPlayerTimerScene.Instantiate<UIPlayerTimer>();
+            Layer.AddChild(UIPlayerTimer);
+        }
     }
 
     private void ConfigureViewport()

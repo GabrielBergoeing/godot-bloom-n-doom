@@ -30,6 +30,7 @@ metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 
 [node name="MatchManager" type="Node" parent="." unique_id=631921640 node_paths=PackedStringArray("PlayerSpawnPoints")]
 script = ExtResource("1_0h6uu")
+MatchDuration = 30.0
 PlayerSpawnPoints = [NodePath("../PlayerSpawnPoints/Position 1"), NodePath("../PlayerSpawnPoints/Position 2"), NodePath("../PlayerSpawnPoints/Position 3"), NodePath("../PlayerSpawnPoints/Position 4")]
 StartingItems = Array[ExtResource("2_gabs3")]([ExtResource("4_w52lu")])
 
