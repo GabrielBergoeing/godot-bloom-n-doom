@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://0jjnrsim7tui"]
+
+[ext_resource type="Texture2D" uid="uid://dh7wv31jhfaih" path="res://art/sprites/parallax/menu_1.png" id="1_te0b7"]
+[ext_resource type="Texture2D" uid="uid://ce878xxu4wcs3" path="res://art/sprites/parallax/menu_2.png" id="2_7t7x4"]
+[ext_resource type="Texture2D" uid="uid://ide1aydc1rkv" path="res://art/sprites/parallax/menu_3.png" id="3_s7q2y"]
+[ext_resource type="Texture2D" uid="uid://b5pf6y0tw5n5d" path="res://art/sprites/parallax/menu_4.png" id="4_fabwj"]
+
+[node name="ParallaxBackground" type="Node2D" unique_id=1832453097]
+z_index = -10
+position = Vector2(576, 324)
+scale = Vector2(2, 2)
+
+[node name="SkyLayer" type="Parallax2D" parent="." unique_id=2034576048]
+repeat_size = Vector2(576, 0)
+autoscroll = Vector2(-2.5, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="SkyLayer" unique_id=1912462518]
+texture = ExtResource("1_te0b7")
+
+[node name="CityLayer" type="Parallax2D" parent="." unique_id=729154792]
+repeat_size = Vector2(576, 0)
+autoscroll = Vector2(-10, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CityLayer" unique_id=1997070597]
+texture = ExtResource("2_7t7x4")
+
+[node name="NeighbourLayer" type="Parallax2D" parent="." unique_id=1198565231]
+repeat_size = Vector2(576, 0)
+autoscroll = Vector2(-17.5, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="NeighbourLayer" unique_id=218401203]
+texture = ExtResource("3_s7q2y")
+
+[node name="ForegroundLayer" type="Parallax2D" parent="." unique_id=46956532]
+repeat_size = Vector2(576, 0)
+autoscroll = Vector2(-25, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ForegroundLayer" unique_id=265272086]
+texture = ExtResource("4_fabwj")

@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://biq04vwuhdslr"]
 
 [ext_resource type="Script" uid="uid://c3ktu67d61h1d" path="res://scr/ui/screens/UIMainMenu.cs" id="1_pdmrt"]
+[ext_resource type="Texture2D" uid="uid://byyrcitkulg4i" path="res://art/ilustrations/logo/logo_bloomdoom.png" id="2_3c7t3"]
 [ext_resource type="Texture2D" uid="uid://cwi0vruhqy8c6" path="res://art/ui/buttons/ButtonText_Large_Square.png" id="2_f2126"]
 [ext_resource type="PackedScene" uid="uid://bvxupxdyeri8r" path="res://nodes/ui/screens/ui_service.tscn" id="2_pdmrt"]
 [ext_resource type="Texture2D" uid="uid://6lc5bwmsjedu" path="res://art/ui/buttons/ButtonText_Large_Green_Square.png" id="3_1rgqv"]
 [ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="4_1rgqv"]
+[ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="7_px43v"]
 
 [node name="MainMenu" type="Control" unique_id=1244156162]
 layout_mode = 3
@@ -15,12 +17,26 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_pdmrt")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=582436847]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Logo" type="TextureRect" parent="." unique_id=1622553468]
+layout_mode = 1
+offset_top = -20.0
+offset_right = 1500.0
+offset_bottom = 800.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_3c7t3")
 
-[node name="PlayButton" type="TextureButton" parent="VBoxContainer" unique_id=1481753425]
+[node name="Buttons" type="VBoxContainer" parent="." unique_id=582436847]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -140.0
+offset_right = 300.0
+offset_bottom = 140.0
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="PlayButton" type="TextureButton" parent="Buttons" unique_id=1481753425]
 clip_contents = true
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
@@ -31,7 +47,7 @@ texture_hover = ExtResource("3_1rgqv")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="VBoxContainer/PlayButton" unique_id=1594218190]
+[node name="Label" type="Label" parent="Buttons/PlayButton" unique_id=1594218190]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -49,7 +65,7 @@ label_settings = ExtResource("4_1rgqv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SettingsButton" type="TextureButton" parent="VBoxContainer" unique_id=1483364709]
+[node name="SettingsButton" type="TextureButton" parent="Buttons" unique_id=1483364709]
 clip_contents = true
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
@@ -61,7 +77,7 @@ texture_hover = ExtResource("3_1rgqv")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="VBoxContainer/SettingsButton" unique_id=659861481]
+[node name="Label" type="Label" parent="Buttons/SettingsButton" unique_id=659861481]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -79,7 +95,7 @@ label_settings = ExtResource("4_1rgqv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="QuitButton" type="TextureButton" parent="VBoxContainer" unique_id=1004235424]
+[node name="QuitButton" type="TextureButton" parent="Buttons" unique_id=1004235424]
 clip_contents = true
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
@@ -90,7 +106,7 @@ texture_hover = ExtResource("3_1rgqv")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="VBoxContainer/QuitButton" unique_id=1063278897]
+[node name="Label" type="Label" parent="Buttons/QuitButton" unique_id=1063278897]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -109,3 +125,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="UIService" parent="." unique_id=1856074653 instance=ExtResource("2_pdmrt")]
+
+[node name="ParallaxBackground" parent="." unique_id=1832453097 instance=ExtResource("7_px43v")]
