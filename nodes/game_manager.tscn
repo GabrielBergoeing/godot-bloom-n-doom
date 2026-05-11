@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://t57n4bravpf4"]
+
+[ext_resource type="Script" uid="uid://bl2i71ohpllxy" path="res://scr/managers/camera/SplitScreenManager.cs" id="1_hneav"]
+[ext_resource type="PackedScene" uid="uid://cb4lm3b8uy24r" path="res://nodes/ui/player/ui_player_viewport.tscn" id="2_o4i5i"]
+[ext_resource type="PackedScene" uid="uid://gevwx1e4sb5g" path="res://nodes/telemetry_logger.tscn" id="5_qpxn3"]
+
+[node name="SplitScreenManager" type="Node" unique_id=1943421568]
+script = ExtResource("1_hneav")
+UIPlayerViewportScene = ExtResource("2_o4i5i")
+LevelPath = "res://nodes/levels/test_scene.tscn"
+
+[node name="TelemetryLogger" parent="." unique_id=1451852597 instance=ExtResource("5_qpxn3")]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=791644416]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=929203448]
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="GridContainer" type="GridContainer" parent="CenterContainer" unique_id=1393471944]
+layout_mode = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0

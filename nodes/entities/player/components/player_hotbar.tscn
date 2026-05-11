@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://clgjc6t6vtj4i"]
+
+[ext_resource type="Script" uid="uid://bh5vxgd1jtwux" path="res://scr/entities/player/components/PlayerHotbar.cs" id="1_80pmv"]
+
+[node name="PlayerHotbar" type="Node" unique_id=867373073]
+script = ExtResource("1_80pmv")

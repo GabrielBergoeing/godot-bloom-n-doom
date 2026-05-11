@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ScissorsData" format=3 uid="uid://kvlln78fje0w"]
+
+[ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="1_5fnen"]
+[ext_resource type="Script" uid="uid://dygig2lph2kj8" path="res://scr/items/tools/ScissorsData.cs" id="1_kxhsi"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="2_sh2ai"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2esf"]
+atlas = ExtResource("1_5fnen")
+region = Rect2(32, 32, 16, 16)
+
+[resource]
+script = ExtResource("1_kxhsi")
+ItemId = "scissors_data"
+ItemName = "Scissors"
+Icon = SubResource("AtlasTexture_e2esf")
+Stackable = false
+MaxStack = 1
+PickupScene = ExtResource("2_sh2ai")
+Duration = 3
+Cooldown = 3
+metadata/_custom_type_script = "uid://dygig2lph2kj8"

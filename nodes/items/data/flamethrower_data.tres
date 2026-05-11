@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FlamethrowerData" format=3 uid="uid://5vli7hpg6g6p"]
+
+[ext_resource type="PackedScene" uid="uid://deatibfkrg4dc" path="res://nodes/vfx/fire_vfx.tscn" id="1_0rvke"]
+[ext_resource type="Script" uid="uid://knyukrqc71cj" path="res://scr/items/tools/FlamethrowerData.cs" id="1_klhv0"]
+[ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="2_koirb"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="3_koirb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_keiij"]
+atlas = ExtResource("2_koirb")
+region = Rect2(1, 36, 27, 12)
+
+[resource]
+script = ExtResource("1_klhv0")
+FirePrefab = ExtResource("1_0rvke")
+ItemId = "flamethrower_data"
+ItemName = "Flamethrower"
+Icon = SubResource("AtlasTexture_keiij")
+Stackable = false
+PickupScene = ExtResource("3_koirb")
+metadata/_custom_type_script = "uid://knyukrqc71cj"

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="FertilizerData" format=3 uid="uid://chg8u0sbslbsw"]
+
+[ext_resource type="Script" uid="uid://bqbiutr2dw7qv" path="res://scr/items/consumable/FertilizerData.cs" id="1_pgktf"]
+[ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="1_rqyrc"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="2_qumf5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rqyrc"]
+atlas = ExtResource("1_rqyrc")
+region = Rect2(51, 48, 10, 15)
+
+[resource]
+script = ExtResource("1_pgktf")
+ItemId = "fertilizer_data"
+ItemName = "Fertilizer"
+Icon = SubResource("AtlasTexture_rqyrc")
+MaxStack = 3
+PickupScene = ExtResource("2_qumf5")
+Consumable = true
+Duration = 1
+Cooldown = 1
+metadata/_custom_type_script = "uid://bqbiutr2dw7qv"

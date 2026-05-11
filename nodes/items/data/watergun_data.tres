@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WaterGunData" format=3 uid="uid://ctvjba2f6s5nw"]
+
+[ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="1_53tcj"]
+[ext_resource type="Script" uid="uid://c25bphld0xd1u" path="res://scr/items/tools/WaterGunData.cs" id="1_avcs6"]
+[ext_resource type="PackedScene" uid="uid://cbwhj482d4ol2" path="res://nodes/vfx/water_vfx.tscn" id="2_2jvk4"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="2_04gdj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04gdj"]
+atlas = ExtResource("1_53tcj")
+region = Rect2(1, 51, 28, 13)
+
+[resource]
+script = ExtResource("1_avcs6")
+ProjectileScene = ExtResource("2_2jvk4")
+ItemId = "watergun_data"
+ItemName = "Watergun"
+Icon = SubResource("AtlasTexture_04gdj")
+Stackable = false
+PickupScene = ExtResource("2_04gdj")
+metadata/_custom_type_script = "uid://c25bphld0xd1u"

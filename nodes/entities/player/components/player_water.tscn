@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dwb5xqqjbq8mf"]
+
+[ext_resource type="Script" uid="uid://bul3lducmqlsk" path="res://scr/entities/player/components/PlayerWater.cs" id="1_v6caa"]
+
+[node name="PlayerWater" type="Node" unique_id=345673475]
+script = ExtResource("1_v6caa")
+CurrentWater = 6
+WaterCostPerUse = 2
+RefillAmount = 3
+Duration = 1
+Cooldown = 1
