@@ -1,0 +1,9 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://chtwobs2vbvrg"]
+
+[ext_resource type="FontFile" uid="uid://e6r32tv6dpcb" path="res://art/fonts/Curse Casual.ttf" id="1_371ly"]
+
+[resource]
+font = ExtResource("1_371ly")
+font_size = 32
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.95686275)
