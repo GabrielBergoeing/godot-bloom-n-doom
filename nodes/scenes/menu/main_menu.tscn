@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://biq04vwuhdslr"]
 
-[ext_resource type="Script" uid="uid://c3ktu67d61h1d" path="res://scr/ui/screens/UIMainMenu.cs" id="1_pdmrt"]
-[ext_resource type="Texture2D" uid="uid://byyrcitkulg4i" path="res://art/ilustrations/logo/logo_bloomdoom.png" id="2_3c7t3"]
-[ext_resource type="Texture2D" uid="uid://cwi0vruhqy8c6" path="res://art/ui/buttons/ButtonText_Large_Square.png" id="2_f2126"]
-[ext_resource type="PackedScene" uid="uid://bvxupxdyeri8r" path="res://nodes/ui/screens/ui_service.tscn" id="2_pdmrt"]
-[ext_resource type="Texture2D" uid="uid://6lc5bwmsjedu" path="res://art/ui/buttons/ButtonText_Large_Green_Square.png" id="3_1rgqv"]
-[ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="4_1rgqv"]
-[ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="7_px43v"]
+[ext_resource type="Script" uid="uid://c3ktu67d61h1d" path="res://scr/ui/screens/UIMainMenu.cs" id="1_nwia3"]
+[ext_resource type="Texture2D" uid="uid://byyrcitkulg4i" path="res://art/ilustrations/logo/logo_bloomdoom.png" id="2_dvtgp"]
+[ext_resource type="Texture2D" uid="uid://cwi0vruhqy8c6" path="res://art/ui/buttons/ButtonText_Large_Square.png" id="3_odjel"]
+[ext_resource type="Texture2D" uid="uid://6lc5bwmsjedu" path="res://art/ui/buttons/ButtonText_Large_Green_Square.png" id="4_t6uyb"]
+[ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="5_r5gok"]
+[ext_resource type="PackedScene" uid="uid://bvxupxdyeri8r" path="res://nodes/ui/screens/ui_service.tscn" id="6_cqj64"]
+[ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="7_8gye4"]
 
 [node name="MainMenu" type="Control" unique_id=1244156162]
 layout_mode = 3
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_pdmrt")
+script = ExtResource("1_nwia3")
 
 [node name="Logo" type="TextureRect" parent="." unique_id=1622553468]
 layout_mode = 1
@@ -23,7 +23,7 @@ offset_top = -20.0
 offset_right = 1500.0
 offset_bottom = 800.0
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_3c7t3")
+texture = ExtResource("2_dvtgp")
 
 [node name="Buttons" type="VBoxContainer" parent="." unique_id=582436847]
 layout_mode = 1
@@ -41,9 +41,9 @@ clip_contents = true
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../SettingsButton")
-texture_normal = ExtResource("2_f2126")
-texture_pressed = ExtResource("3_1rgqv")
-texture_hover = ExtResource("3_1rgqv")
+texture_normal = ExtResource("3_odjel")
+texture_pressed = ExtResource("4_t6uyb")
+texture_hover = ExtResource("4_t6uyb")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -61,7 +61,7 @@ offset_bottom = 18.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Play"
-label_settings = ExtResource("4_1rgqv")
+label_settings = ExtResource("5_r5gok")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -71,9 +71,9 @@ custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 focus_neighbor_top = NodePath("../PlayButton")
 focus_neighbor_bottom = NodePath("../QuitButton")
-texture_normal = ExtResource("2_f2126")
-texture_pressed = ExtResource("3_1rgqv")
-texture_hover = ExtResource("3_1rgqv")
+texture_normal = ExtResource("3_odjel")
+texture_pressed = ExtResource("4_t6uyb")
+texture_hover = ExtResource("4_t6uyb")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -91,7 +91,7 @@ offset_bottom = 18.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Settings"
-label_settings = ExtResource("4_1rgqv")
+label_settings = ExtResource("5_r5gok")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -100,9 +100,9 @@ clip_contents = true
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 focus_neighbor_top = NodePath("../SettingsButton")
-texture_normal = ExtResource("2_f2126")
-texture_pressed = ExtResource("3_1rgqv")
-texture_hover = ExtResource("3_1rgqv")
+texture_normal = ExtResource("3_odjel")
+texture_pressed = ExtResource("4_t6uyb")
+texture_hover = ExtResource("4_t6uyb")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -120,10 +120,10 @@ offset_bottom = 18.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Quit"
-label_settings = ExtResource("4_1rgqv")
+label_settings = ExtResource("5_r5gok")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="UIService" parent="." unique_id=1856074653 instance=ExtResource("2_pdmrt")]
+[node name="UIService" parent="." unique_id=1856074653 instance=ExtResource("6_cqj64")]
 
-[node name="ParallaxBackground" parent="." unique_id=1832453097 instance=ExtResource("7_px43v")]
+[node name="ParallaxBackground" parent="." unique_id=1832453097 instance=ExtResource("7_8gye4")]

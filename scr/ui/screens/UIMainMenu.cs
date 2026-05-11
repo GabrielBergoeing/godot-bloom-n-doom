@@ -5,6 +5,7 @@ public partial class UIMainMenu : Control
 {
     private UIService UI => UIService.Instance;
 
+    [ExportGroup("Title Animation Variables")]
     [Export] public float FloatSpeed = 1.5f;
     [Export] public float FloatAmount = 12f;
 
@@ -50,8 +51,7 @@ public partial class UIMainMenu : Control
     {
         GD.Print("Play button pressed.");
         // UI.Sfx.PlayOnConfirm();
-        // GameManager.Instance.ChangeScene("MatchMenu");
-        // GetTree().ChangeSceneToFile("res://Scenes/MatchMenu.tscn");
+        UI.Scene.ChangeLevelScene(UI.TestLevel);
     }
 
     private void SettingsBTN()

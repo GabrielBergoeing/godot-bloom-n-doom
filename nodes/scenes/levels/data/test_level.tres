@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LevelData" format=3 uid="uid://dgetktsjhfo0y"]
+
+[ext_resource type="PackedScene" uid="uid://spaier2bibr8" path="res://nodes/scenes/levels/layout/test_scene.tscn" id="1_f4c1a"]
+[ext_resource type="Script" uid="uid://cyqx1ge62a3xs" path="res://scr/managers/map/event/SpawnEntry.cs" id="1_upcxu"]
+[ext_resource type="Script" uid="uid://dmmuxsht6pcr1" path="res://scr/managers/scene/LevelData.cs" id="2_f4c1a"]
+
+[resource]
+script = ExtResource("2_f4c1a")
+LevelScene = ExtResource("1_f4c1a")
+MatchDuration = 180.0
+metadata/_custom_type_script = "uid://dmmuxsht6pcr1"

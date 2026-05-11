@@ -6,9 +6,9 @@ public partial class SplitScreenManager : Node
     public static SplitScreenManager Instance;
 
     [Export] public PackedScene UIPlayerViewportScene { get; set; }
-    [Export] public string LevelPath { get; set; }
     [Export] public int MaxPlayerCount = 4;
 
+    private LevelData LevelPath { get; set; }
     private GridContainer screenContainer;
     private SubViewport firstSubViewport = null;
     private UIPlayerViewport bootstrapViewport;
@@ -21,6 +21,7 @@ public partial class SplitScreenManager : Node
     public override void _Ready()
     {
         Instance = this;
+        LevelPath = SceneManager.Instance.CurrentLevel;
 
         screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
         bootstrapViewport = UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
@@ -57,7 +58,7 @@ public partial class SplitScreenManager : Node
 
     private void FirstViewportSetup(UIPlayerViewport container)
     {
-        var levelScene = GD.Load<PackedScene>(LevelPath);
+        var levelScene = LevelPath.LevelScene;
         levelNode = levelScene.Instantiate<Node>();
         container.GetSubViewport().AddChild(levelNode);
     }
