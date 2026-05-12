@@ -7,13 +7,14 @@ public partial class UICharacterSlot : TextureRect
 
 	private TextureRect _illustration;
 	private Label _name;
-	//private TextureRect _lockIcon;
+	private TextureRect _lockIcon;
 
 	private LobbyPlayerData _player;
 	private UILobbyMenu _menu;
 
 	private int _index = 0;
 	private float _cooldown = 0f;
+	private float _inputBlockTimer = 0f;
 
 	[Export] public float NavCooldown = 0.2f;
 
@@ -24,7 +25,7 @@ public partial class UICharacterSlot : TextureRect
 	{
 		_illustration = GetNode<TextureRect>("Illustration");
 		_name = GetNode<Label>("Name");
-		//_lockIcon = GetNode<TextureRect>("LockIcon");
+		_lockIcon = GetNode<TextureRect>("LockIcon");
 
 		SetEmpty();
 	}
@@ -33,6 +34,8 @@ public partial class UICharacterSlot : TextureRect
 	{
 		_player = player;
 		_menu = menu;
+
+		_inputBlockTimer = 0.25f;
 		_index = 0;
 
 		UpdateVisuals();
@@ -44,6 +47,12 @@ public partial class UICharacterSlot : TextureRect
 			return;
 
 		_cooldown -= (float)delta;
+
+		if (_inputBlockTimer > 0f)
+		{
+			_inputBlockTimer -= (float)delta;
+			return;
+		}
 
 		HandleNavigation();
 		HandleConfirm();
@@ -154,7 +163,7 @@ public partial class UICharacterSlot : TextureRect
 
 		_illustration.Texture = character.Illustration;
 		_name.Text = character.CharacterName;
-		//_lockIcon.Visible =_player.LockedIn;
+		_lockIcon.Visible =_player.LockedIn;
 
 		// Colors
 		Color targetColor =
@@ -163,10 +172,6 @@ public partial class UICharacterSlot : TextureRect
 			: character.ActiveColor;
 
 		SelfModulate = targetColor;
-
-		GD.Print(
-			$"Player {_player.PlayerId} selected {character.CharacterName}"
-		);
 	}
 
 	public void SetEmpty()
@@ -174,7 +179,7 @@ public partial class UICharacterSlot : TextureRect
 		SelfModulate = Colors.DarkSlateGray;
 		_illustration.Texture = null;
 		_name.Text = "Press 'Start' to Join";
-		//_lockIcon.Visible = false;
+		_lockIcon.Visible = false;
 	}
 
 	private void ClearSlot()

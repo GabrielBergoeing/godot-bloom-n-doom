@@ -10,6 +10,8 @@ public partial class InputDeviceManager : Node
     [Signal] public delegate void PlayerJoinedEventHandler(LobbyPlayerData player);
     [Signal] public delegate void PlayerLeftEventHandler(LobbyPlayerData player);
 
+    private int _nextPlayerId = 0;
+
     public override void _Ready()
     {
         Instance = this;
@@ -67,7 +69,7 @@ public partial class InputDeviceManager : Node
 
     private void RegisterPlayer(int deviceId, string type)
     {
-        int playerId = LobbyPlayers.Count;
+        int playerId = _nextPlayerId++;
 
         var player = new LobbyPlayerData(
             playerId,
@@ -91,10 +93,6 @@ public partial class InputDeviceManager : Node
             return;
 
         LobbyPlayers.Remove(player);
-
-        // Reindex players
-        for (int i = 0; i < LobbyPlayers.Count; i++)
-            LobbyPlayers[i].PlayerId = i;
 
         GD.Print($"Player Left: {player.PlayerId}");
 
