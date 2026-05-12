@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://bmklkp8w2ryf2"]
+
+[ext_resource type="Script" uid="uid://din1v63u70adn" path="res://scr/entities/character/CharacterData.cs" id="1_7ibh5"]
+[ext_resource type="Texture2D" uid="uid://b38k4mhfs2l56" path="res://art/ilustrations/characters/Dave.png" id="1_qfb3a"]
+[ext_resource type="SpriteFrames" uid="uid://di6uxrligcv5r" path="res://art/sprites/character/dave_sprites.tres" id="2_wtk0m"]
+
+[resource]
+script = ExtResource("1_7ibh5")
+CharacterName = "Dave"
+Sprites = ExtResource("2_wtk0m")
+Illustration = ExtResource("1_qfb3a")
+metadata/_custom_type_script = "uid://din1v63u70adn"

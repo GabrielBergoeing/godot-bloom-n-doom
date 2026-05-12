@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bvxupxdyeri8r"]
-
-[ext_resource type="Script" uid="uid://bbse8rxny7grv" path="res://scr/ui/screens/UIService.cs" id="1_jy3w3"]
-
-[node name="UIService" type="Node" unique_id=1856074653]
-script = ExtResource("1_jy3w3")

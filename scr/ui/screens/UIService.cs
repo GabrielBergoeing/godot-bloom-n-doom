@@ -12,6 +12,7 @@ public partial class UIService : Node
 
     // Scenes
     public string MainMenu { get; private set; } = "res://nodes/scenes/menu/main_menu.tscn";
+    public string LobbyMenu { get; private set; } = "res://nodes/scenes/menu/lobby_menu.tscn";
     public LevelData TestLevel { get; private set; }
 
     private string _testLevelData = "res://nodes/scenes/levels/data/test_level.tres";

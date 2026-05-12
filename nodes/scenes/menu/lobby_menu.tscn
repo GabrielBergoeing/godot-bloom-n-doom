@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://by3cv3luo4av0"]
+
+[ext_resource type="Script" uid="uid://dhgahlnpyatwl" path="res://scr/ui/screens/UILobbyMenu.cs" id="1_6wuiq"]
+[ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="1_aeb35"]
+[ext_resource type="PackedScene" uid="uid://caqu1dbhafgwi" path="res://nodes/ui/screens/ui_character_slot.tscn" id="1_fi1wo"]
+[ext_resource type="Resource" uid="uid://c187xkokt0o1m" path="res://nodes/entities/character/character_database.tres" id="2_ckiie"]
+[ext_resource type="Script" uid="uid://b1qyhpwkaa46o" path="res://scr/managers/input/InputDeviceManager.cs" id="5_jbfl5"]
+
+[node name="LobbyMenu" type="Control" unique_id=1024515571]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6wuiq")
+MinimumPlayers = 4
+CharacterDatabase = ExtResource("2_ckiie")
+
+[node name="Slots" type="HBoxContainer" parent="." unique_id=546197419]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -518.0
+offset_top = -256.0
+offset_right = 518.0
+offset_bottom = 256.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Wrapper" type="Control" parent="Slots" unique_id=550898855]
+custom_minimum_size = Vector2(256, 512)
+layout_mode = 2
+
+[node name="UICharacterSlot" parent="Slots/Wrapper" unique_id=2035721024 instance=ExtResource("1_fi1wo")]
+layout_mode = 0
+
+[node name="Wrapper2" type="Control" parent="Slots" unique_id=1319833628]
+custom_minimum_size = Vector2(256, 512)
+layout_mode = 2
+
+[node name="UICharacterSlot" parent="Slots/Wrapper2" unique_id=881144581 instance=ExtResource("1_fi1wo")]
+layout_mode = 0
+
+[node name="Wrapper3" type="Control" parent="Slots" unique_id=1095800188]
+custom_minimum_size = Vector2(256, 512)
+layout_mode = 2
+
+[node name="UICharacterSlot" parent="Slots/Wrapper3" unique_id=1724760578 instance=ExtResource("1_fi1wo")]
+layout_mode = 0
+
+[node name="Wrapper4" type="Control" parent="Slots" unique_id=1591576352]
+custom_minimum_size = Vector2(256, 512)
+layout_mode = 2
+
+[node name="UICharacterSlot" parent="Slots/Wrapper4" unique_id=465794070 instance=ExtResource("1_fi1wo")]
+layout_mode = 0
+
+[node name="ParallaxBackground" parent="." unique_id=1832453097 instance=ExtResource("1_aeb35")]
+
+[node name="InputDeviceManager" type="Node" parent="." unique_id=2116291087]
+script = ExtResource("5_jbfl5")

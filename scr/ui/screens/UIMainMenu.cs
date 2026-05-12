@@ -51,7 +51,7 @@ public partial class UIMainMenu : Control
     {
         GD.Print("Play button pressed.");
         // UI.Sfx.PlayOnConfirm();
-        UI.Scene.ChangeLevelScene(UI.TestLevel);
+        UI.Scene.ChangeScene(UI.LobbyMenu);
     }
 
     private void SettingsBTN()

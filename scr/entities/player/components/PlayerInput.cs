@@ -25,7 +25,7 @@ public partial class PlayerInput : Node
 
     public override void _Ready()
     {
-        InputDeviceManager.Instance.InputReceived += OnInputReceived;
+        //InputDeviceManager.Instance.InputReceived += OnInputReceived;
     }
 
     public void AssignDevice(int deviceId, string type, int playerId)

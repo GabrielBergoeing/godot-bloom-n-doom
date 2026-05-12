@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://caqu1dbhafgwi"]
+
+[ext_resource type="Texture2D" uid="uid://bymd1pjaiwdco" path="res://art/ui/screens/CharSelectOn.png" id="1_15ls8"]
+[ext_resource type="Script" uid="uid://dmxl8sm7sya6q" path="res://scr/ui/screens/UICharacterSlot.cs" id="1_cu7qr"]
+[ext_resource type="Texture2D" uid="uid://bsm10hq26lmlt" path="res://art/ui/screens/CharSelectOff.png" id="3_vyne0"]
+[ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="4_mxjfv"]
+
+[node name="UICharacterSlot" type="TextureRect" unique_id=2035721024]
+offset_right = 512.0
+offset_bottom = 1024.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_15ls8")
+script = ExtResource("1_cu7qr")
+
+[node name="Illustration" type="TextureRect" parent="." unique_id=185724984]
+show_behind_parent = true
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 528.0
+offset_bottom = 1040.0
+scale = Vector2(0.94, 0.94)
+texture = ExtResource("3_vyne0")
+
+[node name="Name" type="Label" parent="." unique_id=34622911]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 928.0
+offset_right = 255.0
+offset_bottom = 965.0
+scale = Vector2(2, 2)
+text = "Press 'Start' to Join"
+label_settings = ExtResource("4_mxjfv")

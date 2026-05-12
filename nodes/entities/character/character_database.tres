@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CharacterDatabase" format=3 uid="uid://c187xkokt0o1m"]
+
+[ext_resource type="Script" uid="uid://oxlpdj35kvhg" path="res://scr/entities/character/CharacterDatabase.cs" id="1_6y5h3"]
+[ext_resource type="Resource" uid="uid://ci1pkhx1gm3sn" path="res://nodes/entities/character/john_data.tres" id="1_k4g05"]
+[ext_resource type="Resource" uid="uid://bmklkp8w2ryf2" path="res://nodes/entities/character/dave_data.tres" id="1_wifm7"]
+[ext_resource type="Resource" uid="uid://g7lu2chex6wf" path="res://nodes/entities/character/robin_data.tres" id="2_j10yu"]
+[ext_resource type="Resource" uid="uid://02v3d35po0b5" path="res://nodes/entities/character/lily_data.tres" id="4_4tmvv"]
+[ext_resource type="Resource" uid="uid://dvng5qvq1xhft" path="res://nodes/entities/character/jose_data.tres" id="5_qbirt"]
+
+[resource]
+script = ExtResource("1_6y5h3")
+Characters = Array[Object]([ExtResource("1_k4g05"), ExtResource("2_j10yu"), ExtResource("1_wifm7"), ExtResource("4_4tmvv"), ExtResource("5_qbirt")])
+metadata/_custom_type_script = "uid://oxlpdj35kvhg"

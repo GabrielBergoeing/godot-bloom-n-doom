@@ -4,17 +4,15 @@ using System.Collections.Generic;
 public partial class InputDeviceManager : Node
 {
     public static InputDeviceManager Instance;
-    private List<InputDeviceData> devices = new();
 
-    private PackedScene playerScene;
+    public List<LobbyPlayerData> LobbyPlayers { get; private set; } = new();
 
-    [Signal]
-    public delegate void InputReceivedEventHandler(int playerId, InputEvent @event);
+    [Signal] public delegate void PlayerJoinedEventHandler(LobbyPlayerData player);
+    [Signal] public delegate void PlayerLeftEventHandler(LobbyPlayerData player);
 
     public override void _Ready()
     {
         Instance = this;
-        playerScene = GD.Load<PackedScene>("res://nodes/entities/player/characters/player_dave.tscn");
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -23,63 +21,91 @@ public partial class InputDeviceManager : Node
             return;
 
         int deviceId = @event.Device;
-        string type = null;
+        string type = "";
 
+        bool joinPressed = false;
+
+        // Keyboard
         if (@event is InputEventKey key && key.Pressed)
         {
-            type = "Keyboard";
             deviceId = 0;
+            type = "Keyboard";
+
+            if (key.Keycode == Key.Enter)
+                joinPressed = true;
         }
-        else if (@event is InputEventJoypadButton btn && btn.Pressed)
+
+        // Controller
+        if (@event is InputEventJoypadButton btn && btn.Pressed)
+        {
             type = "Controller";
-        else
+
+            if (btn.ButtonIndex == JoyButton.Start)
+                joinPressed = true;
+        }
+
+        if (!joinPressed)
             return;
 
+        if (AlreadyRegistered(deviceId, type))
+            return;
 
-        var deviceData = GetDevice(deviceId, type);
-        if (deviceData == null)
+        RegisterPlayer(deviceId, type);
+    }
+
+    private bool AlreadyRegistered(int deviceId, string type)
+    {
+        foreach (var p in LobbyPlayers)
         {
-            RegisterDevice(deviceId, type);
-            deviceData = GetDevice(deviceId, type);
+            if (p.DeviceId == deviceId &&
+                p.DeviceType == type)
+                return true;
         }
 
-        EmitSignal(SignalName.InputReceived, deviceData.PlayerId, @event);
+        return false;
     }
 
-    private InputDeviceData GetDevice(int deviceId, string type)
+    private void RegisterPlayer(int deviceId, string type)
     {
-        foreach (var d in devices)
-        {
-            if (d.DeviceId == deviceId && d.DeviceType == type)
-                return d;
-        }
-        return null;
+        int playerId = LobbyPlayers.Count;
+
+        var player = new LobbyPlayerData(
+            playerId,
+            deviceId,
+            type
+        );
+
+        LobbyPlayers.Add(player);
+
+        GD.Print($"Player Joined: {playerId}");
+
+        EmitSignal(
+            SignalName.PlayerJoined,
+            player
+        );
     }
 
-    private void RegisterDevice(int deviceId, string type)
+    public void RemovePlayer(LobbyPlayerData player)
     {
-        int playerId = devices.Count;
+        if (!LobbyPlayers.Contains(player))
+            return;
 
-        var data = new InputDeviceData(deviceId, type, playerId);
-        devices.Add(data);
+        LobbyPlayers.Remove(player);
 
-        SpawnPlayer(playerId, deviceId, type);
+        // Reindex players
+        for (int i = 0; i < LobbyPlayers.Count; i++)
+            LobbyPlayers[i].PlayerId = i;
+
+        GD.Print($"Player Left: {player.PlayerId}");
+
+        EmitSignal(
+            SignalName.PlayerLeft,
+            player
+        );
     }
 
-    private void SpawnPlayer(int playerId, int deviceId, string type)
+    public void ResetLobby()
     {
-        var node = playerScene.Instantiate();
-        var player = node as Player;
-
-        var world = SplitScreenManager.Instance.LevelNode;
-        world.AddChild(player); //Find a way to spawn in a random spot
-
-        player.AssignDevice(deviceId, type, playerId);
-        SplitScreenManager.Instance?.AddNewPlayerViewport(player);
-    }
-
-    public void ResetDevices()
-    {
-        devices.Clear();
+        LobbyPlayers.Clear();
     }
 }

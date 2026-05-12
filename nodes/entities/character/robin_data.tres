@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://g7lu2chex6wf"]
+
+[ext_resource type="Script" uid="uid://din1v63u70adn" path="res://scr/entities/character/CharacterData.cs" id="1_dhbom"]
+[ext_resource type="Texture2D" uid="uid://b1b3wesxwm4cf" path="res://art/ilustrations/characters/Robin.png" id="1_nfqqy"]
+
+[resource]
+script = ExtResource("1_dhbom")
+CharacterName = "Robin"
+Illustration = ExtResource("1_nfqqy")
+metadata/_custom_type_script = "uid://din1v63u70adn"
