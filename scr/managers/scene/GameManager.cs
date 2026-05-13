@@ -59,6 +59,7 @@ public partial class GameManager : Node
             SceneManager.Instance.ChangeScene(mainMenuScene);
         }
 
+        AudioManager.Instance.StartBGM(CurrentLevel.BGMTrack);
         match.StartMatch();
     }
 }

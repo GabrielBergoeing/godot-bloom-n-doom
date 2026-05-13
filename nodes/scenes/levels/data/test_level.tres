@@ -33,6 +33,7 @@ metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 script = ExtResource("2_f4c1a")
 LevelScene = ExtResource("1_f4c1a")
 MatchDuration = 30.0
+BGMTrack = "bgm_level_grassy"
 SeedTable = Array[ExtResource("1_upcxu")]([SubResource("Resource_nyfkv")])
 ToolTable = Array[ExtResource("1_upcxu")]([SubResource("Resource_2qm4h"), SubResource("Resource_rdlvd")])
 RareTable = Array[ExtResource("1_upcxu")]([SubResource("Resource_h0f86")])

@@ -20,7 +20,7 @@ config/icon="res://icon.svg"
 SceneManager="*uid://bsxt3jftt8nxm"
 GameManager="*uid://oepk1p4vp5cl"
 AudioManager="*uid://dik1xpf2rhnmy"
-UiService="*uid://bbse8rxny7grv"
+UIService="*uid://bvxupxdyeri8r"
 
 [display]
 

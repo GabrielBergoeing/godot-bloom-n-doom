@@ -15,16 +15,10 @@ public partial class SceneManager : Node
     {
         GD.Print("[SceneManager] Starting scene transition...");
 
-        // Future fade out
-        /*
         if (UIService.Instance?.Fade != null)
-        {
             await UIService.Instance.Fade.FadeOut();
-        }
-        */
 
         Error result = GetTree().ChangeSceneToFile(scenePath);
-
         if (result != Error.Ok)
         {
             GD.PushError($"[SceneManager] Failed to load scene: {scenePath}");
@@ -32,15 +26,7 @@ public partial class SceneManager : Node
         }
 
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-
-        GD.Print("[SceneManager] Scene Changed!");
-
-        // Future fade in
-        /*
         if (UIService.Instance?.Fade != null)
-        {
             await UIService.Instance.Fade.FadeIn();
-        }
-        */
     }
 }

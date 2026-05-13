@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bvxupxdyeri8r"]
+
+[ext_resource type="Script" uid="uid://bbse8rxny7grv" path="res://scr/ui/screens/UIService.cs" id="1_hn8ee"]
+[ext_resource type="PackedScene" uid="uid://brgahm3bj01cg" path="res://nodes/ui/screens/ui_fade_screen.tscn" id="2_vlmhk"]
+
+[node name="UIService" type="Node" unique_id=395305132]
+script = ExtResource("1_hn8ee")
+
+[node name="UIFadeScreen" parent="." unique_id=1399474826 instance=ExtResource("2_vlmhk")]

@@ -24,13 +24,8 @@ public partial class UIMainMenu : Control
         _settingsButton = GetNode<TextureButton>("Buttons/SettingsButton");
         _quitButton = GetNode<TextureButton>("Buttons/QuitButton");
 
-        _playButton.Pressed += PlayBTN;
-        _settingsButton.Pressed += SettingsBTN;
-        _quitButton.Pressed += QuitGameBTN;
-
-        _playButton.MouseEntered += HoverBTN;
-        _settingsButton.MouseEntered += HoverBTN;
-        _quitButton.MouseEntered += HoverBTN;
+        HookButtonSignals();
+        UI.Audio.StartBGM(UI.Paths.MainMenuBGM);
         
         _logoStartPos = _logo.Position;
         _playButton.GrabFocus();
@@ -47,6 +42,17 @@ public partial class UIMainMenu : Control
         );
     }
 
+    private void HookButtonSignals()
+    {
+        _playButton.Pressed += PlayBTN;
+        _settingsButton.Pressed += SettingsBTN;
+        _quitButton.Pressed += QuitGameBTN;
+
+        _playButton.FocusEntered += HoverBTN;
+        _settingsButton.FocusEntered += HoverBTN;
+        _quitButton.FocusEntered += HoverBTN;
+    }
+
     private void PlayBTN()
     {
         UI.SFX.PlayOnConfirm();
@@ -55,13 +61,13 @@ public partial class UIMainMenu : Control
 
     private void SettingsBTN()
     {
-        UI.SFX.PlayOnToggle();
+        UI.SFX.PlayOnConfirm();
         // UI.Menu.ShowSettingsOverlay();
     }
 
     private void QuitGameBTN()
     {
-        UI.SFX.PlayOnToggle();
+        UI.SFX.PlayOnConfirm();
         GetTree().Quit();
     }
 

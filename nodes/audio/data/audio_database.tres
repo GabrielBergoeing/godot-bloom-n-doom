@@ -1,11 +1,13 @@
 [gd_resource type="Resource" script_class="AudioDatabase" format=3 uid="uid://4ukk43ppp2nt"]
 
-[ext_resource type="Script" uid="uid://c54vkhdrawpao" path="res://scr/managers/audio/AudioDatabase.cs" id="1_h1dtl"]
-[ext_resource type="Resource" uid="uid://hipi2k7at82l" path="res://nodes/audio/data/ui_confirm.tres" id="1_kgx7r"]
-[ext_resource type="Resource" uid="uid://jvn7j6bmugga" path="res://nodes/audio/data/ui_hover.tres" id="2_04pl3"]
-[ext_resource type="Resource" uid="uid://bm4qi4oke68ex" path="res://nodes/audio/data/ui_toggle.tres" id="3_f5qdm"]
+[ext_resource type="Resource" uid="uid://hipi2k7at82l" path="res://nodes/audio/data/sfx_ui_confirm.tres" id="1_r8sst"]
+[ext_resource type="Resource" uid="uid://jvn7j6bmugga" path="res://nodes/audio/data/sfx_ui_hover.tres" id="2_ndrs5"]
+[ext_resource type="Resource" uid="uid://bm4qi4oke68ex" path="res://nodes/audio/data/sfx_ui_toggle.tres" id="3_ogy4y"]
+[ext_resource type="Resource" uid="uid://b65aa26ks4qn8" path="res://nodes/audio/data/bgm_menu.tres" id="4_yadu2"]
+[ext_resource type="Resource" uid="uid://dbxjhkbw40wjx" path="res://nodes/audio/data/bgm_level_grassy.tres" id="5_ndrs5"]
+[ext_resource type="Script" uid="uid://c54vkhdrawpao" path="res://scr/managers/audio/AudioDatabase.cs" id="5_weyke"]
 
 [resource]
-script = ExtResource("1_h1dtl")
-Clips = Array[Object]([ExtResource("1_kgx7r"), ExtResource("2_04pl3"), ExtResource("3_f5qdm")])
+script = ExtResource("5_weyke")
+Clips = Array[Object]([ExtResource("1_r8sst"), ExtResource("2_ndrs5"), ExtResource("3_ogy4y"), ExtResource("4_yadu2"), ExtResource("5_ndrs5")])
 metadata/_custom_type_script = "uid://c54vkhdrawpao"

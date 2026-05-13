@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://brgahm3bj01cg"]
+
+[ext_resource type="Script" uid="uid://bepfeukdr6cm0" path="res://scr/ui/screens/UIFadeScreen.cs" id="1_dwioy"]
+
+[node name="UIFadeScreen" type="CanvasLayer" unique_id=1399474826 node_paths=PackedStringArray("_fadeRect")]
+layer = 10
+script = ExtResource("1_dwioy")
+_fadeRect = NodePath("ColorRect")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=723006604]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.007314352, 0.007314352, 0.0073143505, 1)

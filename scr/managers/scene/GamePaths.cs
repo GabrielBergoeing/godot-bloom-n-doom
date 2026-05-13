@@ -16,11 +16,14 @@ public partial class GamePaths
 
     //Audio Names
     public string ConfirmAudio =>
-        "ui_confirm";
-    
-    public string ToggleAudio =>
-        "ui_toggle";
+        "sfx_ui_confirm";
 
     public string HoverAudio =>
-        "ui_hover";
+        "sfx_ui_hover";
+    
+    public string ToggleAudio =>
+        "sfx_ui_toggle";
+
+    public string MainMenuBGM =>
+        "bgm_menu";
 }
