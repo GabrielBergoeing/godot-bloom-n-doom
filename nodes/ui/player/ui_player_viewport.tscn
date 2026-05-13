@@ -14,7 +14,6 @@ PlayerCamScene = ExtResource("4_ypfjy")
 UIPlayerHotbarScene = ExtResource("2_nktoy")
 UIPlayerWaterScene = ExtResource("3_a21n4")
 UIPlayerTimerScene = ExtResource("5_a21n4")
-DebugWorldCam = true
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=183737098]
 handle_input_locally = false

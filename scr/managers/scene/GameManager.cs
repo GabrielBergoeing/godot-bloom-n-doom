@@ -5,6 +5,8 @@ public partial class GameManager : Node
 {
     public static GameManager Instance { get; private set; }
 
+    private UIService UI => UIService.Instance;
+
     public LevelData CurrentLevel { get; private set; }
     public List<LobbyPlayerData> LobbyPlayers = new();
 
@@ -43,7 +45,7 @@ public partial class GameManager : Node
     {   
         SetLevel(levelDataPath);
 
-        string levelManagerScene = UIService.Instance.Paths.LevelManagerScene;
+        string levelManagerScene = UI.Paths.LevelManagerScene;
         SceneManager.Instance.ChangeScene(levelManagerScene);
     }
 
@@ -53,7 +55,7 @@ public partial class GameManager : Node
         if (match == null)
         {
             GD.PushError("[GameManager] MatchManager not found in level.");
-            string mainMenuScene = UIService.Instance.Paths.MainMenuScene;
+            string mainMenuScene = UI.Paths.MainMenuScene;
             SceneManager.Instance.ChangeScene(mainMenuScene);
         }
 

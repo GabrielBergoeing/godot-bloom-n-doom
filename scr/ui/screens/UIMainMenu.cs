@@ -49,34 +49,24 @@ public partial class UIMainMenu : Control
 
     private void PlayBTN()
     {
-        GD.Print("Play button pressed.");
-        // UI.Sfx.PlayOnConfirm();
+        UI.SFX.PlayOnConfirm();
         UI.Scene.ChangeScene(UI.Paths.LobbyMenuScene);
     }
 
     private void SettingsBTN()
     {
-        GD.Print("Settings button pressed.");
-        // UI.Sfx.PlayOnToggle();
+        UI.SFX.PlayOnToggle();
         // UI.Menu.ShowSettingsOverlay();
     }
 
     private void QuitGameBTN()
     {
-        GD.Print("Quit button pressed.");
-        // UI.Sfx.PlayOnToggle();
+        UI.SFX.PlayOnToggle();
         GetTree().Quit();
     }
 
     private void HoverBTN()
     {
-        GD.Print("Hover button.");
-        // UI.Sfx.PlayOnHover();
-    }
-
-    private void ToggleBTN()
-    {
-        GD.Print("Toggle button.");
-        // UI.Sfx.PlayOnToggle();
+        UI.SFX.PlayOnHover();
     }
 }

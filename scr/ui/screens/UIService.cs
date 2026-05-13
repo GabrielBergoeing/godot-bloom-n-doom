@@ -5,29 +5,30 @@ public partial class UIService : Node
 {
     public static UIService Instance { get; private set; }
 
-    // Future systems
-    // public UISFX Sfx { get; private set; }
-    // public UIFadeScreen Fade { get; private set; }
-    public SceneManager Scene { get; private set; }
-    public GameManager Game { get; private set; }
+    public GameManager Game => GameManager.Instance;
+    public SceneManager Scene => SceneManager.Instance;
+    public AudioManager Audio => AudioManager.Instance;
+
+    // Created on the spot
     public GamePaths Paths { get; private set;} = new();
+    // public UIFadeScreen Fade { get; private set; } = new();
+    public UISFX SFX { get; private set; }
+    private AudioStreamPlayer _uiPlayer;
 
     public override void _Ready()
     {
         Instance = this;
-        Game = GameManager.Instance;
-        Scene = SceneManager.Instance;
 
-        // Future setup
-        /*
-        Sfx = GetNode<UISFX>("UISFX");
-        Fade = GetNode<UIFadeScreen>("UIFadeScreen");
+        _uiPlayer = new AudioStreamPlayer();
+        _uiPlayer.Bus = "UI";
 
-        if (Sfx == null)
-            GD.PushError("[UIService] Missing UISFX!");
+        AddChild(_uiPlayer);
 
-        if (Fade == null)
-            GD.PushWarning("[UIService] Missing UIFadeScreen!");
-        */
+        SFX = new UISFX(
+            _uiPlayer,
+            Paths.ConfirmAudio,
+            Paths.ToggleAudio,
+            Paths.HoverAudio
+        );
     }
 }

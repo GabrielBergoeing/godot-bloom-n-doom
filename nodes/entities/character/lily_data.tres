@@ -2,9 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://bst6e238aqyxx" path="res://art/ilustrations/characters/Lily.png" id="1_bcbec"]
 [ext_resource type="Script" uid="uid://din1v63u70adn" path="res://scr/entities/character/CharacterData.cs" id="1_yj6w3"]
+[ext_resource type="SpriteFrames" uid="uid://cbxwg3xixqvj6" path="res://art/sprites/character/lily_sprites.tres" id="2_ybwal"]
 
 [resource]
 script = ExtResource("1_yj6w3")
 CharacterName = "Lily"
 Illustration = ExtResource("1_bcbec")
+Sprites = ExtResource("2_ybwal")
 metadata/_custom_type_script = "uid://din1v63u70adn"

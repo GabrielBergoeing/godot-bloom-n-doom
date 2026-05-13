@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dik1xpf2rhnmy"]
+
+[ext_resource type="Script" uid="uid://dwb7pk00rd874" path="res://scr/managers/audio/AudioManager.cs" id="1_m6gpd"]
+[ext_resource type="Resource" uid="uid://4ukk43ppp2nt" path="res://nodes/audio/data/audio_database.tres" id="2_6hvyy"]
+
+[node name="AudioManager" type="Node" unique_id=262245618 node_paths=PackedStringArray("_bgmPlayer")]
+script = ExtResource("1_m6gpd")
+_database = ExtResource("2_6hvyy")
+_bgmPlayer = NodePath("BGMPlayer")
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="." unique_id=1521333588]

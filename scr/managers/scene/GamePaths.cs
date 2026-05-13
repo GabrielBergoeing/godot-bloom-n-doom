@@ -13,4 +13,14 @@ public partial class GamePaths
     //Level Data
     public string TestLevelData =>
         "res://nodes/scenes/levels/data/test_level.tres";
+
+    //Audio Names
+    public string ConfirmAudio =>
+        "ui_confirm";
+    
+    public string ToggleAudio =>
+        "ui_toggle";
+
+    public string HoverAudio =>
+        "ui_hover";
 }

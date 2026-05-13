@@ -2,9 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://daba3d3pvvlv4" path="res://art/ilustrations/characters/John.png" id="1_3wlv3"]
 [ext_resource type="Script" uid="uid://din1v63u70adn" path="res://scr/entities/character/CharacterData.cs" id="1_814bj"]
+[ext_resource type="SpriteFrames" uid="uid://cv56lt8r1f1p7" path="res://art/sprites/character/john_sprites.tres" id="2_q7526"]
 
 [resource]
 script = ExtResource("1_814bj")
 CharacterName = "John"
 Illustration = ExtResource("1_3wlv3")
+Sprites = ExtResource("2_q7526")
 metadata/_custom_type_script = "uid://din1v63u70adn"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AudioClipData" format=3 uid="uid://hipi2k7at82l"]
+
+[ext_resource type="AudioStream" uid="uid://b4hh1jfmhr4hl" path="res://art/audio/sfx/ui/Confirm.wav" id="1_44ylt"]
+[ext_resource type="Script" uid="uid://b5fg11jxtkeec" path="res://scr/managers/audio/AudioClipData.cs" id="2_8dmse"]
+
+[resource]
+script = ExtResource("2_8dmse")
+AudioName = "ui_confirm"
+Clips = [ExtResource("1_44ylt")]
+metadata/_custom_type_script = "uid://b5fg11jxtkeec"
