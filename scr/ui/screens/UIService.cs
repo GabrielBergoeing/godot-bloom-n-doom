@@ -10,17 +10,14 @@ public partial class UIService : Node
     public AudioManager Audio => AudioManager.Instance;
 
     public GamePaths Paths { get; private set;} = new();
-    public UIFadeScreen Fade { get; private set; }
     public UISFX SFX { get; private set; }
 
-    private AudioStreamPlayer _uiPlayer = new();
+    [Export] private AudioStreamPlayer _uiPlayer;
 
     public override void _Ready()
     {
         Instance = this;
-
         _uiPlayer.Bus = "UI";
-        AddChild(_uiPlayer);
 
         SFX = new UISFX(
             _uiPlayer,
@@ -28,13 +25,5 @@ public partial class UIService : Node
             Paths.ToggleAudio,
             Paths.HoverAudio
         );
-
-        ReadyFadeScreen();
-    }
-
-    private async void ReadyFadeScreen()
-    {
-        Fade = GetNode<UIFadeScreen>("UIFadeScreen");
-        await Fade.FadeIn();
     }
 }

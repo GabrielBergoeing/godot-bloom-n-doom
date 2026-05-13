@@ -5,18 +5,20 @@ using System.Threading.Tasks;
 public partial class SceneManager : Node
 {
     public static SceneManager Instance { get; private set; }
+    [Export] private UIFadeScreen Fade;
 
     public override void _Ready()
     {
         Instance = this;
+        ReadyFadeScreen();
     }
 
     public async void ChangeScene(string scenePath)
     {
         GD.Print("[SceneManager] Starting scene transition...");
 
-        if (UIService.Instance?.Fade != null)
-            await UIService.Instance.Fade.FadeOut();
+        if (Fade != null)
+            await Fade.FadeOut();
 
         Error result = GetTree().ChangeSceneToFile(scenePath);
         if (result != Error.Ok)
@@ -26,7 +28,12 @@ public partial class SceneManager : Node
         }
 
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-        if (UIService.Instance?.Fade != null)
-            await UIService.Instance.Fade.FadeIn();
+        if (Fade != null)
+            await Fade.FadeIn();
+    }
+
+    private async void ReadyFadeScreen()
+    {
+        await Fade.FadeIn();
     }
 }
