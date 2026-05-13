@@ -59,6 +59,14 @@ public partial class UICharacterSlot : TextureRect
 		HandleCancel();
 	}
 
+	public void SetEmpty()
+	{
+		SelfModulate = Colors.DarkSlateGray;
+		_illustration.Texture = null;
+		_name.Text = "Press 'Start' to Join";
+		_lockIcon.Visible = false;
+	}
+
 	private void HandleNavigation()
 	{
 		if (_player.LockedIn)
@@ -174,18 +182,9 @@ public partial class UICharacterSlot : TextureRect
 		SelfModulate = targetColor;
 	}
 
-	public void SetEmpty()
-	{
-		SelfModulate = Colors.DarkSlateGray;
-		_illustration.Texture = null;
-		_name.Text = "Press 'Start' to Join";
-		_lockIcon.Visible = false;
-	}
-
 	private void ClearSlot()
 	{
-		InputDeviceManager.Instance
-			.RemovePlayer(_player);
+		InputDeviceManager.Instance.RemovePlayer(_player);
 
 		_player = null;
 		_menu.NotifySlotUpdated();

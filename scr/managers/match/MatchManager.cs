@@ -6,10 +6,7 @@ using System.Linq;
 public partial class MatchManager : Node
 {
     public static MatchManager Instance;
-
-    [ExportGroup("Match Settings")]
-    [Export] public float MatchDuration = 180f;
-    [Export] public bool AutoStartMatch = true;
+    public GameManager Game => GameManager.Instance;
 
     [ExportGroup("Player Setup")]
     [Export] public Array<Node2D> PlayerSpawnPoints = new();
@@ -20,18 +17,16 @@ public partial class MatchManager : Node
 
     private bool isPlayingMatch = false;
     private bool hasPrintedResults = false;
-    public float Timer { get; private set; }
 
-    public bool IsMatchRunning =>
-        isPlayingMatch && !hasPrintedResults;
+    public float MatchDuration;
+    public float Timer { get; private set; }
+    public bool IsMatchRunning => isPlayingMatch && !hasPrintedResults;
 
     public override void _Ready()
     {
         Instance = this;
+        MatchDuration = Game.CurrentLevel.MatchDuration;
         Timer = MatchDuration;
-
-        if (AutoStartMatch)
-            StartMatch();
     }
 
     public override void _Process(double delta)
@@ -54,8 +49,6 @@ public partial class MatchManager : Node
         InitializePlayers();
         SpawnPlayers();
         GiveStartingItems();
-
-        Timer = MatchDuration;
 
         isPlayingMatch = true;
         hasPrintedResults = false;
@@ -82,9 +75,7 @@ public partial class MatchManager : Node
                 players.Add(player);
         }
 
-        GD.Print(
-            $"[MatchManager] Registered {players.Count} players"
-        );
+        GD.Print($"[MatchManager] Registered {players.Count} players");
     }
 
     private void SpawnPlayers()
@@ -101,28 +92,17 @@ public partial class MatchManager : Node
         for (int i = 0; i < players.Count; i++)
         {
             Player player = players[i];
-
-            Vector2 spawnPos =
-                GetSpawnPosition(i);
+            Vector2 spawnPos = GetSpawnPosition(i);
 
             player.Position = spawnPos;
-
-            GD.Print(
-                $"[MatchManager] Spawned Player {player.PlayerId} at {spawnPos}"
-            );
+            GD.Print($"[MatchManager] Spawned Player {player.PlayerId} at {spawnPos}");
         }
     }
 
     private Vector2 GetSpawnPosition(int index)
     {
-        if (
-            index < PlayerSpawnPoints.Count &&
-            PlayerSpawnPoints[index] != null
-        )
-        {
-            return PlayerSpawnPoints[index]
-                .GlobalPosition;
-        }
+        if (index < PlayerSpawnPoints.Count && PlayerSpawnPoints[index] != null)
+            return PlayerSpawnPoints[index].GlobalPosition;
 
         return new Vector2(index * 32, 0);
     }

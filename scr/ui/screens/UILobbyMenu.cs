@@ -5,7 +5,7 @@ public partial class UILobbyMenu : Control
 {
     private UIService UI => UIService.Instance;
     
-    [Export] public int MinimumPlayers = 1;
+    [Export(PropertyHint.Range, "1,4")] public int MinimumPlayers = 1;
     [Export] public CharacterDatabase CharacterDatabase;
 
     private HBoxContainer _slotsContainer;
@@ -77,11 +77,12 @@ public partial class UILobbyMenu : Control
 
     private void StartMatch()
     {
-        GD.Print("START MATCH");
+        var players = _slots
+            .Where(s => s.Occupied)
+            .Select(s => s.Player)
+            .ToArray();
 
-        // Future:
-        // SceneManager
-        // spawn configs
-        // map selection
+        UI.Game.SetLobbyPlayers(players);
+        UI.Game.LoadLevel(UI.Paths.TestLevelData); //TODO: Remove when level select sceen is implemented
     }
 }

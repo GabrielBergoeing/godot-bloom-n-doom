@@ -13,7 +13,13 @@ public partial class PlayerAnim : AnimatedSprite2D
 
     public override void _Process(double delta)
     {
-        UpdateAnimation();
+        if(SpriteFrames != null)
+            UpdateAnimation();
+    }
+
+    public void Setup(SpriteFrames sprites)
+    {
+        SpriteFrames = sprites;
     }
 
     public void SetAction(string action)
@@ -24,7 +30,6 @@ public partial class PlayerAnim : AnimatedSprite2D
     private void UpdateAnimation()
     {
         string direction = GetDirectionString();
-
         string finalAnim = $"{CurrentAction}_{direction}";
 
         if (Animation != finalAnim)

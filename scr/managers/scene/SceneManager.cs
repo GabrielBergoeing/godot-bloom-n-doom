@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 public partial class SceneManager : Node
 {
     public static SceneManager Instance { get; private set; }
-    public LevelData CurrentLevel { get; private set; }
-
-    private string _levelManagerPath = "res://nodes/scenes/menu/level_manager.tscn";
 
     public override void _Ready()
     {
@@ -45,11 +42,5 @@ public partial class SceneManager : Node
             await UIService.Instance.Fade.FadeIn();
         }
         */
-    }
-
-    public void ChangeLevelScene(LevelData levelData)
-    {
-        CurrentLevel = levelData;
-        ChangeScene(_levelManagerPath);
     }
 }

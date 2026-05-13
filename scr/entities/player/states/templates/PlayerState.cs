@@ -18,7 +18,7 @@ public abstract partial class PlayerState : EntityState
     {
         this.player = player;
 
-        Anim = player.GetNode<PlayerAnim>("AnimatedSprite2D");
+        Anim = player.Anim;
 		tile = player.Tile;
         Input = player.Input;
         Water = player.Water;

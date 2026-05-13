@@ -7,15 +7,10 @@ public partial class UIPlayerTimer : Label
     private double _nextUpdateTime = 0f;
 
     //For a decouple independent system, make init function that recieves a timer variable
-    private MatchManager _matchManager;
+    private MatchManager Match => MatchManager.Instance;
 
     private readonly Color _startColor = new Color(1f, 1f, 1f, 0.8f);
     private readonly Color _endColor = new Color(1f, 0.2f, 0.2f, 1f);
-
-    public override void _Ready()
-    {
-        _matchManager = MatchManager.Instance;
-    }
 
     public override void _Process(double delta)
     {
@@ -31,7 +26,7 @@ public partial class UIPlayerTimer : Label
 
     private void UpdateTimerDisplay()
     {
-        float remainingTime = Mathf.Max(_matchManager.Timer, 0f);
+        float remainingTime = Mathf.Max(Match.Timer, 0f);
         int minutes = Mathf.FloorToInt(remainingTime / 60f);
         int seconds = Mathf.FloorToInt(remainingTime % 60f);
 
@@ -40,7 +35,7 @@ public partial class UIPlayerTimer : Label
         float t =
             Mathf.InverseLerp(
                 0f,
-                _matchManager.MatchDuration,
+                Match.MatchDuration,
                 remainingTime
             );
 

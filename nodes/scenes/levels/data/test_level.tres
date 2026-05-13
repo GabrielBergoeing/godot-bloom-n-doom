@@ -3,9 +3,37 @@
 [ext_resource type="PackedScene" uid="uid://spaier2bibr8" path="res://nodes/scenes/levels/layout/test_scene.tscn" id="1_f4c1a"]
 [ext_resource type="Script" uid="uid://cyqx1ge62a3xs" path="res://scr/managers/map/event/SpawnEntry.cs" id="1_upcxu"]
 [ext_resource type="Script" uid="uid://dmmuxsht6pcr1" path="res://scr/managers/scene/LevelData.cs" id="2_f4c1a"]
+[ext_resource type="Resource" uid="uid://ctvjba2f6s5nw" path="res://nodes/items/data/watergun_data.tres" id="3_e0cve"]
+[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/test_seed.tres" id="4_o7lse"]
+[ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="5_2pdmq"]
+[ext_resource type="Resource" uid="uid://5vli7hpg6g6p" path="res://nodes/items/data/flamethrower_data.tres" id="6_0074g"]
+
+[sub_resource type="Resource" id="Resource_h0f86"]
+script = ExtResource("1_upcxu")
+Item = ExtResource("3_e0cve")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_nyfkv"]
+script = ExtResource("1_upcxu")
+Item = ExtResource("4_o7lse")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_2qm4h"]
+script = ExtResource("1_upcxu")
+Item = ExtResource("5_2pdmq")
+Weight = 3
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_rdlvd"]
+script = ExtResource("1_upcxu")
+Item = ExtResource("6_0074g")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 
 [resource]
 script = ExtResource("2_f4c1a")
 LevelScene = ExtResource("1_f4c1a")
-MatchDuration = 180.0
+MatchDuration = 30.0
+SeedTable = Array[ExtResource("1_upcxu")]([SubResource("Resource_nyfkv")])
+ToolTable = Array[ExtResource("1_upcxu")]([SubResource("Resource_2qm4h"), SubResource("Resource_rdlvd")])
+RareTable = Array[ExtResource("1_upcxu")]([SubResource("Resource_h0f86")])
 metadata/_custom_type_script = "uid://dmmuxsht6pcr1"

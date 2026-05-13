@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://h1f0qpp72uyw"]
 
 [ext_resource type="Script" uid="uid://bf606ytvi7uc1" path="res://scr/entities/player/components/Player.cs" id="1_mfldv"]
-[ext_resource type="PackedScene" uid="uid://clgjc6t6vtj4i" path="res://nodes/entities/player/components/player_hotbar.tscn" id="2_lar61"]
+[ext_resource type="PackedScene" uid="uid://clgjc6t6vtj4i" path="res://nodes/entities/player/player_hotbar.tscn" id="2_lar61"]
 [ext_resource type="Script" uid="uid://dto2me6sq7mvh" path="res://scr/entities/player/components/PlayerAnim.cs" id="3_lar61"]
 [ext_resource type="Script" uid="uid://cl2cl5dvxxxir" path="res://scr/entities/player/components/PlayerInput.cs" id="4_5bbg0"]
-[ext_resource type="PackedScene" uid="uid://dwb5xqqjbq8mf" path="res://nodes/entities/player/components/player_water.tscn" id="4_x768k"]
+[ext_resource type="PackedScene" uid="uid://dwb5xqqjbq8mf" path="res://nodes/entities/player/player_water.tscn" id="4_x768k"]
 [ext_resource type="PackedScene" uid="uid://v5b2ixv8ly5u" path="res://nodes/vfx/player_water_fx.tscn" id="5_x38ru"]
-[ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/components/player_tile_interaction.tscn" id="5_x768k"]
+[ext_resource type="PackedScene" uid="uid://cibs3fm53my87" path="res://nodes/entities/player/player_tile_interaction.tscn" id="5_x768k"]
 [ext_resource type="Script" uid="uid://cldm31pjpd4ai" path="res://scr/entities/player/components/PlayerOnHand.cs" id="6_lar61"]
 [ext_resource type="SpriteFrames" uid="uid://di6uxrligcv5r" path="res://art/sprites/character/dave_sprites.tres" id="6_x768k"]
 

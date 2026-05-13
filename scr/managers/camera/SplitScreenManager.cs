@@ -1,117 +1,136 @@
 using Godot;
-using System;
+using System.Collections.Generic;
 
 public partial class SplitScreenManager : Node
 {
     public static SplitScreenManager Instance;
 
-    [Export] public PackedScene UIPlayerViewportScene { get; set; }
-    [Export] public int MaxPlayerCount = 4;
+    [Export] public PackedScene UIPlayerViewportScene;
+    [Export] public PackedScene PlayerScene;
 
-    private LevelData LevelPath { get; set; }
-    private GridContainer screenContainer;
-    private SubViewport firstSubViewport = null;
-    private UIPlayerViewport bootstrapViewport;
+    private GridContainer _screenContainer;
+    private Node _levelNode;
+    public Node LevelNode => _levelNode;
 
-    private Node levelNode = null;
-	public Node LevelNode => levelNode;
+    private World2D _sharedWorld;
+    private readonly List<UIPlayerViewport> _viewports = new();
 
-    private float baseHeight = 162;
+    private const float BaseHeight = 162f;
 
     public override void _Ready()
     {
         Instance = this;
-        LevelPath = SceneManager.Instance.CurrentLevel;
+        _screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
 
-        screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
-        bootstrapViewport = UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
-
-        AddChild(bootstrapViewport);
-        FirstViewportSetup(bootstrapViewport);
-
-        firstSubViewport = bootstrapViewport.GetSubViewport();
+        CreateLevel();
+        SpawnPlayers();
+        UpdateViewportLayout();
+        GameManager.Instance.StartMatch(_levelNode);
     }
 
-    public void AddNewPlayerViewport(Player newPlayerNode)
+    private void CreateLevel()
     {
-        var container = UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
+        LevelData levelData = GameManager.Instance.CurrentLevel;
+        UIPlayerViewport worldViewport = CreateViewport();
 
-        screenContainer.AddChild(container);
-        container.SetSubPortWorld(firstSubViewport.World2D);
+        _levelNode =levelData.LevelScene.Instantiate<Node>();
+        worldViewport.GetSubViewport().AddChild(_levelNode);
+        _sharedWorld = worldViewport.GetSubViewport().World2D;
+    }
 
-        if (levelNode != null)
+    private void SpawnPlayers()
+    {
+        var players = GameManager.Instance.LobbyPlayers;
+        for (int i = 0; i < players.Count; i++)
+            SpawnPlayer(players[i], i);
+    }
+
+    private void SpawnPlayer(LobbyPlayerData data, int index)
+    {
+        Player player = PlayerScene.Instantiate<Player>();
+        LevelNode.AddChild(player);
+
+        player.Setup(
+            data.PlayerId,
+            data.DeviceId,
+            data.DeviceType,
+            data.SelectedCharacter.Sprites
+        );
+
+        UIPlayerViewport viewport;
+        if (index == 0)
+            viewport = _viewports[0];
+        else
         {
-            var tilemap = levelNode.GetNode<TileMapLayer>("World");
-
-            container.SetCameraBounds(
-                tilemap.GetUsedRect(),
-                tilemap.TileSet.TileSize
-            );
+            viewport = CreateViewport();
+            viewport.SetSubPortWorld(_sharedWorld);
         }
 
-        container.LinkPlayer(newPlayerNode);
-        container.LinkPlayerUI(newPlayerNode);
-
-        UpdateViewportSize();
-        RemoveBootstrapViewport();
+        viewport.LinkPlayer(player);
+        viewport.LinkPlayerUI(player);
+        ApplyCameraBounds(viewport);
     }
 
-    private void FirstViewportSetup(UIPlayerViewport container)
+    private UIPlayerViewport CreateViewport()
     {
-        var levelScene = LevelPath.LevelScene;
-        levelNode = levelScene.Instantiate<Node>();
-        container.GetSubViewport().AddChild(levelNode);
+        UIPlayerViewport viewport =UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
+
+        _screenContainer.AddChild(viewport);
+        _viewports.Add(viewport);
+
+        return viewport;
     }
 
-    private void UpdateViewportSize()
+    private void ApplyCameraBounds(UIPlayerViewport viewport)
     {
-        int count = screenContainer.GetChildCount();
+        if (_levelNode == null)
+            return;
+
+        var tilemap =_levelNode.GetNode<TileMapLayer>("World");
+
+        viewport.SetCameraBounds(
+            tilemap.GetUsedRect(),
+            tilemap.TileSet.TileSize
+        );
+    }
+
+    private void UpdateViewportLayout()
+    {
+        int count = _viewports.Count;
         if (count == 0)
             return;
 
         int columns = Mathf.CeilToInt(count / 2.0f);
-        screenContainer.Columns = columns;
+        _screenContainer.Columns = columns;
 
         Vector2 size = GetViewport().GetVisibleRect().Size;
-        foreach (Node child in screenContainer.GetChildren())
+
+        Vector2I viewportSize =
+            CalculateViewportSize(
+                count,
+                columns,
+                size
+            );
+
+        foreach (var viewport in _viewports)
         {
-            var container = child as UIPlayerViewport;
-
-            if (container == null)
-                continue;
-
-            Vector2I subPortSize = SetSubPortSize(count, columns, size);
-            container.UpdateViewportSize(subPortSize, baseHeight, count);
+            viewport.UpdateViewportSize(
+                viewportSize,
+                BaseHeight,
+                count
+            );
         }
     }
 
-    private void RemoveBootstrapViewport()
-    {
-        if (bootstrapViewport == null)
-            return;
-
-        if (screenContainer.GetChildCount() > 0)
-        {
-            bootstrapViewport.Visible = false;
-            var subPort = bootstrapViewport.GetSubViewport();
-
-            if (subPort != null)
-            {
-                subPort.RenderTargetUpdateMode =
-                    SubViewport.UpdateMode.Disabled;
-            }
-        }
-    }
-
-    private Vector2I SetSubPortSize(int count, int columns, Vector2 size)
+    private Vector2I CalculateViewportSize(int count, int columns, Vector2 screenSize)
     {
         int rows = Mathf.CeilToInt(count / (float)columns);
-
-        int width = (int)(size.X / columns);
-        int height = (int)(size.Y / rows);
+        int width = (int)(screenSize.X / columns);
+        int height = (int)(screenSize.Y / rows);
 
         width -= width % 2;
         height -= height % 2;
+
         return new Vector2I(width, height);
     }
 }

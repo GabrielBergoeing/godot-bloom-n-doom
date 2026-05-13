@@ -3,23 +3,19 @@ using Godot.Collections;
 
 public partial class EventManager : Node
 {
-	[Export] public FarmManager FarmManager;
+	public GameManager Game => GameManager.Instance;
+	public FarmManager Farm => FarmManager.Instance;
 
-	[ExportGroup("Spawn Tables")]
-	[Export] public Array<SpawnEntry> SeedTable = new();
-	[Export] public Array<SpawnEntry> ToolTable = new();
-	[Export] public Array<SpawnEntry> RareTable = new();
-
-	[ExportGroup("Spawn Intervals")]
-	[Export] public float SeedInterval = 8f;
-	[Export] public float ToolInterval = 15f;
-	[Export] public float RareInterval = 50f;
-
-	[Export] public int SpawnAttempts = 50;
+	private LevelData _data;
 
 	private double seedTimer;
 	private double toolTimer;
 	private double rareTimer;
+
+	public override void _Ready()
+	{
+		_data = Game.CurrentLevel;
+	}
 
 	public override void _Process(double delta)
 	{
@@ -27,21 +23,21 @@ public partial class EventManager : Node
 		toolTimer += delta;
 		rareTimer += delta;
 
-		if (seedTimer >= SeedInterval)
+		if (seedTimer >= _data.SeedInterval)
 		{
-			SpawnRandomItem(SeedTable);
+			SpawnRandomItem(_data.SeedTable);
 			seedTimer = 0;
 		}
 
-		if (toolTimer >= ToolInterval)
+		if (toolTimer >= _data.ToolInterval)
 		{
-			SpawnRandomItem(ToolTable);
+			SpawnRandomItem(_data.ToolTable);
 			toolTimer = 0;
 		}
 
-		if (rareTimer >= RareInterval)
+		if (rareTimer >= _data.RareInterval)
 		{
-			SpawnRandomItem(RareTable);
+			SpawnRandomItem(_data.RareTable);
 			rareTimer = 0;
 		}
 	}
@@ -100,12 +96,12 @@ public partial class EventManager : Node
 
 	private Vector2? GetRandomFreePosition()
 	{
-		if (FarmManager == null)
+		if (Farm == null)
 			return null;
 
-		Rect2I bounds = FarmManager.GetUsedRect();
+		Rect2I bounds = Farm.GetUsedRect();
 
-		for (int i = 0; i < SpawnAttempts; i++)
+		for (int i = 0; i < _data.SpawnAttempts; i++)
 		{
 			int x = GD.RandRange(
 				bounds.Position.X,
@@ -123,8 +119,8 @@ public partial class EventManager : Node
 				continue;
 
 			Vector2 worldPos =
-				FarmManager.ToGlobal(
-					FarmManager.MapToLocal(cell)
+				Farm.ToGlobal(
+					Farm.MapToLocal(cell)
 				);
 
 			if (IsPositionFree(worldPos))
@@ -136,10 +132,10 @@ public partial class EventManager : Node
 
 	private bool CanSpawnAt(Vector2I cell)
 	{
-		if (FarmManager.IsWaterTile(cell))
+		if (Farm.IsWaterTile(cell))
 			return false;
 
-		if (FarmManager.IsOccupied(cell))
+		if (Farm.IsOccupied(cell))
 			return false;
 		return true;
 	}

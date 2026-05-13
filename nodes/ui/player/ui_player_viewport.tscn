@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://d0m1xbae31ft4" path="res://scr/ui/player/UIPlayerViewport.cs" id="1_uq11f"]
 [ext_resource type="PackedScene" uid="uid://caqlo6t4bucho" path="res://nodes/ui/player/ui_player_hotbar.tscn" id="2_nktoy"]
 [ext_resource type="PackedScene" uid="uid://btb3b2xftq5o8" path="res://nodes/ui/player/ui_player_water.tscn" id="3_a21n4"]
-[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/components/player_camera.tscn" id="4_ypfjy"]
+[ext_resource type="PackedScene" uid="uid://bs3f0qcadotpm" path="res://nodes/entities/player/player_camera.tscn" id="4_ypfjy"]
 [ext_resource type="PackedScene" uid="uid://dql46fbloc7rh" path="res://nodes/ui/player/ui_player_timer.tscn" id="5_a21n4"]
 
 [node name="UIPlayerViewport" type="SubViewportContainer" unique_id=1065729657]

@@ -10,6 +10,7 @@ public partial class Player : Entity
 
 	public PlayerInput Input { get; private set; }
 	public PlayerHotbar Hotbar { get; private set; }
+	public PlayerAnim Anim { get; private set; }
 	public PlayerTileInteraction Tile { get; private set; }
 	public PlayerWater Water { get; private set; }
 	public PlayerWaterFX WaterFX { get; private set; }
@@ -42,10 +43,15 @@ public partial class Player : Entity
 		Hotbar.HandleInput(Input);
 	}
 
-	public void AssignDevice(int deviceId, string deviceType, int playerId)
+	public void Setup(
+		int playerId, 
+		int deviceId, 
+		string deviceType,
+		SpriteFrames sprites)
 	{
 		PlayerId = playerId;
-		Input.AssignDevice(deviceId, deviceType, playerId);
+		Input.Setup(playerId, deviceId, deviceType);
+		Anim.Setup(sprites);
 	}
 
 	public Vector2 GetFacingDirection() =>
@@ -96,6 +102,7 @@ public partial class Player : Entity
 	private void GetPlayerSystems() 
 	{
 		Input = GetNode<PlayerInput>("PlayerInput");
+		Anim = GetNode<PlayerAnim>("AnimatedSprite2D");
 
 		if (HotbarScene != null)
 		{

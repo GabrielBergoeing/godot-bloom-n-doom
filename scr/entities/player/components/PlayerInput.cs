@@ -22,13 +22,10 @@ public partial class PlayerInput : Node
     public bool ShootReleased { get; private set; }
 
     private bool previousShootHeld;
+    private bool IsKeyboard => DeviceType == "Keyboard";
+    private bool IsController => DeviceType == "Controller";
 
-    public override void _Ready()
-    {
-        //InputDeviceManager.Instance.InputReceived += OnInputReceived;
-    }
-
-    public void AssignDevice(int deviceId, string type, int playerId)
+    public void Setup(int playerId, int deviceId, string type)
     {
         DeviceId = deviceId;
         DeviceType = type;
@@ -40,13 +37,22 @@ public partial class PlayerInput : Node
         canControl = !canControl;
     }
 
-    private void OnInputReceived(int playerId, InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
-        if (playerId != PlayerId || !canControl)
+        if (!canControl)
             return;
 
-        if (DeviceType == "Keyboard" && @event is InputEventKey key && key.Pressed)
+        if (IsKeyboard)
         {
+            if (@event is not InputEventKey key)
+                return;
+
+            if (!key.Pressed || key.Echo)
+                return;
+
+            if (key.Device != DeviceId)
+                return;
+
             if (key.Keycode == Key.E)
                 InteractPressed = true;
 
@@ -59,8 +65,17 @@ public partial class PlayerInput : Node
             if (key.Keycode == Key.Key4) SlotPressed = 3;
         }
 
-        if (DeviceType == "Controller" && @event is InputEventJoypadButton btn && btn.Pressed)
+        if (IsController)
         {
+            if (@event is not InputEventJoypadButton btn)
+                return;
+
+            if (!btn.Pressed)
+                return;
+
+            if (btn.Device != DeviceId)
+                return;
+
             if (btn.ButtonIndex == JoyButton.A)
                 InteractPressed = true;
 
@@ -84,7 +99,7 @@ public partial class PlayerInput : Node
 
     private void HandleMovement()
     {
-        if (DeviceType == "Keyboard")
+        if (IsKeyboard)
         {
             float x = 0;
             float y = 0;
@@ -96,7 +111,7 @@ public partial class PlayerInput : Node
 
             moveInput = new Vector2(x, y);
         }
-        else if (DeviceType == "Controller")
+        else if (IsController)
         {
             float x = Input.GetJoyAxis(DeviceId, JoyAxis.LeftX);
             float y = Input.GetJoyAxis(DeviceId, JoyAxis.LeftY);
@@ -117,11 +132,11 @@ public partial class PlayerInput : Node
     {
         previousShootHeld = ShootHeld;
 
-        if (DeviceType == "Keyboard")
+        if (IsKeyboard)
         {
             ShootHeld = Input.IsKeyPressed(Key.Space);
         }
-        else if (DeviceType == "Controller")
+        else if (IsController)
         {
             ShootHeld = Input.IsJoyButtonPressed(
                 DeviceId,
