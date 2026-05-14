@@ -9,4 +9,6 @@ script = ExtResource("1_yj6w3")
 CharacterName = "Lily"
 Illustration = ExtResource("1_bcbec")
 Sprites = ExtResource("2_ybwal")
+ActiveColor = Color(0.8352941, 0.827451, 0.827451, 1)
+LockedColor = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://din1v63u70adn"

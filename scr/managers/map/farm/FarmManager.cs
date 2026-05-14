@@ -50,6 +50,14 @@ public partial class FarmManager : TileMapLayer
         return null;
     }
 
+    public Plant TryGetPlant(Vector2I cell)
+    {
+        if (plantsByCell.TryGetValue(cell, out var node) && node is Plant plant)
+            return plant;
+
+        return null;
+    }
+
     public void TryPrepareTile(Vector2I cell)
     {
         if (IsPrepared(cell) || IsOccupied(cell))
@@ -113,6 +121,21 @@ public partial class FarmManager : TileMapLayer
             return true;
         }
         return false;
+    }
+
+    public List<Plant> GetAdjacentPlants(Vector2I cell)
+    {
+        List<Plant> plants = new();
+        Vector2I[] offsets = {Vector2I.Up, Vector2I.Down, Vector2I.Left, Vector2I.Right};
+
+        foreach (var offset in offsets)
+        {
+            Plant neighbor = TryGetPlant(cell + offset);
+            if (neighbor == null)
+                continue;
+            plants.Add(neighbor);
+        }
+        return plants;
     }
 
     public Dictionary<int, int> GetAllPlantScores()

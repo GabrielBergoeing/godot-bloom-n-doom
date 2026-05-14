@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="SeedData" format=3 uid="uid://cs8pttieoh6qm"]
+
+[ext_resource type="Script" uid="uid://y1a16h7gfqvy" path="res://scr/items/consumable/SeedData.cs" id="1_fbdjf"]
+[ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="1_pun1y"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="1_rnew5"]
+[ext_resource type="PackedScene" uid="uid://b3wa2pgo4rklm" path="res://nodes/entities/plant/plant.tscn" id="2_pun1y"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kcuc8"]
+atlas = ExtResource("1_pun1y")
+region = Rect2(34, 3, 12, 13)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_euh76"]
+atlas = ExtResource("1_pun1y")
+region = Rect2(82, 18, 12, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pvfn2"]
+atlas = ExtResource("1_pun1y")
+region = Rect2(33, 16, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_71u2h"]
+atlas = ExtResource("1_pun1y")
+region = Rect2(18, 7, 12, 9)
+
+[resource]
+script = ExtResource("1_fbdjf")
+PlantScene = ExtResource("2_pun1y")
+SeedTexture = SubResource("AtlasTexture_71u2h")
+GrowingTexture = SubResource("AtlasTexture_kcuc8")
+MatureTexture = SubResource("AtlasTexture_pvfn2")
+BlocksMovement = true
+MaxHealth = 20.0
+WitheringTime = 50.0
+BaseScore = 0
+GrowingBonus = 0
+MatureBonus = 1
+EnableWaterStorage = true
+MaxWaterStorage = 5
+WaterConsumptionRate = 0.1
+ItemId = "cactus_data"
+ItemName = "Cactus"
+Icon = SubResource("AtlasTexture_euh76")
+MaxStack = 2
+PickupScene = ExtResource("1_rnew5")
+Consumable = true
+Duration = 2
+Cooldown = 1
+metadata/_custom_type_script = "uid://y1a16h7gfqvy"

@@ -40,6 +40,12 @@ public partial class PlayerWater : Node
         OnWaterChanged?.Invoke();
     }
 
+    public void ConsumeWater(int ammount)
+    {
+        CurrentWater -= ammount;
+        OnWaterChanged?.Invoke();
+    }
+
     public float GetNormalized() =>
         MaxWater == 0 ? 0 : (float)CurrentWater / MaxWater;
 }

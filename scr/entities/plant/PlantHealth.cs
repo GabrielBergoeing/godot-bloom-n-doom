@@ -10,6 +10,8 @@ public partial class PlantHealth : Node
     private float currentHealth;
     private float witherTimeRemaining;
 
+    private float _currentWaterStorage = 0;
+
     public bool isOnFire { get; private set; } = false;
     private float fireDps = 1f;
 
@@ -24,7 +26,9 @@ public partial class PlantHealth : Node
         if (Data == null || Plant == null)
             return;
 
-        witherTimeRemaining -= (float)delta;
+        bool hydrated = ConsumeStoredWater((float)delta); 
+        if(!hydrated)
+            witherTimeRemaining -= (float)delta;
 
         ModulateHealth();
 
@@ -38,6 +42,9 @@ public partial class PlantHealth : Node
 
         currentHealth = Data.MaxHealth;
         witherTimeRemaining = Data.WitheringTime;
+
+        if (Data.EnableWaterStorage)
+            _currentWaterStorage = Data.MaxWaterStorage;
 
         TickTimer.WaitTime = Data.WitheringTickRate;
         TickTimer.Start();
@@ -78,6 +85,11 @@ public partial class PlantHealth : Node
         Plant.Modulate = Colors.White;
     }
 
+    public void StashWaterReserve(float ammount)
+    {
+        _currentWaterStorage += ammount;
+    }
+
     private void CreateTimer()
     {
         TickTimer = new Timer();
@@ -93,11 +105,24 @@ public partial class PlantHealth : Node
         if (Data == null || Plant == null)
             return;
 
-        if (isOnFire)
+        bool hasWaterStorage = Data.EnableWaterStorage && _currentWaterStorage > 0f;
+        if (isOnFire && !hasWaterStorage)
             currentHealth -= fireDps * Data.WitheringTickRate;
 
         if (currentHealth <= 0f)
             Die();
+    }
+
+    private bool ConsumeStoredWater(float delta)
+    {
+        if(_currentWaterStorage > 0 && Plant.IsMature())
+        {
+            _currentWaterStorage -= Data.WaterConsumptionRate * delta;
+            _currentWaterStorage = Mathf.Max(_currentWaterStorage, 0);
+            GD.Print($"Remaining Water: {_currentWaterStorage}");
+            return true;
+        }
+        return false;
     }
 
     private void Die()
@@ -106,7 +131,10 @@ public partial class PlantHealth : Node
 
         var farm = FarmManager.Instance;
         if (farm != null)
+        {
+            SpreadFire(farm);
             farm.RemovePlant(Plant.CellPos);
+        }
 
         Plant.QueueFree();
     }
@@ -129,5 +157,15 @@ public partial class PlantHealth : Node
         }
 
         Plant.Modulate = baseColor;
+    }
+
+    private void SpreadFire(FarmManager farm)
+    {
+        if(!isOnFire)
+            return;
+        
+        var plants = farm.GetAdjacentPlants(Plant.CellPos);
+        foreach (Plant plant in plants)
+            plant.Ignite();
     }
 }

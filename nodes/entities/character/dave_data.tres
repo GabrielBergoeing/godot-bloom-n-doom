@@ -7,6 +7,8 @@
 [resource]
 script = ExtResource("1_7ibh5")
 CharacterName = "Dave"
-Sprites = ExtResource("2_wtk0m")
 Illustration = ExtResource("1_qfb3a")
+Sprites = ExtResource("2_wtk0m")
+ActiveColor = Color(0.24313726, 0.54901963, 0.29803923, 1)
+LockedColor = Color(0.42352942, 1, 0.5411765, 1)
 metadata/_custom_type_script = "uid://din1v63u70adn"

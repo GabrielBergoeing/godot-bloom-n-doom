@@ -9,4 +9,5 @@ script = ExtResource("1_fqkrr")
 CharacterName = "Jose"
 Illustration = ExtResource("1_ag6my")
 Sprites = ExtResource("2_ktvv6")
+ActiveColor = Color(0.56078434, 0.4745098, 0.13725491, 1)
 metadata/_custom_type_script = "uid://din1v63u70adn"

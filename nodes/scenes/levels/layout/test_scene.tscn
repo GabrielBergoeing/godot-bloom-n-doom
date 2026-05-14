@@ -5,7 +5,11 @@
 [ext_resource type="Script" uid="uid://vy3gx11kcbk8" path="res://scr/managers/map/farm/FarmManager.cs" id="2_0hknr"]
 [ext_resource type="TileSet" uid="uid://uibwpl1ch1ll" path="res://nodes/tilesets/terrain.tres" id="2_2hq3m"]
 [ext_resource type="Script" uid="uid://be2s0bfin8e8m" path="res://scr/items/core/ItemData.cs" id="2_gabs3"]
-[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/test_seed.tres" id="4_w52lu"]
+[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/redconeflower_data.tres" id="4_w52lu"]
+[ext_resource type="PackedScene" uid="uid://cqpde2tqmbcng" path="res://nodes/items/core/pickup.tscn" id="7_jej47"]
+[ext_resource type="Resource" uid="uid://cs8pttieoh6qm" path="res://nodes/items/data/cactus_data.tres" id="8_6iw56"]
+[ext_resource type="Resource" uid="uid://dfef2n5fcp1mj" path="res://nodes/items/data/crown_data.tres" id="9_n5o3n"]
+[ext_resource type="Resource" uid="uid://dxbb5ktteyq1p" path="res://nodes/items/data/sunflower_data.tres" id="10_hr7y6"]
 
 [node name="TestScene" type="Node" unique_id=1205820897]
 
@@ -38,3 +42,15 @@ position = Vector2(768, 432)
 
 [node name="Position 4" type="Node2D" parent="PlayerSpawnPoints" unique_id=51063319]
 position = Vector2(384, 432)
+
+[node name="Pickup" parent="." unique_id=605201135 instance=ExtResource("7_jej47")]
+position = Vector2(216, 88)
+ItemData = ExtResource("8_6iw56")
+
+[node name="Pickup2" parent="." unique_id=1164588638 instance=ExtResource("7_jej47")]
+position = Vector2(168, 88)
+ItemData = ExtResource("9_n5o3n")
+
+[node name="Pickup3" parent="." unique_id=791776160 instance=ExtResource("7_jej47")]
+position = Vector2(120, 88)
+ItemData = ExtResource("10_hr7y6")

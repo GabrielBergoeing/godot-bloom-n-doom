@@ -43,30 +43,39 @@ public partial class Fire : Node2D
             Hitbox.GlobalRotation;
     }
 
-	public void Burn()
-	{
-		var space = GetWorld2D().DirectSpaceState;
+    public void Burn()
+    {
+        var space = GetWorld2D().DirectSpaceState;
 
-		var query = new PhysicsShapeQueryParameters2D
-		{
-			Shape = CollisionShape.Shape,
-			Transform = Hitbox.GlobalTransform,
-			CollisionMask = Hitbox.CollisionMask,
+        var query = new PhysicsShapeQueryParameters2D
+        {
+            Shape = CollisionShape.Shape,
+            Transform = Hitbox.GlobalTransform,
+            CollisionMask = Hitbox.CollisionMask,
 
-			CollideWithAreas = true,
-			CollideWithBodies = false
-		};
+            CollideWithAreas = true,
+            CollideWithBodies = false
+        };
 
-		var results = space.IntersectShape(query);
-		foreach (var result in results)
-		{
-			Node collider = result["collider"].As<Node>();
-			Plant plant = collider.GetParentOrNull<Plant>();
+        var results = space.IntersectShape(query);
 
-			if (plant == null)
-				continue;
+        foreach (var result in results)
+        {
+            Node collider = result["collider"].As<Node>();
 
-			plant.Ignite();
-		}
-	}
+            if (collider is not Area2D area)
+                continue;
+
+            // Only react to burnable plant hitboxes
+            if (area.Name != "Hurtbox")
+                continue;
+
+            Plant plant = area.GetParentOrNull<Plant>();
+
+            if (plant == null)
+                continue;
+
+            plant.Ignite();
+        }
+    }
 }
