@@ -10,6 +10,9 @@ public partial class GamePaths
     public string LevelManagerScene =>
         "res://nodes/scenes/menu/level_manager.tscn";
 
+    public string LevelSelectScene =>
+        "res://nodes/scenes/menu/level_select_menu.tscn";
+
     //Level Data
     public string TestLevelData =>
         "res://nodes/scenes/levels/data/test_level.tres";

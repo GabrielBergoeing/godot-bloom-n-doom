@@ -6,6 +6,10 @@ public partial class LevelData : Resource
 {
     [Export] public PackedScene LevelScene;
 
+    [ExportGroup("UI")]
+    [Export] public string LevelName = "";
+    [Export(PropertyHint.MultilineText)] public string Description = "";
+
     [ExportGroup("Level Settings")]
     [Export(PropertyHint.Range, "1, 300, or_greater")] public float MatchDuration;
     [Export] public string BGMTrack;

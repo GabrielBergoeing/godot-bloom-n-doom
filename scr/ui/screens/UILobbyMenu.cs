@@ -72,10 +72,10 @@ public partial class UILobbyMenu : Control
         if (!allLocked)
             return;
 
-        StartMatch();
+        ConfirmPlayers();
     }
 
-    private void StartMatch()
+    private void ConfirmPlayers()
     {
         var players = _slots
             .Where(s => s.Occupied)
@@ -83,6 +83,6 @@ public partial class UILobbyMenu : Control
             .ToArray();
 
         UI.Game.SetLobbyPlayers(players);
-        UI.Game.LoadLevel(UI.Paths.TestLevelData); //TODO: Remove when level select sceen is implemented
+        UI.Scene.ChangeScene(UI.Paths.LevelSelectScene);
     }
 }

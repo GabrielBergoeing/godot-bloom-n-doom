@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cs3a4mha7hs1g"]
+
+[ext_resource type="Script" uid="uid://cm2j2ib6ymkxv" path="res://scr/ui/screens/UILevelSelectMenu.cs" id="1_iwnoe"]
+[ext_resource type="Script" uid="uid://dmmuxsht6pcr1" path="res://scr/managers/scene/LevelData.cs" id="2_nb3oc"]
+[ext_resource type="Resource" uid="uid://fiy451nnftrb" path="res://nodes/scenes/levels/data/level_1_data.tres" id="3_w5235"]
+[ext_resource type="Resource" uid="uid://ck7tl04bohfvi" path="res://nodes/scenes/levels/data/level_2_data.tres" id="4_7skal"]
+[ext_resource type="Resource" uid="uid://cw0xe1y4i5ct0" path="res://nodes/scenes/levels/data/level_3_data.tres" id="5_d44x5"]
+[ext_resource type="Resource" uid="uid://dviielasfbkiv" path="res://nodes/scenes/levels/data/level_4_data.tres" id="6_7csds"]
+[ext_resource type="Resource" uid="uid://bqujsj6jqot8k" path="res://nodes/scenes/levels/data/level_5_data.tres" id="7_td8oe"]
+[ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="8_l6qla"]
+
+[node name="LevelSelectMenu" type="Control" unique_id=1067679648]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Levels" type="HBoxContainer" parent="." unique_id=1804142627 node_paths=PackedStringArray("_buttonsContainer")]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_iwnoe")
+Levels = Array[ExtResource("2_nb3oc")]([ExtResource("3_w5235"), ExtResource("4_7skal"), ExtResource("5_d44x5"), ExtResource("6_7csds"), ExtResource("7_td8oe")])
+_buttonsContainer = NodePath(".")
+
+[node name="ParallaxBackground" parent="." unique_id=1832453097 instance=ExtResource("8_l6qla")]
