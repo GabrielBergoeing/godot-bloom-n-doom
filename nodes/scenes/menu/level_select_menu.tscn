@@ -8,21 +8,54 @@
 [ext_resource type="Resource" uid="uid://dviielasfbkiv" path="res://nodes/scenes/levels/data/level_4_data.tres" id="6_7csds"]
 [ext_resource type="Resource" uid="uid://bqujsj6jqot8k" path="res://nodes/scenes/levels/data/level_5_data.tres" id="7_td8oe"]
 [ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="8_l6qla"]
+[ext_resource type="PackedScene" uid="uid://dyk5ny4ge841k" path="res://nodes/ui/screens/ui_level_button.tscn" id="8_w5235"]
 
-[node name="LevelSelectMenu" type="Control" unique_id=1067679648]
+[node name="LevelSelectMenu" type="Control" unique_id=1067679648 node_paths=PackedStringArray("_buttonsContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Levels" type="HBoxContainer" parent="." unique_id=1804142627 node_paths=PackedStringArray("_buttonsContainer")]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
 script = ExtResource("1_iwnoe")
 Levels = Array[ExtResource("2_nb3oc")]([ExtResource("3_w5235"), ExtResource("4_7skal"), ExtResource("5_d44x5"), ExtResource("6_7csds"), ExtResource("7_td8oe")])
-_buttonsContainer = NodePath(".")
+_buttonsContainer = NodePath("Levels")
+
+[node name="Levels" type="HBoxContainer" parent="." unique_id=1804142627]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="UILevelButton" parent="Levels" unique_id=2109781326 instance=ExtResource("8_w5235")]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+
+[node name="UILevelButton2" parent="Levels" unique_id=1152781914 instance=ExtResource("8_w5235")]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+
+[node name="UILevelButton3" parent="Levels" unique_id=365630651 instance=ExtResource("8_w5235")]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+
+[node name="UILevelButton4" parent="Levels" unique_id=250991040 instance=ExtResource("8_w5235")]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+
+[node name="UILevelButton5" parent="Levels" unique_id=451116745 instance=ExtResource("8_w5235")]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
 
 [node name="ParallaxBackground" parent="." unique_id=1832453097 instance=ExtResource("8_l6qla")]

@@ -36,14 +36,14 @@ public partial class GameManager : Node
         LobbyPlayers.Clear();
     }
 
-    public void SetLevel(string levelDataPath)
+    public void SetLevel(LevelData levelData)
     {
-        CurrentLevel = GD.Load<LevelData>(levelDataPath) ?? _testLevel;
+        CurrentLevel = levelData ?? _testLevel;
     }
 
-    public void LoadLevel(string levelDataPath)
-    {   
-        SetLevel(levelDataPath);
+    public void LoadLevel(LevelData levelData)
+    {
+        SetLevel(levelData);
 
         string levelManagerScene = UI.Paths.LevelManagerScene;
         SceneManager.Instance.ChangeScene(levelManagerScene);
