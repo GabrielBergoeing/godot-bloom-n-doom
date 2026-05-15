@@ -9,6 +9,7 @@ public class PlayerMoveState : PlayerNeutralState
 	{
 		base.Update(delta);
 		Anim.SetAction("move");
+		SFX.PlayOnWalk();
 
 		if (Input.MoveInput == Vector2.Zero)
 		{

@@ -10,7 +10,7 @@ public abstract partial class PlayerState : EntityState
     protected PlayerInput Input { get; private set; }
     protected PlayerWater Water { get; private set; }
     protected PlayerWaterFX WaterFX { get; private set; }
-    //protected Node sfx { get; private set; }
+    protected PlayerSFX SFX { get; private set; }
     protected PlayerHotbar Inventory { get; private set; }
 
     public PlayerState(Player player, StateMachine stateMachine)
@@ -23,7 +23,7 @@ public abstract partial class PlayerState : EntityState
         Input = player.Input;
         Water = player.Water;
         WaterFX = player.WaterFX;
-        //sfx = player.GetNodeOrNull("Player_SFX");
+        SFX = player.SFX;
         Inventory = player.Hotbar;
     }
 

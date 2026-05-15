@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AudioClipData" format=3 uid="uid://bgw8wnp2oi4ij"]
+
+[ext_resource type="AudioStream" uid="uid://bw7sgi62q3guc" path="res://art/audio/sfx/player/player_refill.wav" id="1_k1jx3"]
+[ext_resource type="Script" uid="uid://b5fg11jxtkeec" path="res://scr/managers/audio/AudioClipData.cs" id="2_djums"]
+
+[resource]
+script = ExtResource("2_djums")
+Clips = [ExtResource("1_k1jx3")]
+metadata/_custom_type_script = "uid://b5fg11jxtkeec"

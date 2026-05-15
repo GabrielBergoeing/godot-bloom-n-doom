@@ -25,6 +25,7 @@ public partial class ItemData : Resource
     [Export] public int MaxStack = 5;
 
     [Export] public PackedScene PickupScene;
+    [Export] public string SoundName;
 
     [Export] public bool Consumable = false;
 

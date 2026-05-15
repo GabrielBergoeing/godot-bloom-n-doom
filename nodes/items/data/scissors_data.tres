@@ -16,6 +16,7 @@ Icon = SubResource("AtlasTexture_e2esf")
 Stackable = false
 MaxStack = 1
 PickupScene = ExtResource("2_sh2ai")
+SoundName = "sfx_tool_scissors"
 Duration = 3
 Cooldown = 3
 metadata/_custom_type_script = "uid://dygig2lph2kj8"

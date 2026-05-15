@@ -15,6 +15,7 @@ ItemName = "Fertilizer"
 Icon = SubResource("AtlasTexture_rqyrc")
 MaxStack = 3
 PickupScene = ExtResource("2_qumf5")
+SoundName = "sfx_player_plant"
 Consumable = true
 Duration = 1
 Cooldown = 1

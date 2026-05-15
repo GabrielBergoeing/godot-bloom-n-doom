@@ -16,7 +16,7 @@ public class PlayerPrepareGroundState : PlayerActionState
             () =>
             {
                 tile.PrepareInCell();
-                //sfx.PlayOnPrepareGround();
+                SFX.PlayOnPrepare();
             }
         );
     }

@@ -28,24 +28,15 @@ public partial class AudioManager : Node
     public void PlaySFX(string soundName, AudioStreamPlayer player)
     {
         var data = _database.Get(soundName);
-        if (data == null)
-        {
-            GD.Print($"Missing sound: {soundName}");
-            return;
-        }
+        if (SetupPlayer(player, soundName, data))
+            player.Play();
+    }
 
-        var clip = data.GetRandomClip();
-        if (clip == null)
-            return;
-
-        player.Stream = clip;
-        player.PitchScale =
-            (float)GD.RandRange(
-                data.Pitch - 0.05f,
-                data.Pitch + 0.05f);
-
-        player.VolumeDb = LinearToDb(data.Volume);
-        player.Play();
+    public void PlaySFX(string soundName, AudioStreamPlayer2D player)
+    {
+        var data = _database.Get(soundName);
+        if (SetupPlayer(player, soundName, data))
+            player.Play();
     }
 
     public async Task StartBGM(string musicGroup)
@@ -94,18 +85,49 @@ public partial class AudioManager : Node
         _bgmPlayer.Stop();
     }
 
-    public void PlayOneShot(string soundName)
+    private bool SetupPlayer(Node player, string soundName, AudioClipData data)
     {
-        var data = _database.Get(soundName);
+        if (data == null)
+        {
+            GD.Print($"Missing sound: {soundName}");
+            return false;
+        }
+
         var clip = data.GetRandomClip();
+        if (clip == null)
+            return false;
 
-        AudioStreamPlayer player = new();
+        float pitch = (float)GD.RandRange(
+                data.Pitch - 0.05f,
+                data.Pitch + 0.05f
+            );
 
-        AddChild(player);
+        float volumeDb = LinearToDb(data.Volume);
+        switch (player)
+        {
+            case AudioStreamPlayer p:
+                p.Stream = clip;
+                p.PitchScale = pitch;
+                p.VolumeDb = volumeDb;
+                break;
 
-        player.Stream = clip;
-        player.Play();
-        player.Finished += () => player.QueueFree();
+            case AudioStreamPlayer2D p:
+                p.Stream = clip;
+                p.PitchScale = pitch;
+                p.VolumeDb = volumeDb;
+                break;
+
+            case AudioStreamPlayer3D p:
+                p.Stream = clip;
+                p.PitchScale = pitch;
+                p.VolumeDb = volumeDb;
+                break;
+
+            default:
+                GD.PushError($"Unsupported audio player type: {player.GetType()}");
+                return false;
+        }
+        return true;
     }
 
     private async Task FadeVolume(

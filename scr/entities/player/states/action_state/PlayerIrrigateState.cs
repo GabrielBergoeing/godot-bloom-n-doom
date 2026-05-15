@@ -19,6 +19,7 @@ public partial class PlayerIrrigateState : PlayerActionState
                     return;
 
                 tile.IrrigateInCell();
+                SFX.PlayOnWater();
                 WaterFX.Play();
             }
         );

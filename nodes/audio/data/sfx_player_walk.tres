@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AudioClipData" format=3 uid="uid://cf12q8x7oihx2"]
+
+[ext_resource type="AudioStream" uid="uid://twp2af60rkys" path="res://art/audio/sfx/player/FootSteps.wav" id="1_27hjd"]
+[ext_resource type="Script" uid="uid://b5fg11jxtkeec" path="res://scr/managers/audio/AudioClipData.cs" id="2_x8ijv"]
+
+[resource]
+script = ExtResource("2_x8ijv")
+Clips = [ExtResource("1_27hjd")]
+metadata/_custom_type_script = "uid://b5fg11jxtkeec"

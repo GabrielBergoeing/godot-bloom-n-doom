@@ -40,6 +40,7 @@ ItemName = "Crown of Flowers"
 Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("2_5jxs8")
+SoundName = "sfx_player_plant"
 Consumable = true
 Duration = 2
 Cooldown = 1

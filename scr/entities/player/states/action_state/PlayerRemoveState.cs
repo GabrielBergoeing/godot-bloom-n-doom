@@ -16,7 +16,7 @@ public partial class PlayerRemoveState : PlayerActionState
             () =>
             {
                 tile.RemoveInCell(player.PlayerId);
-                //sfx.PlayOnSabotage();
+                SFX.PlayOnDrop();
             }
         );
     }

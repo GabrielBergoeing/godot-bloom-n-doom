@@ -17,6 +17,7 @@ public partial class PlayerUseItemState : PlayerActionState
 			() =>
 			{
 				var ctx = new ItemUseContext(player, tile);
+				SFX.PlaySound(item.SoundName);
 				item.Use(ctx);
 			}
 		);

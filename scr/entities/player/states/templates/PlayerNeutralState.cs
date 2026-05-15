@@ -47,11 +47,15 @@ public partial class PlayerNeutralState : PlayerState
     private PlayerState DetermineInteractionState()
     {
         if(TryPickupNearby())
-            return this;
+        {
+            SFX.PlayOnPickup();
+            return this;   
+        }
 
         if(IsHandEmpty() && tile.CanRefillWater())
         {
             Water.Refill();
+            SFX.PlayOnRefill();
             return this;
         }
 
@@ -70,7 +74,10 @@ public partial class PlayerNeutralState : PlayerState
     private PlayerState DetermineDisruptionState()
     {
         if (TryDroppingItem())
+        {
+            SFX.PlayOnDrop();
             return this;
+        }
 
         if(tile.CanInteractPlant(player.PlayerId))
             return player.RemoveState;

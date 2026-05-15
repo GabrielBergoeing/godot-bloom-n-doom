@@ -14,6 +14,7 @@ public partial class Player : Entity
 	public PlayerTileInteraction Tile { get; private set; }
 	public PlayerWater Water { get; private set; }
 	public PlayerWaterFX WaterFX { get; private set; }
+	public PlayerSFX SFX { get; private set; }
 
 	public int PlayerId { get; private set; }
 	public List<Pickup> PickupsInRange = new();
@@ -103,6 +104,7 @@ public partial class Player : Entity
 	{
 		Input = GetNode<PlayerInput>("PlayerInput");
 		Anim = GetNode<PlayerAnim>("AnimatedSprite2D");
+		SFX = GetNode<PlayerSFX>("AudioStreamPlayer");
 
 		if (HotbarScene != null)
 		{

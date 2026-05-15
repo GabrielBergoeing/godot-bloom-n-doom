@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AudioClipData" format=3 uid="uid://b612s8dkvsv1o"]
+
+[ext_resource type="AudioStream" uid="uid://clrgss0i68qf3" path="res://art/audio/bgm/levels/bgm_level5.mp3" id="1_3hoaq"]
+[ext_resource type="Script" uid="uid://b5fg11jxtkeec" path="res://scr/managers/audio/AudioClipData.cs" id="2_5nln0"]
+
+[resource]
+script = ExtResource("2_5nln0")
+Clips = [ExtResource("1_3hoaq")]
+metadata/_custom_type_script = "uid://b5fg11jxtkeec"

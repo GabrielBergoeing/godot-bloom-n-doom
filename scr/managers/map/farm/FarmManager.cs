@@ -26,6 +26,9 @@ public partial class FarmManager : TileMapLayer
             AddChild(PlantsRoot);
         }
     }
+
+    public Vector2I WorldToCell(Vector2 worldPos) =>
+        LocalToMap(worldPos);
     
     public bool IsGrass(Vector2I cell) =>
         helper.IsCellTerrain(cell, FarmHelper.GRASS);

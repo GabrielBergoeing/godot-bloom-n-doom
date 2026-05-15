@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AudioClipData" format=3 uid="uid://bu57wb0lyla8q"]
+
+[ext_resource type="AudioStream" uid="uid://csmgd5ky0bxmq" path="res://art/audio/sfx/tools/tool_flamethrower.mp3" id="1_sbyc1"]
+[ext_resource type="Script" uid="uid://b5fg11jxtkeec" path="res://scr/managers/audio/AudioClipData.cs" id="2_i55b0"]
+
+[resource]
+script = ExtResource("2_i55b0")
+Clips = [ExtResource("1_sbyc1")]
+metadata/_custom_type_script = "uid://b5fg11jxtkeec"

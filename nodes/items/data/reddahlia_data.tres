@@ -38,6 +38,7 @@ ItemName = "Red Dahlia"
 Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("1_jpu2v")
+SoundName = "sfx_player_plant"
 Consumable = true
 Duration = 2
 Cooldown = 1

@@ -17,4 +17,5 @@ ItemName = "Flamethrower"
 Icon = SubResource("AtlasTexture_keiij")
 Stackable = false
 PickupScene = ExtResource("3_koirb")
+SoundName = "sfx_tool_flamethrower"
 metadata/_custom_type_script = "uid://knyukrqc71cj"

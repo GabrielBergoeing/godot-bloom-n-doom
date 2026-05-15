@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="LevelData" format=3 uid="uid://fiy451nnftrb"]
+
+[ext_resource type="PackedScene" uid="uid://cjla7ue4qbgl7" path="res://nodes/scenes/levels/layout/level_1.tscn" id="1_gj4cf"]
+[ext_resource type="Script" uid="uid://cyqx1ge62a3xs" path="res://scr/managers/map/event/SpawnEntry.cs" id="2_2dwck"]
+[ext_resource type="Resource" uid="uid://ctvjba2f6s5nw" path="res://nodes/items/data/watergun_data.tres" id="3_fpeqc"]
+[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/redconeflower_data.tres" id="4_g5nl0"]
+[ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="5_k20by"]
+[ext_resource type="Resource" uid="uid://5vli7hpg6g6p" path="res://nodes/items/data/flamethrower_data.tres" id="6_edysj"]
+[ext_resource type="Script" uid="uid://dmmuxsht6pcr1" path="res://scr/managers/scene/LevelData.cs" id="7_yreh6"]
+
+[sub_resource type="Resource" id="Resource_h0f86"]
+script = ExtResource("2_2dwck")
+Item = ExtResource("3_fpeqc")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_nyfkv"]
+script = ExtResource("2_2dwck")
+Item = ExtResource("4_g5nl0")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_2qm4h"]
+script = ExtResource("2_2dwck")
+Item = ExtResource("5_k20by")
+Weight = 3
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_rdlvd"]
+script = ExtResource("2_2dwck")
+Item = ExtResource("6_edysj")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[resource]
+script = ExtResource("7_yreh6")
+LevelScene = ExtResource("1_gj4cf")
+MatchDuration = 60.0
+BGMTrack = "bgm_level_grassy"
+SeedTable = Array[ExtResource("2_2dwck")]([SubResource("Resource_nyfkv")])
+ToolTable = Array[ExtResource("2_2dwck")]([SubResource("Resource_2qm4h"), SubResource("Resource_rdlvd")])
+RareTable = Array[ExtResource("2_2dwck")]([SubResource("Resource_h0f86")])
+metadata/_custom_type_script = "uid://dmmuxsht6pcr1"

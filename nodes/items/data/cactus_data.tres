@@ -41,6 +41,7 @@ ItemName = "Cactus"
 Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("1_rnew5")
+SoundName = "sfx_player_plant"
 Consumable = true
 Duration = 2
 Cooldown = 1

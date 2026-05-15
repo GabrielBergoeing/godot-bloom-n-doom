@@ -17,4 +17,5 @@ ItemName = "Watergun"
 Icon = SubResource("AtlasTexture_04gdj")
 Stackable = false
 PickupScene = ExtResource("2_04gdj")
+SoundName = "sfx_player_water"
 metadata/_custom_type_script = "uid://c25bphld0xd1u"

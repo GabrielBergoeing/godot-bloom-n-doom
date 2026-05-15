@@ -39,6 +39,7 @@ ItemName = "Sunflower"
 Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("1_4h3kr")
+SoundName = "sfx_player_plant"
 Consumable = true
 Duration = 2
 Cooldown = 1

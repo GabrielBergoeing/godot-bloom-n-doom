@@ -25,6 +25,7 @@ public partial class PlayerShootState : PlayerActionState
 
         var ctx = new ItemUseContext(player, tile);
         tool.TickUse(ctx, delta);
+        SFX.PlaySound(tool.SoundName);
 
         if (!Input.ShootHeld)
         {

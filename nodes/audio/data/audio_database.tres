@@ -6,8 +6,20 @@
 [ext_resource type="Resource" uid="uid://b65aa26ks4qn8" path="res://nodes/audio/data/bgm_menu.tres" id="4_yadu2"]
 [ext_resource type="Resource" uid="uid://dbxjhkbw40wjx" path="res://nodes/audio/data/bgm_level_grassy.tres" id="5_ndrs5"]
 [ext_resource type="Script" uid="uid://c54vkhdrawpao" path="res://scr/managers/audio/AudioDatabase.cs" id="5_weyke"]
+[ext_resource type="Resource" uid="uid://b8fmvb6jc8q50" path="res://nodes/audio/data/bgm_level_lake.tres" id="6_g6kke"]
+[ext_resource type="Resource" uid="uid://b612s8dkvsv1o" path="res://nodes/audio/data/bgm_level_fierce.tres" id="7_746fs"]
+[ext_resource type="Resource" uid="uid://cf12q8x7oihx2" path="res://nodes/audio/data/sfx_player_walk.tres" id="8_3wde1"]
+[ext_resource type="Resource" uid="uid://diyrahxqcnrt5" path="res://nodes/audio/data/sfx_player_walk_grass.tres" id="9_4rj7j"]
+[ext_resource type="Resource" uid="uid://bmegof18lv8gx" path="res://nodes/audio/data/sfx_player_pickup.tres" id="10_5w8g7"]
+[ext_resource type="Resource" uid="uid://c41yaoy8842tm" path="res://nodes/audio/data/sfx_player_drop.tres" id="11_8ehbb"]
+[ext_resource type="Resource" uid="uid://ddf5sl7v7ocvh" path="res://nodes/audio/data/sfx_player_plant.tres" id="12_qjiym"]
+[ext_resource type="Resource" uid="uid://b8rywljrfi5mv" path="res://nodes/audio/data/sfx_player_water.tres" id="13_nsaww"]
+[ext_resource type="Resource" uid="uid://bxmysgxdvo45v" path="res://nodes/audio/data/sfx_player_prepare.tres" id="14_gn6ta"]
+[ext_resource type="Resource" uid="uid://bgw8wnp2oi4ij" path="res://nodes/audio/data/sfx_player_refill.tres" id="15_a7jy1"]
+[ext_resource type="Resource" uid="uid://c35vb1g8kvpo3" path="res://nodes/audio/data/sfx_tool_scissors.tres" id="16_t6rhn"]
+[ext_resource type="Resource" uid="uid://bu57wb0lyla8q" path="res://nodes/audio/data/sfx_tool_flamethrower.tres" id="17_esi70"]
 
 [resource]
 script = ExtResource("5_weyke")
-Clips = Array[Object]([ExtResource("1_r8sst"), ExtResource("2_ndrs5"), ExtResource("3_ogy4y"), ExtResource("4_yadu2"), ExtResource("5_ndrs5")])
+Clips = Array[Object]([ExtResource("1_r8sst"), ExtResource("2_ndrs5"), ExtResource("3_ogy4y"), ExtResource("4_yadu2"), ExtResource("5_ndrs5"), ExtResource("6_g6kke"), ExtResource("7_746fs"), ExtResource("8_3wde1"), ExtResource("9_4rj7j"), ExtResource("10_5w8g7"), ExtResource("11_8ehbb"), ExtResource("12_qjiym"), ExtResource("13_nsaww"), ExtResource("14_gn6ta"), ExtResource("15_a7jy1"), ExtResource("16_t6rhn"), ExtResource("17_esi70")])
 metadata/_custom_type_script = "uid://c54vkhdrawpao"

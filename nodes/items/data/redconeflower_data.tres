@@ -36,6 +36,7 @@ ItemName = "Red Coneflower"
 Icon = SubResource("AtlasTexture_euh76")
 MaxStack = 2
 PickupScene = ExtResource("2_4blv3")
+SoundName = "sfx_player_plant"
 Consumable = true
 Duration = 2
 Cooldown = 1
