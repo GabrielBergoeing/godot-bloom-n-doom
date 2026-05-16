@@ -32,6 +32,8 @@ metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 [resource]
 script = ExtResource("7_p3yeh")
 LevelScene = ExtResource("1_fbc8q")
+LevelName = "The Ring"
+Description = "The smallest plot of overgrown land high above the garden's tower. Every land counts in this flamable map."
 MatchDuration = 60.0
 BGMTrack = "bgm_level_grassy"
 SeedTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_nyfkv")])

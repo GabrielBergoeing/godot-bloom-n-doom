@@ -6,6 +6,8 @@ public partial class UILevelSelectMenu : Control
 
     [Export] public Godot.Collections.Array<LevelData> Levels = new();
     [Export] private HBoxContainer _buttonsContainer;
+    [Export] private Label _descriptionContainer;
+    [Export] private Label _levelName;
 
     private TextureButton _firstButton;
 
@@ -13,6 +15,12 @@ public partial class UILevelSelectMenu : Control
     {
         if(_buttonsContainer == null)
             _buttonsContainer = GetNode<HBoxContainer>("Levels");
+
+        if(_descriptionContainer == null)
+            _descriptionContainer = GetNode<Label>("LevelDescription/Label");
+
+        if(_levelName == null)
+            _levelName = GetNode<Label>("LevelName/Label");
         RegisterButtons();
     }
 
@@ -32,7 +40,7 @@ public partial class UILevelSelectMenu : Control
     {
         //button.Text = Levels[i].LevelName;
         button.Pressed += () => SelectLevel(index);
-        button.FocusEntered += HoverBTN;
+        button.FocusEntered += () => HoverBTN(index);
 
         var label = button.GetNode<Label>("Label");
         label.Text = $"{index + 1}";
@@ -55,8 +63,10 @@ public partial class UILevelSelectMenu : Control
         UI.Game.LoadLevel(level);
     }
 
-    private void HoverBTN()
+    private void HoverBTN(int index)
     {
         UI.SFX.PlayOnHover();
+        _descriptionContainer.Text = Levels[index].Description;
+        _levelName.Text = Levels[index].LevelName;
     }
 }

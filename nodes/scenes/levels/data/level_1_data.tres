@@ -32,6 +32,8 @@ metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 [resource]
 script = ExtResource("7_yreh6")
 LevelScene = ExtResource("1_gj4cf")
+LevelName = "Blooming Entrance"
+Description = "A vibrant gateway overrun with wild vegetation, where players get their first taste of the garden’s chaotic beauty and lurking dangers."
 MatchDuration = 60.0
 BGMTrack = "bgm_level_grassy"
 SeedTable = Array[ExtResource("2_2dwck")]([SubResource("Resource_nyfkv")])
