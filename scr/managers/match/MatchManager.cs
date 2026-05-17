@@ -8,12 +8,16 @@ public partial class MatchManager : Node
     public static MatchManager Instance;
     public GameManager Game => GameManager.Instance;
 
+    [Signal] public delegate void MatchEndedEventHandler();
+
     [ExportGroup("Player Setup")]
     [Export] public Array<Node2D> PlayerSpawnPoints = new();
     [Export] public Array<ItemData> StartingItems = new();
 
     private readonly Array<Player> players = new();
     private readonly ScoreTally scoreTally = new();
+    private List<ScoreResult> _results = new();
+    public List<ScoreResult> Results => _results;
 
     private bool isPlayingMatch = false;
     private bool hasPrintedResults = false;
@@ -58,11 +62,11 @@ public partial class MatchManager : Node
 
     public void EndMatch()
     {
-        //PauseMatch(true);
         hasPrintedResults = true;
-
         GD.Print("[MatchManager] Match Ended");
-        PrintResults();
+
+        _results = GetResults();
+        EmitSignal(SignalName.MatchEnded);
     }
 
     public void InitializePlayers()
@@ -126,30 +130,17 @@ public partial class MatchManager : Node
         }
     }
 
-    private void PrintResults()
+    private List<ScoreResult> GetResults()
     {
-        GD.Print("========== MATCH RESULTS ==========");
-
         List<Player> playerList = players.ToList();
-        List<ScoreResult> results = scoreTally.DeterminePlacements(
+
+        List<ScoreResult> results =
+            scoreTally.DeterminePlacements(
                 playerList,
-                FarmManager.Instance);
-
-        if (results.Count == 0)
-            GD.Print("No scores registered.");
-
-        for (int i = 0; i < results.Count; i++)
-        {
-            ScoreResult result = results[i];
-
-            GD.Print(
-                $"#{i + 1} " +
-                $"{result.PlayerName} " +
-                $"- {result.Score} pts"
+                FarmManager.Instance
             );
-        }
 
-        GD.Print("===================================");
+        return results;
     }
 
     public Array<Player> GetPlayers() => players;

@@ -38,7 +38,6 @@ public partial class UILevelSelectMenu : Control
 
     private void ConfigureButton(TextureButton button, int index)
     {
-        //button.Text = Levels[i].LevelName;
         button.Pressed += () => SelectLevel(index);
         button.FocusEntered += () => HoverBTN(index);
 
