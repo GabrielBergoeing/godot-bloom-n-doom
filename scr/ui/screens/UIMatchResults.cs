@@ -12,38 +12,31 @@ public partial class UIMatchResults : Control
     [Export] private Label _playerLabel;
 
     [ExportGroup("Buttons")]
-    [Export] private Button _characterSelectButton;
-    [Export] private Button _stageSelectButton;
-    [Export] private Button _mainMenuButton;
+    [Export] private TextureButton _characterSelectButton;
+    [Export] private TextureButton _stageSelectButton;
+    [Export] private TextureButton _mainMenuButton;
 
     private bool _initialized;
 
     public override void _Ready()
     {
         Visible = false;
-
         RegisterButtons();
 
         if (MatchManager.Instance != null)
-        {
-            MatchManager.Instance.MatchEnded +=
-                OnMatchEnded;
-        }
+            MatchManager.Instance.MatchEnded += OnMatchEnded;
     }
 
     private void RegisterButtons()
     {
         if (_characterSelectButton != null)
-            _characterSelectButton.Pressed +=
-                GoToCharacterSelect;
+            _characterSelectButton.Pressed += GoToCharacterSelect;
 
         if (_stageSelectButton != null)
-            _stageSelectButton.Pressed +=
-                GoToStageSelect;
+            _stageSelectButton.Pressed += GoToStageSelect;
 
         if (_mainMenuButton != null)
-            _mainMenuButton.Pressed +=
-                GoToMainMenu;
+            _mainMenuButton.Pressed += GoToMainMenu;
     }
 
     private void OnMatchEnded()
@@ -57,7 +50,6 @@ public partial class UIMatchResults : Control
             return;
 
         _initialized = true;
-
         if (results == null || results.Count == 0)
         {
             GD.PushError(
@@ -72,12 +64,7 @@ public partial class UIMatchResults : Control
             .ToList();
 
         ScoreResult winner = sorted[0];
-
-        if (
-            winner.PlayerIndex < 0 ||
-            winner.PlayerIndex >=
-            UI.Game.LobbyPlayers.Count
-        )
+        if (winner.PlayerIndex < 0 || winner.PlayerIndex >= UI.Game.LobbyPlayers.Count)
         {
             GD.PushError(
                 $"[UIMatchResults] Invalid winner index {winner.PlayerIndex}"
@@ -86,29 +73,22 @@ public partial class UIMatchResults : Control
             return;
         }
 
-        LobbyPlayerData player =
-            UI.Game.LobbyPlayers[
+        LobbyPlayerData player = UI.Game.LobbyPlayers[
                 winner.PlayerIndex
             ];
 
-        CharacterData character =
-            player.SelectedCharacter;
-
+        CharacterData character = player.SelectedCharacter;
         if (_portrait != null)
-            _portrait.Texture =
-                character.Illustration;
+            _portrait.Texture = character.Illustration;
 
         if (_scoreLabel != null)
-            _scoreLabel.Text =
-                $"{winner.Score} pts";
+            _scoreLabel.Text = $"{winner.Score} pts";
 
         if (_playerLabel != null)
-            _playerLabel.Text =
-                $"Player {winner.PlayerIndex + 1}";
+            _playerLabel.Text = $"Player {winner.PlayerIndex + 1}";
 
         Visible = true;
-
-        _characterSelectButton?.GrabFocus();
+        _stageSelectButton?.GrabFocus();
     }
 
     private void GoToCharacterSelect()

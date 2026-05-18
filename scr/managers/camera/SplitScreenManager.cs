@@ -7,10 +7,12 @@ public partial class SplitScreenManager : Node
 
     [Export] public PackedScene UIPlayerViewportScene;
     [Export] public PackedScene PlayerScene;
+    [Export] public PackedScene MatchResultsScene;
 
     private GridContainer _screenContainer;
     private Node _levelNode;
     public Node LevelNode => _levelNode;
+    private UIMatchResults _matchResults;
 
     private World2D _sharedWorld;
     private readonly List<UIPlayerViewport> _viewports = new();
@@ -26,6 +28,7 @@ public partial class SplitScreenManager : Node
         SpawnPlayers();
         UpdateViewportLayout();
         GameManager.Instance.StartMatch(_levelNode);
+        CreateMatchResultsPanel();
     }
 
     private void CreateLevel()
@@ -73,7 +76,7 @@ public partial class SplitScreenManager : Node
 
     private UIPlayerViewport CreateViewport()
     {
-        UIPlayerViewport viewport =UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
+        UIPlayerViewport viewport = UIPlayerViewportScene.Instantiate<UIPlayerViewport>();
 
         _screenContainer.AddChild(viewport);
         _viewports.Add(viewport);
@@ -132,5 +135,11 @@ public partial class SplitScreenManager : Node
         height -= height % 2;
 
         return new Vector2I(width, height);
+    }
+
+    private void CreateMatchResultsPanel()
+    {
+        _matchResults = MatchResultsScene.Instantiate<UIMatchResults>();
+        AddChild(_matchResults);
     }
 }

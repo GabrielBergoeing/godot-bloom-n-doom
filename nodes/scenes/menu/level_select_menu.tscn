@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bjhjh5lqfxdqg" path="res://art/ui/screens/SettingsPage.png" id="10_d44x5"]
 [ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="11_7csds"]
 
-[node name="LevelSelectMenu" type="Control" unique_id=1067679648 node_paths=PackedStringArray("_buttonsContainer", "_descriptionContainer")]
+[node name="LevelSelectMenu" type="Control" unique_id=1067679648 node_paths=PackedStringArray("_buttonsContainer", "_descriptionContainer", "_levelName")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +23,7 @@ script = ExtResource("1_iwnoe")
 Levels = Array[ExtResource("2_nb3oc")]([ExtResource("3_w5235"), ExtResource("4_7skal"), ExtResource("5_d44x5"), ExtResource("6_7csds"), ExtResource("7_td8oe")])
 _buttonsContainer = NodePath("Levels")
 _descriptionContainer = NodePath("LevelDescription/Label")
+_levelName = NodePath("LevelName/Label")
 
 [node name="LevelName" type="Control" parent="." unique_id=1395825580]
 layout_mode = 1

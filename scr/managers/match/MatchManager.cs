@@ -63,7 +63,7 @@ public partial class MatchManager : Node
     public void EndMatch()
     {
         hasPrintedResults = true;
-        GD.Print("[MatchManager] Match Ended");
+        DisablePlayerInput();
 
         _results = GetResults();
         EmitSignal(SignalName.MatchEnded);
@@ -141,6 +141,12 @@ public partial class MatchManager : Node
             );
 
         return results;
+    }
+
+    private void DisablePlayerInput()
+    {
+        foreach (Player player in players)
+            player.Input.SetMatchStatus(false);
     }
 
     public Array<Player> GetPlayers() => players;

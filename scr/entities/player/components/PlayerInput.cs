@@ -13,6 +13,9 @@ public partial class PlayerInput : Node
     private bool canControl = true;
     public bool CanControl => canControl;
 
+    private bool matchActive = true;
+
+
     public bool InteractPressed { get; private set; }
     public bool SabotagePressed { get; private set; }
     public int? SlotPressed { get; private set; }
@@ -32,14 +35,19 @@ public partial class PlayerInput : Node
         PlayerId = playerId;
     }
 
-    public void ToggleControl()
+    public void ToggleControl(bool newState)
     {
-        canControl = !canControl;
+        canControl = newState;
+    }
+
+    public void SetMatchStatus(bool matchStatus)
+    {
+        bool matchActive = matchStatus;
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!canControl)
+        if (!canControl || !matchActive)
             return;
 
         if (IsKeyboard)
@@ -91,10 +99,10 @@ public partial class PlayerInput : Node
 
     public override void _Process(double delta)
     {
+        ClearFrameInput();
         HandleMovement();
         HandleShoot();
         UpdateFacingDir();
-        ClearFrameInput();
     }
 
     private void HandleMovement()

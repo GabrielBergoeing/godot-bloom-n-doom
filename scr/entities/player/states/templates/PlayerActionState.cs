@@ -30,7 +30,7 @@ public partial class PlayerActionState : PlayerState
         float cooldown,
         Action applyAction)
     {
-        Input.ToggleControl();
+        Input.ToggleControl(false);
 
         applyAction?.Invoke();
 
@@ -39,7 +39,7 @@ public partial class PlayerActionState : PlayerState
             SceneTreeTimer.SignalName.Timeout
         );
 
-        Input.ToggleControl();
+        Input.ToggleControl(true);
         isPerformingAction = false;
 
         if (cooldown > 0)

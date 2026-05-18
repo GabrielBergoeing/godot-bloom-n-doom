@@ -1,19 +1,204 @@
 [gd_scene format=3 uid="uid://dvhf2nnwxvkm8"]
 
+[ext_resource type="Script" uid="uid://qhrmgyovjb3l" path="res://scr/ui/screens/UIMatchResults.cs" id="1_jo835"]
 [ext_resource type="Texture2D" uid="uid://bjhjh5lqfxdqg" path="res://art/ui/screens/SettingsPage.png" id="1_uosau"]
+[ext_resource type="Texture2D" uid="uid://cwi0vruhqy8c6" path="res://art/ui/buttons/ButtonText_Large_Square.png" id="3_20v2w"]
+[ext_resource type="Texture2D" uid="uid://b1b3wesxwm4cf" path="res://art/ilustrations/characters/Robin.png" id="3_w25pl"]
+[ext_resource type="Texture2D" uid="uid://6lc5bwmsjedu" path="res://art/ui/buttons/ButtonText_Large_Green_Square.png" id="4_w25pl"]
+[ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="5_2my2s"]
 
-[node name="MatchResults" type="Control" unique_id=1853001909]
+[node name="MatchResults" type="Control" unique_id=1853001909 node_paths=PackedStringArray("_portrait", "_scoreLabel", "_playerLabel", "_characterSelectButton", "_stageSelectButton", "_mainMenuButton")]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -1151.0
-offset_bottom = -647.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_jo835")
+_portrait = NodePath("Layout/VBoxContainer/WinnerSection/Portrait")
+_scoreLabel = NodePath("Layout/VBoxContainer/WinnerSection/WinnerSection/Points")
+_playerLabel = NodePath("Layout/VBoxContainer/WinnerSection/WinnerSection/PlayerName")
+_characterSelectButton = NodePath("Layout/VBoxContainer/Buttons/CharacterSelectButton")
+_stageSelectButton = NodePath("Layout/VBoxContainer/Buttons/StageSelectButton")
+_mainMenuButton = NodePath("Layout/VBoxContainer/Buttons/MainMenuButton")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=238476360]
-layout_mode = 0
+[node name="Layout" type="TextureRect" parent="." unique_id=238476360]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -445.0
+offset_top = -240.0
+offset_right = 445.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_uosau")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout" unique_id=1235448215]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="WinnerSection" type="HBoxContainer" parent="Layout/VBoxContainer" unique_id=1704078687]
+custom_minimum_size = Vector2(256, 205)
+layout_mode = 2
+
+[node name="Portrait" type="TextureRect" parent="Layout/VBoxContainer/WinnerSection" unique_id=663636490]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+texture = ExtResource("3_w25pl")
+expand_mode = 4
+
+[node name="WinnerSection" type="Control" parent="Layout/VBoxContainer/WinnerSection" unique_id=1942171235]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="Layout/VBoxContainer/WinnerSection/WinnerSection" unique_id=101962150]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 1
+offset_right = 120.0
+offset_bottom = 37.0
+text = "Player Name"
+label_settings = ExtResource("5_2my2s")
+
+[node name="Points" type="Label" parent="Layout/VBoxContainer/WinnerSection/WinnerSection" unique_id=102884142]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -18.5
+offset_right = 140.0
+offset_bottom = 18.5
+grow_vertical = 2
+text = "Points"
+label_settings = ExtResource("5_2my2s")
+
+[node name="Buttons" type="VBoxContainer" parent="Layout/VBoxContainer" unique_id=45828052]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="StageSelectButton" type="TextureButton" parent="Layout/VBoxContainer/Buttons" unique_id=96807529]
+clip_contents = true
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../CharacterSelectButton")
+mouse_filter = 2
+texture_normal = ExtResource("3_20v2w")
+texture_pressed = ExtResource("4_w25pl")
+texture_hover = ExtResource("4_w25pl")
+texture_focused = ExtResource("4_w25pl")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Layout/VBoxContainer/Buttons/StageSelectButton" unique_id=321100958]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.5
+offset_top = -18.5
+offset_right = 24.5
+offset_bottom = 18.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "To Stage Select"
+label_settings = ExtResource("5_2my2s")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CharacterSelectButton" type="TextureButton" parent="Layout/VBoxContainer/Buttons" unique_id=1888500554]
+clip_contents = true
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+focus_neighbor_top = NodePath("../StageSelectButton")
+focus_neighbor_bottom = NodePath("../MainMenuButton")
+mouse_filter = 2
+texture_normal = ExtResource("3_20v2w")
+texture_pressed = ExtResource("4_w25pl")
+texture_hover = ExtResource("4_w25pl")
+texture_focused = ExtResource("4_w25pl")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Layout/VBoxContainer/Buttons/CharacterSelectButton" unique_id=718112980]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -49.0
+offset_top = -18.5
+offset_right = 49.0
+offset_bottom = 18.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "To Character Select"
+label_settings = ExtResource("5_2my2s")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MainMenuButton" type="TextureButton" parent="Layout/VBoxContainer/Buttons" unique_id=416361001]
+clip_contents = true
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+focus_neighbor_top = NodePath("../CharacterSelectButton")
+mouse_filter = 2
+texture_normal = ExtResource("3_20v2w")
+texture_pressed = ExtResource("4_w25pl")
+texture_hover = ExtResource("4_w25pl")
+texture_focused = ExtResource("4_w25pl")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Layout/VBoxContainer/Buttons/MainMenuButton" unique_id=966435880]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.5
+offset_top = -18.5
+offset_right = 24.5
+offset_bottom = 18.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "To Main Menu"
+label_settings = ExtResource("5_2my2s")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=929241705]
+z_index = -1
+layout_mode = 1
+offset_left = -576.0
+offset_top = -323.0
+offset_right = 576.0
+offset_bottom = 325.0
+mouse_filter = 2
+color = Color(0.007843138, 0.007843138, 0.007843138, 0.5137255)
+
+[node name="Control" type="Control" parent="." unique_id=265432673]
+anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-texture = ExtResource("1_uosau")
