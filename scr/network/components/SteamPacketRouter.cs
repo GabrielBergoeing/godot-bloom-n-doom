@@ -23,6 +23,11 @@ public partial class SteamPacketRouter : Node
             NetworkPacketType.Ping,
             HandlePing
         );
+
+        RegisterHandler(
+            NetworkPacketType.ChatMessage,
+            HandleChatMessage
+        );
     }
 
     public void RegisterHandler(
@@ -66,5 +71,18 @@ public partial class SteamPacketRouter : Node
         GD.Print(
             $"[SteamPacketRouter] Ping received from {sender}"
         );
+    }
+
+    private void HandleChatMessage(
+        CSteamID sender,
+        byte[] data
+    )
+    {
+        PacketReader reader = new PacketReader(data);
+
+        reader.ReadByte();
+        string message = reader.ReadString();
+
+        GD.Print($"[SteamPacketRouter] Chat from {sender}: {message}");
     }
 }

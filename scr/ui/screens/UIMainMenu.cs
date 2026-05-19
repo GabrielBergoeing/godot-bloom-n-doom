@@ -66,7 +66,7 @@ public partial class UIMainMenu : Control
     private void OnlineBTN()
     {
         UI.SFX.PlayOnConfirm();
-        SteamNetworkManager.Instance.SendPingToSelf();
+        SteamNetworkManager.Instance.SendChatTest();
     }
 
     private void SettingsBTN()

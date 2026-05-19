@@ -85,6 +85,21 @@ public partial class SteamNetworkManager : Node
         SendPacket(self, packet);
     }
 
+    public void SendChatTest()
+    {
+        CSteamID self = SteamUser.GetSteamID();
+
+        PacketWriter writer =
+            new PacketWriter(
+                NetworkPacketType.ChatMessage
+            );
+
+        writer.WriteString("Hello from Steam packet!");
+        SendPacket(self, writer.ToArray());
+
+        GD.Print("[SteamNetworkManager] Chat packet sent");
+    }
+
     private void ReceivePackets()
     {
         if (_packetRouter == null)
