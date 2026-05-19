@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://om0iy228aur6"]
+
+[ext_resource type="Script" uid="uid://0fa75571wjqx" path="res://scr/network/components/NetworkRoot.cs" id="1_e10rr"]
+[ext_resource type="Script" uid="uid://ojox1llbw3vc" path="res://scr/network/components/SteamworksLoader.cs" id="1_efejj"]
+[ext_resource type="Script" uid="uid://lsgf7pqqkpc1" path="res://scr/network/components/SteamNetworkManager.cs" id="2_s8h4n"]
+[ext_resource type="Script" uid="uid://dyc6pcwinlmbw" path="res://scr/network/components/SteamConnectionManager.cs" id="3_e10rr"]
+[ext_resource type="Script" uid="uid://dr0en1qkpipg8" path="res://scr/network/components/SteamPacketRouter.cs" id="4_drsno"]
+[ext_resource type="Script" uid="uid://c8x4577jjuwg7" path="res://scr/network/components/NetworkTickManager.cs" id="5_al7kj"]
+
+[node name="NetworkRoot" type="Node" unique_id=1059457770]
+script = ExtResource("1_e10rr")
+
+[node name="SteamworksLoader" type="Node" parent="." unique_id=1638937721]
+script = ExtResource("1_efejj")
+
+[node name="SteamConnectionManager" type="Node" parent="." unique_id=278197136]
+script = ExtResource("3_e10rr")
+
+[node name="SteamPacketRouter" type="Node" parent="." unique_id=1392927034]
+script = ExtResource("4_drsno")
+
+[node name="NetworkTickManager" type="Node" parent="." unique_id=669799015]
+script = ExtResource("5_al7kj")
+
+[node name="SteamNetworkManager" type="Node" parent="." unique_id=1927026613]
+script = ExtResource("2_s8h4n")

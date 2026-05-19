@@ -4,7 +4,7 @@ using System.IO;
 using Steamworks;
 using System.Runtime.InteropServices;
 
-public partial class SteamworksHelper : Node
+public partial class SteamworksLoader : Node
 {
     public override void _Ready()
     {
@@ -13,21 +13,21 @@ public partial class SteamworksHelper : Node
             AutoloadSteamLibrary();
 
             bool running = SteamAPI.IsSteamRunning();
-            GD.Print($"[SteamworksHelper] Steam running: {running}");
+            GD.Print($"[SteamworksLoader] Steam running: {running}");
 
             bool initialized = SteamAPI.Init();
 
             if (initialized)
             {
-                GD.Print("[SteamworksHelper] Steam initialized");
-                GD.Print($"[SteamworksHelper] User: {SteamFriends.GetPersonaName()}");
+                GD.Print("[SteamworksLoader] Steam initialized");
+                GD.Print($"[SteamworksLoader] User: {SteamFriends.GetPersonaName()}");
             }
             else
-                GD.PrintErr("[SteamworksHelper] Steam initialization failed");
+                GD.PrintErr("[SteamworksLoader] Steam initialization failed");
         }
         catch (Exception e)
         {
-            GD.PrintErr("[SteamworksHelper] Ready Error: ", e);
+            GD.PrintErr("[SteamworksLoader] Ready Error: ", e);
         }
     }
 
@@ -39,7 +39,7 @@ public partial class SteamworksHelper : Node
         }
         catch (Exception e)
         {
-            GD.PrintErr("[SteamworksHelper] Exit Error: ", e);
+            GD.PrintErr("[SteamworksLoader] Exit Error: ", e);
         }
     }
 
@@ -65,7 +65,7 @@ public partial class SteamworksHelper : Node
         }
         else
         {
-            GD.PrintErr("[SteamworksHelper] Unsupported platform");
+            GD.PrintErr("[SteamworksLoader] Unsupported platform");
             return;
         }
 
@@ -77,15 +77,15 @@ public partial class SteamworksHelper : Node
             libraryName
         );
 
-        GD.Print($"[SteamworksHelper] Loading Steam library: {libraryPath}");
+        GD.Print($"[SteamworksLoader] Loading Steam library: {libraryPath}");
 
         if (!File.Exists(libraryPath))
         {
-            GD.PrintErr($"[SteamworksHelper] Steam library not found: {libraryPath}");
+            GD.PrintErr($"[SteamworksLoader] Steam library not found: {libraryPath}");
             return;
         }
 
         NativeLibrary.Load(libraryPath);
-        GD.Print("[SteamworksHelper] Steam native library loaded");
+        GD.Print("[SteamworksLoader] Steam native library loaded");
     }
 }

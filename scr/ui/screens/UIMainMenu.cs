@@ -14,6 +14,7 @@ public partial class UIMainMenu : Control
 
     private TextureRect _logo;
     private TextureButton _playButton;
+    private TextureButton _onlineButton;
     private TextureButton _settingsButton;
     private TextureButton _quitButton;
 
@@ -21,6 +22,7 @@ public partial class UIMainMenu : Control
     {
         _logo = GetNode<TextureRect>("Logo");
         _playButton = GetNode<TextureButton>("Buttons/PlayButton");
+        _onlineButton = GetNode<TextureButton>("Buttons/OnlineButton");
         _settingsButton = GetNode<TextureButton>("Buttons/SettingsButton");
         _quitButton = GetNode<TextureButton>("Buttons/QuitButton");
 
@@ -45,10 +47,12 @@ public partial class UIMainMenu : Control
     private void HookButtonSignals()
     {
         _playButton.Pressed += PlayBTN;
+        _onlineButton.Pressed += OnlineBTN;
         _settingsButton.Pressed += SettingsBTN;
         _quitButton.Pressed += QuitGameBTN;
 
         _playButton.FocusEntered += HoverBTN;
+        _onlineButton.FocusEntered += HoverBTN;
         _settingsButton.FocusEntered += HoverBTN;
         _quitButton.FocusEntered += HoverBTN;
     }
@@ -57,6 +61,12 @@ public partial class UIMainMenu : Control
     {
         UI.SFX.PlayOnConfirm();
         UI.Scene.ChangeScene(UI.Paths.LobbyMenuScene);
+    }
+
+    private void OnlineBTN()
+    {
+        UI.SFX.PlayOnConfirm();
+        SteamNetworkManager.Instance.SendPingToSelf();
     }
 
     private void SettingsBTN()
