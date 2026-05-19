@@ -21,6 +21,7 @@ ScreenManager="*uid://b31gsgt5g7v8t"
 GameManager="*uid://oepk1p4vp5cl"
 AudioManager="*uid://dik1xpf2rhnmy"
 UIService="*uid://bvxupxdyeri8r"
+SteamworksHelper="*uid://ojox1llbw3vc"
 
 [display]
 
