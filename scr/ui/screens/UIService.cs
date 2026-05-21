@@ -8,6 +8,7 @@ public partial class UIService : Node
     public GameManager Game => GameManager.Instance;
     public SceneManager Scene => SceneManager.Instance;
     public AudioManager Audio => AudioManager.Instance;
+    public NetworkRoot Network => NetworkRoot.Instance;
 
     public GamePaths Paths { get; private set;} = new();
     public UISFX SFX { get; private set; }

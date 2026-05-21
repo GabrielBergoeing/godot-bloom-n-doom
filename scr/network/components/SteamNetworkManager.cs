@@ -4,6 +4,7 @@ using Steamworks;
 public partial class SteamNetworkManager : Node
 {
     public static SteamNetworkManager Instance;
+    public NetworkRoot Network => NetworkRoot.Instance;
 
     public bool IsHost { get; private set; }
     public bool IsConnected => CurrentLobbyId.IsValid();
@@ -16,7 +17,6 @@ public partial class SteamNetworkManager : Node
     public override void _Ready()
     {
         Instance = this;
-
         GD.Print("[SteamNetworkManager] Ready");
     }
 
@@ -24,29 +24,25 @@ public partial class SteamNetworkManager : Node
     {
         _packetRouter = packetRouter;
         _connectionManager = connectionManager;
-
         GD.Print("[SteamNetworkManager] Initialized");
     }
 
     public override void _Process(double delta)
     {
-        ReceivePackets();
+        if(Network.IsNetworkRunning())
+            ReceivePackets();
     }
 
     public void StartHost()
     {
         IsHost = true;
-
         GD.Print("[SteamNetworkManager] Hosting session");
     }
 
     public void JoinLobby(CSteamID lobbyId)
     {
         CurrentLobbyId = lobbyId;
-
-        GD.Print(
-            $"[SteamNetworkManager] Joined lobby {lobbyId}"
-        );
+        GD.Print($"[SteamNetworkManager] Joined lobby {lobbyId}");
     }
 
     public void SendPacket(
@@ -55,6 +51,9 @@ public partial class SteamNetworkManager : Node
         EP2PSend sendType = EP2PSend.k_EP2PSendReliable
     )
     {
+        if(!Network.IsNetworkRunning())
+            return;
+
         bool success =
             SteamNetworking.SendP2PPacket(
                 target,
@@ -64,11 +63,7 @@ public partial class SteamNetworkManager : Node
             );
 
         if (!success)
-        {
-            GD.PrintErr(
-                $"[SteamNetworkManager] Failed sending packet to {target}"
-            );
-        }
+            GD.PrintErr($"[SteamNetworkManager] Failed sending packet to {target}");
     }
 
     public void SendPingToSelf()

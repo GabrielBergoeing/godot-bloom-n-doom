@@ -6,18 +6,23 @@ using System.Runtime.InteropServices;
 
 public partial class SteamworksLoader : Node
 {
+    public bool IsSteamRunning { get; private set; }
+    public bool IsSteamInitialized { get; private set; }
+
+    public bool IsSteamAvailable => IsSteamRunning && IsSteamInitialized;
+
     public override void _Ready()
     {
         try
         {
             AutoloadSteamLibrary();
 
-            bool running = SteamAPI.IsSteamRunning();
-            GD.Print($"[SteamworksLoader] Steam running: {running}");
+            IsSteamRunning = SteamAPI.IsSteamRunning();
+            GD.Print($"[SteamworksLoader] Steam running: {IsSteamRunning}");
 
-            bool initialized = SteamAPI.Init();
+            bool IsSteamInitialized = SteamAPI.Init();
 
-            if (initialized)
+            if (IsSteamInitialized)
             {
                 GD.Print("[SteamworksLoader] Steam initialized");
                 GD.Print($"[SteamworksLoader] User: {SteamFriends.GetPersonaName()}");
@@ -33,6 +38,9 @@ public partial class SteamworksLoader : Node
 
     public override void _ExitTree()
     {
+        if (!IsSteamInitialized)
+            return;
+
         try
         {
             SteamAPI.Shutdown();

@@ -65,8 +65,11 @@ public partial class UIMainMenu : Control
 
     private void OnlineBTN()
     {
+        if(!UI.Network.IsNetworkRunning())
+            return;
+
         UI.SFX.PlayOnConfirm();
-        SteamNetworkManager.Instance.SendChatTest();
+        UI.Network.Steam.SendChatTest();
     }
 
     private void SettingsBTN()
@@ -84,5 +87,14 @@ public partial class UIMainMenu : Control
     private void HoverBTN()
     {
         UI.SFX.PlayOnHover();
+    }
+
+    private void UpdateOnlineButton()
+    {
+        bool available = UI.Network != null && UI.Network.IsNetworkRunning();
+
+        _onlineButton.Disabled = !available;
+        if (!available)
+            _onlineButton.Modulate = Colors.DarkGray;
     }
 }

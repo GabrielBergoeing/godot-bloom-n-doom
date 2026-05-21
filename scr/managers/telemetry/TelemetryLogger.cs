@@ -1,14 +1,18 @@
 using Godot;
 using System;
+using System.Diagnostics;
 
 public partial class TelemetryLogger : Node
 {
-    [Export] public float SampleInterval = 0.25f;
-    [Export] public bool SetRecording = false;
+    [Export] private float SampleInterval = 0.25f;
+    [Export] private bool SetRecording = false;
+    
+    private Process CurrentProcess;
+    private TimeSpan LastCPUTime;
+    private DateTime LastTime;
 
     private FileAccess File;
     private float Timer = 0f;
-
     private bool IsCapturing = false;
 
     private string CaptureName;
@@ -16,6 +20,9 @@ public partial class TelemetryLogger : Node
 
     public override void _Ready()
     {
+        if (!OS.IsDebugBuild())
+            SetRecording = true;
+
         if (SetRecording)
             StartCapture();
     }
@@ -25,7 +32,7 @@ public partial class TelemetryLogger : Node
         if (!IsCapturing || File == null || !SetRecording)
             return;
 
-        if (CheckTimerDesync(delta))
+        if (!CheckTimerDesync(delta))
             return;
 
         string row = GetLatestRowData();
@@ -46,7 +53,6 @@ public partial class TelemetryLogger : Node
             return;
 
         IsCapturing = false;
-
         if (File != null)
         {
             File.Flush();
@@ -54,30 +60,13 @@ public partial class TelemetryLogger : Node
             File = null;
         }
 
-        GD.Print(
-            $"Telemetry capture ended: {CaptureName}"
-        );
+        GD.Print($"[TelemetryLogger] Capture ended: {CaptureName}");
     }
 
     private void StartCapture()
     {
-        string timestamp = DateTime.Now.ToString(
-            "yyyyMMdd_HHmmss"
-        );
-
-        CaptureName = $"match_{timestamp}";
-
-        string relativePath =
-            $"res://telemetry/{CaptureName}.txt";
-
-        AbsolutePath =
-            ProjectSettings.GlobalizePath(relativePath);
-
-        DirAccess.MakeDirAbsolute(
-            ProjectSettings.GlobalizePath(
-                "res://telemetry"
-            )
-        );
+        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        AbsolutePath = DeterminePathing(timestamp);
 
         File = FileAccess.Open(
             AbsolutePath,
@@ -86,10 +75,7 @@ public partial class TelemetryLogger : Node
 
         if (File == null)
         {
-            GD.PrintErr(
-                $"Failed to create telemetry file: {AbsolutePath}"
-            );
-
+            GD.PrintErr($"[TelemetryLogger] Failed to create telemetry file: {AbsolutePath}");
             return;
         }
 
@@ -97,6 +83,7 @@ public partial class TelemetryLogger : Node
         File.StoreLine(
             "timestamp," +
             "fps," +
+            "cpu_usage," +
             "frame_time_ms," +
             "process_time," +
             "physics_time," +
@@ -107,10 +94,8 @@ public partial class TelemetryLogger : Node
         );
 
         IsCapturing = true;
-
-        GD.Print(
-            $"Telemetry capture started: {AbsolutePath}"
-        );
+        GetOSProcessRegister();
+        GD.Print($"[TelemetryLogger] Capture started: {AbsolutePath}");
     }
 
     private bool CheckTimerDesync(double delta)
@@ -123,6 +108,53 @@ public partial class TelemetryLogger : Node
         return true;
     }
 
+    private void GetOSProcessRegister()
+    {
+        CurrentProcess = Process.GetCurrentProcess();
+        LastCPUTime = CurrentProcess.TotalProcessorTime;
+        LastTime = DateTime.UtcNow;
+    }
+
+    private string DeterminePathing(string timestamp)
+    {
+        CaptureName = $"match_{timestamp}";
+        string basePath;
+
+        if(OS.IsDebugBuild())
+            basePath = $"res://telemetry";
+        else
+            basePath = $"user://telemetry";
+
+        DirAccess.MakeDirAbsolute(
+            ProjectSettings.GlobalizePath(basePath)
+        );
+        return ProjectSettings.GlobalizePath(basePath + $"/{CaptureName}.txt");
+    }
+
+    private float GetCpuUsagePercent()
+    {
+        CurrentProcess.Refresh();
+
+        DateTime time = DateTime.UtcNow;
+        TimeSpan cpuTime = CurrentProcess.TotalProcessorTime;
+
+        double cpuUsedMs = (cpuTime - LastCPUTime).TotalMilliseconds;
+        double elapsedMs = (time - LastTime).TotalMilliseconds;
+
+        LastCPUTime = cpuTime;
+        LastTime = time;
+
+        if (elapsedMs <= 0)
+            return 0f;
+
+        float cpuUsage = (float)(
+            cpuUsedMs /
+            (elapsedMs * System.Environment.ProcessorCount) * 100.0
+        );
+
+        return cpuUsage;
+    }
+
     private string GetLatestRowData()
     {
         ulong timestamp = Time.GetTicksMsec();
@@ -130,6 +162,8 @@ public partial class TelemetryLogger : Node
         float fps = (float)Performance.GetMonitor(
             Performance.Monitor.TimeFps
         );
+
+        float cpuUsage = GetCpuUsagePercent();
 
         float frameTime = fps > 0
             ? 1000.0f / fps
@@ -163,6 +197,7 @@ public partial class TelemetryLogger : Node
         return
             $"{timestamp}," +
             $"{fps}," +
+            $"{cpuUsage:F2}," +
             $"{frameTime:F2}," +
             $"{processTime:F4}," +
             $"{physicsTime:F4}," +
