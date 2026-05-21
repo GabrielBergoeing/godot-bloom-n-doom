@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://be1nrcleotctn" path="res://scr/ui/player/UIPlayerWater.cs" id="1_y27eq"]
 [ext_resource type="Texture2D" uid="uid://78j5068yiumd" path="res://art/sprites/items/items 1.png" id="2_evv6e"]
 [ext_resource type="Texture2D" uid="uid://kvd80cwok2ry" path="res://art/ui/player/bar.png" id="2_in310"]
+[ext_resource type="Texture2D" uid="uid://dsuakxixndeqy" path="res://art/ui/buttons/ScrollBar_Blue_Base.png" id="4_4p5vp"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_syjwo"]
 atlas = ExtResource("2_evv6e")
@@ -19,8 +20,10 @@ region = Rect2(81, 0, 15, 16)
 [node name="UIPlayerWater" type="Control" unique_id=2043182943]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 456.0
-offset_bottom = 24.0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 486.0
+offset_bottom = 54.0
 script = ExtResource("1_y27eq")
 FullIcon = SubResource("AtlasTexture_syjwo")
 MidIcon = SubResource("AtlasTexture_bibs7")
@@ -45,5 +48,8 @@ expand_mode = 1
 layout_mode = 0
 offset_left = 10.0
 offset_top = 5.0
-offset_right = 390.0
+offset_right = 371.0
 offset_bottom = 20.0
+value = 95.0
+nine_patch_stretch = true
+texture_progress = ExtResource("4_4p5vp")

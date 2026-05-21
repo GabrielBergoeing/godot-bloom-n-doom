@@ -4,3 +4,4 @@
 
 [node name="TelemetryLogger" type="Node" unique_id=1451852597]
 script = ExtResource("1_6xjv2")
+SampleInterval = 1.0

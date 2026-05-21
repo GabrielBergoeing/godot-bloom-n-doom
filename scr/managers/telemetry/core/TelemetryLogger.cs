@@ -6,6 +6,7 @@ public partial class TelemetryLogger : Node
 {
     [Export] private float SampleInterval = 0.25f;
     [Export] private bool SetRecording = false;
+    [Export] private float FlushInterval = 5.0f;
     
     private Process CurrentProcess;
     private TimeSpan LastCPUTime;
@@ -15,6 +16,7 @@ public partial class TelemetryLogger : Node
 
     private FileAccess File;
     private float Timer = 0f;
+    private float FlushTimer = 0f;
     private bool IsCapturing = false;
 
     private string CaptureName;
@@ -35,13 +37,12 @@ public partial class TelemetryLogger : Node
         if (!IsCapturing || File == null || !SetRecording)
             return;
 
+        UpdateFlushTimer(delta);
         if (!CheckTimerDesync(delta))
             return;
 
         string row = GetLatestRowData();
-
         File.StoreLine(row);
-        File.Flush();
     }
 
     public override void _ExitTree()
@@ -116,6 +117,19 @@ public partial class TelemetryLogger : Node
 
         Timer = 0f;
         return true;
+    }
+
+    private void UpdateFlushTimer(double delta)
+    {
+        FlushTimer += (float)delta;
+
+        if (FlushTimer < FlushInterval)
+            return;
+
+        FlushTimer = 0f;
+
+        if (File != null)
+            File.Flush();
     }
 
     private void GetOSProcessRegister()
