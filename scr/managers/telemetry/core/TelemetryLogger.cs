@@ -11,6 +11,8 @@ public partial class TelemetryLogger : Node
     private TimeSpan LastCPUTime;
     private DateTime LastTime;
 
+    private IGPUProvider GPUProvider;
+
     private FileAccess File;
     private float Timer = 0f;
     private bool IsCapturing = false;
@@ -20,6 +22,7 @@ public partial class TelemetryLogger : Node
 
     public override void _Ready()
     {
+        SetGPUProvider();
         if (!OS.IsDebugBuild())
             SetRecording = true;
 
@@ -63,6 +66,12 @@ public partial class TelemetryLogger : Node
         GD.Print($"[TelemetryLogger] Capture ended: {CaptureName}");
     }
 
+    private void SetGPUProvider()
+    {
+        GPUProvider = GPUProviderFactory.Create();
+        GD.Print($"[TelemetryLogger] GPU provider set as: {GPUProvider.GetGPUName()}");
+    }
+
     private void StartCapture()
     {
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -84,6 +93,7 @@ public partial class TelemetryLogger : Node
             "timestamp," +
             "fps," +
             "cpu_usage," +
+            "gpu_usage," +
             "frame_time_ms," +
             "process_time," +
             "physics_time," +
@@ -165,6 +175,8 @@ public partial class TelemetryLogger : Node
 
         float cpuUsage = GetCpuUsagePercent();
 
+        float gpuUsage = GPUProvider.GetGPUUsagePercent();
+
         float frameTime = fps > 0
             ? 1000.0f / fps
             : 0f;
@@ -198,6 +210,7 @@ public partial class TelemetryLogger : Node
             $"{timestamp}," +
             $"{fps}," +
             $"{cpuUsage:F2}," +
+            $"{gpuUsage:F2}," +
             $"{frameTime:F2}," +
             $"{processTime:F4}," +
             $"{physicsTime:F4}," +
