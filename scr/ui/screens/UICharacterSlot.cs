@@ -95,6 +95,7 @@ public partial class UICharacterSlot : TextureRect
 		if (PressedAccept())
 		{
 			_player.LockedIn = true;
+			UI.SFX.PlayOnConfirm();
 
 			_player.SelectedCharacter =
 				_menu.Characters[_index];
@@ -124,10 +125,10 @@ public partial class UICharacterSlot : TextureRect
 	{
 		if (_player.DeviceType == "Keyboard")
 		{
-			if (Input.IsKeyPressed(Key.Up))
+			if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.Up))
 				return 1;
 
-			if (Input.IsKeyPressed(Key.Down))
+			if (Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.Down))
 				return -1;
 		}
 		else
@@ -180,6 +181,11 @@ public partial class UICharacterSlot : TextureRect
 			: character.ActiveColor;
 
 		SelfModulate = targetColor;
+
+		if(_player.LockedIn)
+			UI.SFX.PlayOnConfirm();
+		else
+			UI.SFX.PlayOnHover();
 	}
 
 	private void ClearSlot()

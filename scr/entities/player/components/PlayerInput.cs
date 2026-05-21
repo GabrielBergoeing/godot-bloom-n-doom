@@ -112,10 +112,10 @@ public partial class PlayerInput : Node
             float x = 0;
             float y = 0;
 
-            if (Input.IsKeyPressed(Key.A)) x -= 1;
-            if (Input.IsKeyPressed(Key.D)) x += 1;
-            if (Input.IsKeyPressed(Key.W)) y -= 1;
-            if (Input.IsKeyPressed(Key.S)) y += 1;
+            if (Input.IsKeyPressed(Key.A) || Input.IsKeyPressed(Key.Left)) x -= 1;
+            if (Input.IsKeyPressed(Key.D) || Input.IsKeyPressed(Key.Right)) x += 1;
+            if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.Up)) y -= 1;
+            if (Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.Down)) y += 1;
 
             moveInput = new Vector2(x, y);
         }

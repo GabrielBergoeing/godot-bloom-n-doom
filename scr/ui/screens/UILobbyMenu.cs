@@ -83,6 +83,7 @@ public partial class UILobbyMenu : Control
             .ToArray();
 
         UI.Game.SetLobbyPlayers(players);
+        UI.SFX.PlayOnConfirm();
         UI.Scene.ChangeScene(UI.Paths.LevelSelectScene);
     }
 }
