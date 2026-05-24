@@ -2,10 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://djn74xhhqnb5n" path="res://nodes/scenes/levels/layout/level_2.tscn" id="1_fbc8q"]
 [ext_resource type="Script" uid="uid://cyqx1ge62a3xs" path="res://scr/managers/map/event/SpawnEntry.cs" id="2_pr2i7"]
-[ext_resource type="Resource" uid="uid://ctvjba2f6s5nw" path="res://nodes/items/data/watergun_data.tres" id="3_x2wcv"]
+[ext_resource type="Resource" uid="uid://chg8u0sbslbsw" path="res://nodes/items/data/fertilizer_data.tres" id="3_x2wcv"]
 [ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/redconeflower_data.tres" id="4_abqi0"]
+[ext_resource type="Resource" uid="uid://cs8pttieoh6qm" path="res://nodes/items/data/cactus_data.tres" id="4_u4jbh"]
 [ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="5_u4jbh"]
 [ext_resource type="Resource" uid="uid://5vli7hpg6g6p" path="res://nodes/items/data/flamethrower_data.tres" id="6_hxayg"]
+[ext_resource type="Resource" uid="uid://777dhwh3do01" path="res://nodes/items/data/reddahlia_data.tres" id="6_p3yeh"]
 [ext_resource type="Script" uid="uid://dmmuxsht6pcr1" path="res://scr/managers/scene/LevelData.cs" id="7_p3yeh"]
 
 [sub_resource type="Resource" id="Resource_h0f86"]
@@ -13,9 +15,19 @@ script = ExtResource("2_pr2i7")
 Item = ExtResource("3_x2wcv")
 metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 
+[sub_resource type="Resource" id="Resource_ywiks"]
+script = ExtResource("2_pr2i7")
+Item = ExtResource("4_u4jbh")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
 [sub_resource type="Resource" id="Resource_nyfkv"]
 script = ExtResource("2_pr2i7")
 Item = ExtResource("4_abqi0")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_bbq8w"]
+script = ExtResource("2_pr2i7")
+Item = ExtResource("6_p3yeh")
 metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 
 [sub_resource type="Resource" id="Resource_2qm4h"]
@@ -34,9 +46,9 @@ script = ExtResource("7_p3yeh")
 LevelScene = ExtResource("1_fbc8q")
 LevelName = "The Ring"
 Description = "The smallest plot of overgrown land high above the garden's tower. Every land counts in this flamable map."
-MatchDuration = 60.0
+MatchDuration = 180.0
 BGMTrack = "bgm_level_grassy"
-SeedTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_nyfkv")])
+SeedTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_nyfkv"), SubResource("Resource_bbq8w")])
 ToolTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_2qm4h"), SubResource("Resource_rdlvd")])
-RareTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_h0f86")])
+RareTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_h0f86"), SubResource("Resource_ywiks")])
 metadata/_custom_type_script = "uid://dmmuxsht6pcr1"
