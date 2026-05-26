@@ -194,8 +194,7 @@ public partial class SteamLobbyManager : Node
 
     private void EmitInitialPlayerState()
     {
-        foreach (LobbyPlayerData player in
-            InputDeviceManager.Instance.Players)
+        foreach (LobbyPlayerData player in InputDeviceManager.Instance.LobbyPlayers)
         {
             UpdatePlayerState(
                 player,
