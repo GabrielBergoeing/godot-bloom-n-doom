@@ -2,4 +2,4 @@
 .godot/
 /android/
 /telemetry/
-builds/*.zip
+/builds/
