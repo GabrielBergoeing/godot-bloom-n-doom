@@ -20,7 +20,7 @@ public partial class SteamworksLoader : Node
             IsSteamRunning = SteamAPI.IsSteamRunning();
             GD.Print($"[SteamworksLoader] Steam running: {IsSteamRunning}");
 
-            bool IsSteamInitialized = SteamAPI.Init();
+            IsSteamInitialized = SteamAPI.Init();
 
             if (IsSteamInitialized)
             {
