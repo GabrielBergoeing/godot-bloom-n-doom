@@ -11,6 +11,11 @@ public partial class UILobbyMenu : Control
     private HBoxContainer _slotsContainer;
     private UICharacterSlot[] _slots;
 
+    private readonly Dictionary<
+        ulong,
+        UICharacterSlot
+    > _remoteSlots = new();
+
     public override void _Ready()
     {
         _slotsContainer = GetNode<HBoxContainer>("Slots");
@@ -91,13 +96,48 @@ public partial class UILobbyMenu : Control
         UI.Scene.ChangeScene(UI.Paths.LevelSelectScene);
     }
 
-    private void OnRemotePlayerUpdated(LobbyPlayerStatePacket packet)
+    private void OnRemotePlayerUpdated(
+        LobbyPlayerStatePacket packet
+    )
     {
-        GD.Print(
-            $"Remote player updated: {packet.SteamId}"
+        // Ignore ourself
+        if (packet.SteamId ==
+            Steamworks.SteamUser.GetSteamID().m_SteamID)
+            return;
+
+        if (_remoteSlots.TryGetValue(
+            packet.SteamId,
+            out UICharacterSlot existingSlot
+        ))
+        {
+            existingSlot.AssignRemotePlayer(
+                packet,
+                this
+            );
+
+            return;
+        }
+
+        UICharacterSlot freeSlot = FindFreeSlot();
+
+        if (freeSlot == null)
+        {
+            GD.PrintErr(
+                "No free slot for remote player"
+            );
+            return;
+        }
+
+        freeSlot.AssignRemotePlayer(
+            packet,
+            this
         );
 
-        // later:
-        // create/update remote slot visuals
+        _remoteSlots[packet.SteamId] =
+            freeSlot;
+
+        GD.Print(
+            $"Created remote slot for {packet.SteamId}"
+        );
     }
 }

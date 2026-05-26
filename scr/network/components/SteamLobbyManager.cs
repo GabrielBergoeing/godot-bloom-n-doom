@@ -127,6 +127,7 @@ public partial class SteamLobbyManager : Node
         LobbyPlayerStatePacket packet = new LobbyPlayerStatePacket
         {
             SteamId = SteamUser.GetSteamID().m_SteamID,
+            Username = SteamFriends.GetPersonaName(),
             PlayerId = player.PlayerId,
             CharacterIndex = characterIndex,
             LockedIn = player.LockedIn
@@ -156,16 +157,50 @@ public partial class SteamLobbyManager : Node
     {
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
 
-        HostSteamId =
-            SteamMatchmaking
-                .GetLobbyOwner(CurrentLobbyId)
-                .m_SteamID;
-
+        HostSteamId = SteamMatchmaking
+            .GetLobbyOwner(CurrentLobbyId)
+            .m_SteamID;
+        
+        EmitInitialPlayerState();
+        RegisterLobbyMembers();
         GD.Print($"Entered lobby: {CurrentLobbyId}");
     }
 
     private void OnJoinRequested(GameLobbyJoinRequested_t callback)
     {
         JoinLobby(callback.m_steamIDLobby);
+    }
+
+    private void RegisterLobbyMembers()
+    {
+        int count = SteamMatchmaking.GetNumLobbyMembers(
+            CurrentLobbyId
+        );
+
+        Network.Connection.Clear();
+        for (int i = 0; i < count; i++)
+        {
+            CSteamID member =SteamMatchmaking.GetLobbyMemberByIndex(
+                CurrentLobbyId, i
+            );
+
+            if (member == SteamUser.GetSteamID())
+                continue;
+
+            Network.Connection.AddPeer(member);
+            GD.Print($"Registered peer: {member}");
+        }
+    }
+
+    private void EmitInitialPlayerState()
+    {
+        foreach (LobbyPlayerData player in
+            InputDeviceManager.Instance.Players)
+        {
+            UpdatePlayerState(
+                player,
+                0
+            );
+        }
     }
 }

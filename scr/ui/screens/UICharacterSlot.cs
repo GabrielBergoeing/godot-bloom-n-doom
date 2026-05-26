@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class UICharacterSlot : TextureRect
 {
@@ -15,6 +16,9 @@ public partial class UICharacterSlot : TextureRect
 	private int _index = 0;
 	private float _cooldown = 0f;
 	private float _inputBlockTimer = 0f;
+
+	private bool _isRemote;
+	private ulong _remoteSteamId;
 
 	[Export] public float NavCooldown = 0.2f;
 
@@ -43,7 +47,10 @@ public partial class UICharacterSlot : TextureRect
 
 	public override void _Process(double delta)
 	{
-		if (_player == null)
+		if (_player == null && !_isRemote)
+			return;
+
+		if (_isRemote)
 			return;
 
 		_cooldown -= (float)delta;
@@ -65,6 +72,35 @@ public partial class UICharacterSlot : TextureRect
 		_illustration.Texture = null;
 		_name.Text = "Press 'Start' to Join";
 		_lockIcon.Visible = false;
+	}
+
+	public void AssignRemotePlayer(
+		LobbyPlayerStatePacket packet,
+		UILobbyMenu menu
+	)
+	{
+		_menu = menu;
+
+		_isRemote = true;
+		_remoteSteamId = packet.SteamId;
+
+		_index = packet.CharacterIndex;
+
+		CharacterData character =
+			_menu.Characters[_index];
+
+		_illustration.Texture =
+			character.Illustration;
+
+		_name.Text = packet.Username;
+
+		_lockIcon.Visible =
+			packet.LockedIn;
+
+		SelfModulate =
+			packet.LockedIn
+			? character.LockedColor
+			: character.ActiveColor;
 	}
 
 	private void HandleNavigation()
