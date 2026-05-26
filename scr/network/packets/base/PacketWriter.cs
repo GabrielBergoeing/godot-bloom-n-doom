@@ -1,8 +1,9 @@
 using Godot;
+using System;
 using System.IO;
 using System.Text;
 
-public class PacketWriter
+public class PacketWriter : IDisposable
 {
     private readonly MemoryStream _stream;
     private readonly BinaryWriter _writer;
@@ -21,6 +22,11 @@ public class PacketWriter
     }
 
     public void WriteInt(int value)
+    {
+        _writer.Write(value);
+    }
+
+    public void WriteULong(ulong value)
     {
         _writer.Write(value);
     }
@@ -55,5 +61,11 @@ public class PacketWriter
     public byte[] ToArray()
     {
         return _stream.ToArray();
+    }
+
+    public void Dispose()
+    {
+        _writer?.Dispose();
+        _stream?.Dispose();
     }
 }

@@ -65,11 +65,14 @@ public partial class UIMainMenu : Control
 
     private void OnlineBTN()
     {
-        if(!UI.Network.IsNetworkRunning())
+        if (!UI.Network.IsNetworkRunning())
             return;
 
         UI.SFX.PlayOnConfirm();
-        UI.Network.Steam.SendChatTest();
+        UI.Network.SetOnlineMode(true);
+        UI.Network.Lobby.CreateLobby();
+
+        UI.Scene.ChangeScene(UI.Paths.LobbyMenuScene);
     }
 
     private void SettingsBTN()

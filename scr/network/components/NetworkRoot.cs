@@ -9,6 +9,9 @@ public partial class NetworkRoot : Node
     public SteamPacketRouter PacketRouter { get; private set; }
     public NetworkTickManager Tick { get; private set; }
     public SteamNetworkManager Steam { get; private set; }
+    public SteamLobbyManager Lobby { get; private set; }
+
+    public bool IsOnline { get; private set; } = false;
 
     public override void _Ready()
     {
@@ -20,7 +23,10 @@ public partial class NetworkRoot : Node
         Tick = GetNode<NetworkTickManager>("NetworkTickManager");
 
         Steam = GetNode<SteamNetworkManager>("SteamNetworkManager");
-        Steam.Initialize(PacketRouter, Connection);
+        Steam.Initialize(PacketRouter);
+
+        Lobby = GetNode<SteamLobbyManager>("SteamLobbyManager");
+        Lobby.Initialize(PacketRouter);
 
         GD.Print("[NetworkRoot] Initialized");
     }
@@ -30,5 +36,11 @@ public partial class NetworkRoot : Node
         if(Loader == null)
             return false;
         return Loader.IsSteamAvailable;
+    }
+
+    public void SetOnlineMode(bool mode)
+    {
+        if(IsNetworkRunning())
+            IsOnline = mode;
     }
 }

@@ -5,24 +5,18 @@ public partial class NetworkTickManager : Node
 {
     public static NetworkTickManager Instance;
 
-    [Export]
-    public int TickRate = 20;
-
+    [Export] public int TickRate = 20;
     public int CurrentTick { get; private set; }
 
     private double _tickTimer;
-    private double TickInterval =>
-        1.0 / TickRate;
+    private double TickInterval => 1.0 / TickRate;
 
     public event Action<int> OnNetworkTick;
 
     public override void _Ready()
     {
         Instance = this;
-
-        GD.Print(
-            $"[NetworkTickManager] Started at {TickRate}hz"
-        );
+        GD.Print($"[NetworkTickManager] Started at {TickRate}hz");
     }
 
     public override void _Process(double delta)
@@ -32,7 +26,6 @@ public partial class NetworkTickManager : Node
         while (_tickTimer >= TickInterval)
         {
             _tickTimer -= TickInterval;
-
             ExecuteTick();
         }
     }
@@ -40,7 +33,6 @@ public partial class NetworkTickManager : Node
     private void ExecuteTick()
     {
         CurrentTick++;
-
         OnNetworkTick?.Invoke(CurrentTick);
     }
 }

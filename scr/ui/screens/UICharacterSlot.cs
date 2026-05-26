@@ -85,6 +85,7 @@ public partial class UICharacterSlot : TextureRect
 		_cooldown = NavCooldown;
 
 		UpdateVisuals();
+		UpdateNetwork();
 	}
 
 	private void HandleConfirm()
@@ -101,6 +102,7 @@ public partial class UICharacterSlot : TextureRect
 				_menu.Characters[_index];
 
 			UpdateVisuals();
+			UpdateNetwork();
 
 			_menu.NotifySlotUpdated();
 		}
@@ -186,6 +188,12 @@ public partial class UICharacterSlot : TextureRect
 			UI.SFX.PlayOnConfirm();
 		else
 			UI.SFX.PlayOnHover();
+	}
+
+	private void UpdateNetwork()
+	{
+		if(UI.Network.IsOnline)
+			UI.Network.Lobby.UpdatePlayerState(_player, _index);
 	}
 
 	private void ClearSlot()

@@ -1,8 +1,9 @@
 using Godot;
+using System;
 using System.IO;
 using System.Text;
 
-public class PacketReader
+public class PacketReader : IDisposable
 {
     private readonly MemoryStream _stream;
     private readonly BinaryReader _reader;
@@ -21,6 +22,11 @@ public class PacketReader
     public int ReadInt()
     {
         return _reader.ReadInt32();
+    }
+
+    public ulong ReadULong()
+    {
+        return _reader.ReadUInt64();
     }
 
     public float ReadFloat()
@@ -49,5 +55,11 @@ public class PacketReader
             _reader.ReadSingle(),
             _reader.ReadSingle()
         );
+    }
+
+    public void Dispose()
+    {
+        _reader?.Dispose();
+        _stream?.Dispose();
     }
 }

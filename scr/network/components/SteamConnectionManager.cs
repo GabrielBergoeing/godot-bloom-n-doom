@@ -6,41 +6,56 @@ public partial class SteamConnectionManager : Node
 {
     public static SteamConnectionManager Instance;
 
-    private readonly HashSet<CSteamID> _connectedPeers =
-        new();
+    private readonly Dictionary<
+        ulong,
+        CSteamID
+    > _peers = new();
 
-    public IReadOnlyCollection<CSteamID> ConnectedPeers =>
-        _connectedPeers;
+    public IReadOnlyDictionary<
+        ulong,
+        CSteamID
+    > Peers => _peers;
 
     public override void _Ready()
     {
         Instance = this;
-
         GD.Print("[SteamConnectionManager] Ready");
     }
 
     public void AddPeer(CSteamID steamId)
     {
-        if (_connectedPeers.Add(steamId))
-        {
-            GD.Print(
-                $"[SteamConnectionManager] Peer connected: {steamId}"
-            );
-        }
+        ulong id = steamId.m_SteamID;
+
+        if (_peers.ContainsKey(id))
+            return;
+
+        _peers[id] = steamId;
+
+        GD.Print($"[SteamConnectionManager] Peer connected: {id}");
     }
 
     public void RemovePeer(CSteamID steamId)
     {
-        if (_connectedPeers.Remove(steamId))
-        {
-            GD.Print(
-                $"[SteamConnectionManager] Peer disconnected: {steamId}"
-            );
-        }
+        ulong id = steamId.m_SteamID;
+
+        if (!_peers.Remove(id))
+            return;
+
+        GD.Print($"[SteamConnectionManager] Peer disconnected: {id}");
     }
 
-    public bool IsConnected(CSteamID steamId)
+    public bool HasPeer(ulong steamId)
     {
-        return _connectedPeers.Contains(steamId);
+        return _peers.ContainsKey(steamId);
+    }
+
+    public IEnumerable<CSteamID> GetAllPeers()
+    {
+        return _peers.Values;
+    }
+
+    public void Clear()
+    {
+        _peers.Clear();
     }
 }

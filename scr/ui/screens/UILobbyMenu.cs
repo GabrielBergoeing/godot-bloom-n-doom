@@ -24,6 +24,10 @@ public partial class UILobbyMenu : Control
         InputDeviceManager.Instance.PlayerJoined += OnPlayerJoined;
         foreach (var slot in _slots)
             slot.SetEmpty();
+        
+
+        if (UI.Network.IsOnline)
+            UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
     }
 
     private void OnPlayerJoined(LobbyPlayerData player)
@@ -85,5 +89,15 @@ public partial class UILobbyMenu : Control
         UI.Game.SetLobbyPlayers(players);
         UI.SFX.PlayOnConfirm();
         UI.Scene.ChangeScene(UI.Paths.LevelSelectScene);
+    }
+
+    private void OnRemotePlayerUpdated(LobbyPlayerStatePacket packet)
+    {
+        GD.Print(
+            $"Remote player updated: {packet.SteamId}"
+        );
+
+        // later:
+        // create/update remote slot visuals
     }
 }
