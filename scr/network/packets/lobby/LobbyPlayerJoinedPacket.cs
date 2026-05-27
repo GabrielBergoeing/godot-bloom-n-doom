@@ -1,6 +1,6 @@
 public class LobbyPlayerJoinedPacket : NetworkPacket
 {
-    public override byte PacketId => (byte)NetworkPacketType.LobbyPlayerState;
+    public override byte PacketId => (byte)NetworkPacketType.LobbyPlayerJoined;
 
     public ulong SteamId;
     public string Username;

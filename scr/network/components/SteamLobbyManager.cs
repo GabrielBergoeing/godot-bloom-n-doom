@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using Steamworks;
+using System.Linq;
 using System.Collections.Generic;
 
 public partial class SteamLobbyManager : Node
@@ -118,7 +119,8 @@ public partial class SteamLobbyManager : Node
 
     public void Broadcast(NetworkPacket packet)
     {
-        GD.Print($"Broadcasting packet to {Network.Connection.GetAllPeers()} peers");
+        var peers = Network.Connection.GetAllPeers().ToList();
+        GD.Print($"Broadcasting packet to {peers} peers");
 
         foreach (var peer in Network.Connection.GetAllPeers())
         {
@@ -129,8 +131,7 @@ public partial class SteamLobbyManager : Node
 
     public void UpdatePlayerState(LobbyPlayerData player, int characterIndex)
     {
-        if (!Network.IsOnline)
-            return;
+        if (!Network.IsOnline) return;
 
         LobbyPlayerStatePacket packet = new LobbyPlayerStatePacket
         {
@@ -141,8 +142,11 @@ public partial class SteamLobbyManager : Node
             LockedIn = player.LockedIn
         };
 
+        // Store locally too
+        _players[packet.SteamId] = packet;
+        OnPlayerStateUpdated?.Invoke(packet);
+
         Broadcast(packet);
-        GD.Print($"Peers: {Network.Connection.GetAllPeers()}");
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
