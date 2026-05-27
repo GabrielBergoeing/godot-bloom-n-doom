@@ -52,6 +52,8 @@ public partial class SteamLobbyManager : Node
 
         _players[sender.m_SteamID] = packet;
         OnPlayerStateUpdated?.Invoke(packet);
+
+        GD.Print($"Updated player state for {sender}");
     }
 
     private void RegisterCallbacks()
@@ -78,6 +80,8 @@ public partial class SteamLobbyManager : Node
             ELobbyType.k_ELobbyTypeFriendsOnly,
             maxPlayers
         );
+
+        GD.Print("[SteamLobbyManager] Creating lobby...");
     }
 
     public void JoinLobby(CSteamID lobbyId)
@@ -95,6 +99,8 @@ public partial class SteamLobbyManager : Node
 
         _players.Clear();
         Network.Connection.Clear();
+
+        GD.Print("[SteamLobbyManager] Left lobby");
     }
 
     public void InviteFriend(CSteamID friendId)
@@ -133,6 +139,11 @@ public partial class SteamLobbyManager : Node
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
+        GD.Print("[SteamLobbyManager] OnLobbyCreated fired");
+
+        GD.Print($"Result: {callback.m_eResult}");
+        GD.Print($"Lobby ID: {callback.m_ulSteamIDLobby}");
+
         if (callback.m_eResult != EResult.k_EResultOK)
         {
             GD.PrintErr($"Failed creating lobby: {callback.m_eResult}");
@@ -141,27 +152,36 @@ public partial class SteamLobbyManager : Node
 
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         HostSteamId = SteamUser.GetSteamID().m_SteamID;
+
+        GD.Print($"Lobby created: {CurrentLobbyId}");
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
+        GD.Print("[SteamLobbyManager] OnLobbyEntered fired");
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
 
         HostSteamId = SteamMatchmaking
             .GetLobbyOwner(CurrentLobbyId)
             .m_SteamID;
         
+        GD.Print($"Entered lobby: {CurrentLobbyId}");
         RegisterLobbyMembers();
         NotifyLobbyReady();
     }
 
     private void NotifyLobbyReady()
     {
+        GD.Print("[SteamLobbyManager] NotifyLobbyReady");
+
         if (OnLobbyReady == null)
         {
             GD.PrintErr("NO SUBSCRIBERS");
             return;
         }
+
+        GD.Print("Invoking lobby ready");
+
         OnLobbyReady.Invoke();
     }
 

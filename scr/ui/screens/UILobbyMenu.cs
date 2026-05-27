@@ -49,6 +49,10 @@ public partial class UILobbyMenu : Control
         }
 
         slot.AssignPlayer(player, this);
+
+        if (UI.Network.IsOnline)
+            UI.Network.Lobby.UpdatePlayerState(player, 0);
+
         EvaluateStart();
     }
 
