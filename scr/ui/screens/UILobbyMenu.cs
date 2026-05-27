@@ -27,6 +27,12 @@ public partial class UILobbyMenu : Control
         }
     }
 
+    public override void _ExitTree()
+    {
+        if (UI.Network.IsOnline)
+            UI.Network.Lobby.OnPlayerStateUpdated -= OnRemotePlayerUpdated;
+    }
+
     public override void _Ready()
     {
         GD.Print("[UILobbyMenu] _Ready called");
@@ -123,18 +129,11 @@ public partial class UILobbyMenu : Control
         UI.Scene.ChangeScene(UI.Paths.LevelSelectScene);
     }
 
-    private void OnRemotePlayerUpdated(
-        LobbyPlayerStatePacket packet
-    )
+    private void OnRemotePlayerUpdated(LobbyPlayerStatePacket packet)
     {
         GD.Print($"[UILobbyMenu] Remote update from {packet.SteamId}");
-        // Ignore ourself
-        if (packet.SteamId == Steamworks.SteamUser.GetSteamID().m_SteamID)
-        {
-            GD.Print("[UILobbyMenu] Ignoring self packet");
+        if (packet.SteamId == UI.Network.Lobby.LocalSteamId)
             return;
-        }
-
         GD.Print("[UILobbyMenu] Processing remote packet");
 
         if (_remoteSlots.TryGetValue(
@@ -194,7 +193,7 @@ public partial class UILobbyMenu : Control
 
             UI.Network.Lobby.UpdatePlayerState(
                 slot.Player,
-                0
+                slot.Index
             );
         }
 

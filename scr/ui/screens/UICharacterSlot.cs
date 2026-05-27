@@ -75,33 +75,26 @@ public partial class UICharacterSlot : TextureRect
 		_lockIcon.Visible = false;
 	}
 
-	public void AssignRemotePlayer(
-		LobbyPlayerStatePacket packet,
-		UILobbyMenu menu
-	)
+	public void AssignRemotePlayer(LobbyPlayerStatePacket packet, UILobbyMenu menu)
 	{
 		_menu = menu;
-
 		_isRemote = true;
 		_remoteSteamId = packet.SteamId;
-
 		_index = packet.CharacterIndex;
 
-		CharacterData character =
-			_menu.Characters[_index];
+		if (_menu.Characters == null || _menu.Characters.Length == 0)
+		{
+			GD.PrintErr("[UICharacterSlot] CharacterDatabase not set or empty");
+			return;
+		}
 
-		_illustration.Texture =
-			character.Illustration;
+		_index = Mathf.Clamp(_index, 0, _menu.Characters.Length - 1);
+		CharacterData character = _menu.Characters[_index];
 
+		_illustration.Texture = character.Illustration;
 		_name.Text = packet.Username;
-
-		_lockIcon.Visible =
-			packet.LockedIn;
-
-		SelfModulate =
-			packet.LockedIn
-			? character.LockedColor
-			: character.ActiveColor;
+		_lockIcon.Visible = packet.LockedIn;
+		SelfModulate = packet.LockedIn ? character.LockedColor : character.ActiveColor;
 	}
 
 	private void HandleNavigation()
