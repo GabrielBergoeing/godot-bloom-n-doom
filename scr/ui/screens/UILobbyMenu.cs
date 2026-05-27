@@ -23,13 +23,6 @@ public partial class UILobbyMenu : Control
         {
             UI.Network.Lobby.OnPlayerStateUpdated -= OnRemotePlayerUpdated;
             UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
-
-            // Drain any states that arrived before we subscribed
-            foreach (var kvp in UI.Network.Lobby.Players)
-            {
-                if (kvp.Key != UI.Network.Lobby.LocalSteamId)
-                    OnRemotePlayerUpdated(kvp.Value);
-            }
         }
     }
 
@@ -50,6 +43,20 @@ public partial class UILobbyMenu : Control
 
         if (UI.Network.IsOnline)
             SyncOnlineLobby();
+    }
+
+    public override void _Process(double delta)
+    {
+        if (!UI.Network.IsOnline) return;
+        
+        foreach (var kvp in UI.Network.Lobby.Players)
+        {
+            if (kvp.Key == UI.Network.Lobby.LocalSteamId) continue;
+            if (_remoteSlots.ContainsKey(kvp.Key)) continue;
+            
+            GD.Print($"[UILobbyMenu] Late-discovered player: {kvp.Key}");
+            OnRemotePlayerUpdated(kvp.Value);
+        }
     }
 
     private void OnPlayerJoined(LobbyPlayerData player)
