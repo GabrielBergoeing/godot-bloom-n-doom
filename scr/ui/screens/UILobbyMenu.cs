@@ -17,6 +17,15 @@ public partial class UILobbyMenu : Control
         UICharacterSlot
     > _remoteSlots = new();
 
+    public override void _EnterTree()
+    {
+        if (UI.Network.IsOnline)
+        {
+            UI.Network.Lobby.OnPlayerStateUpdated -= OnRemotePlayerUpdated;
+            UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
+        }
+    }
+
     public override void _Ready()
     {
         _slotsContainer = GetNode<HBoxContainer>("Slots");
@@ -105,10 +114,15 @@ public partial class UILobbyMenu : Control
         LobbyPlayerStatePacket packet
     )
     {
+        GD.Print($"[UILobbyMenu] Remote update from {packet.SteamId}");
         // Ignore ourself
-        if (packet.SteamId ==
-            Steamworks.SteamUser.GetSteamID().m_SteamID)
+        if (packet.SteamId == Steamworks.SteamUser.GetSteamID().m_SteamID)
+        {
+            GD.Print("[UILobbyMenu] Ignoring self packet");
             return;
+        }
+
+        GD.Print("[UILobbyMenu] Processing remote packet");
 
         if (_remoteSlots.TryGetValue(
             packet.SteamId,
@@ -147,9 +161,13 @@ public partial class UILobbyMenu : Control
 
     private void SyncOnlineLobby()
     {
-        UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
+        GD.Print("[UILobbyMenu] SyncOnlineLobby");
+
         foreach (var kvp in UI.Network.Lobby.Players)
+        {
+            GD.Print($"[UILobbyMenu] Existing player: {kvp.Key}");
             OnRemotePlayerUpdated(kvp.Value);
+        }
 
         CallDeferred(nameof(SendInitialStates));
     }
