@@ -58,20 +58,21 @@ public partial class SteamLobbyManager : Node
 
     private void RegisterCallbacks()
     {
-        _lobbyCreated =
-            Callback<LobbyCreated_t>.Create(
-                OnLobbyCreated
-            );
+        _lobbyCreated = Callback<LobbyCreated_t>.Create(
+            OnLobbyCreated
+        );
 
-        _lobbyEntered =
-            Callback<LobbyEnter_t>.Create(
-                OnLobbyEntered
-            );
+        _lobbyEntered = Callback<LobbyEnter_t>.Create(
+            OnLobbyEntered
+        );
 
-        _joinRequest =
-            Callback<GameLobbyJoinRequested_t>.Create(
-                OnJoinRequested
-            );
+        _joinRequest = Callback<GameLobbyJoinRequested_t>.Create(
+            OnJoinRequested
+        );
+
+        _lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(
+            OnLobbyChatUpdate
+        );
     }
 
     public void CreateLobby(int maxPlayers = 4)
@@ -116,8 +117,13 @@ public partial class SteamLobbyManager : Node
 
     public void Broadcast(NetworkPacket packet)
     {
+        GD.Print($"Broadcasting packet to {Network.Connection.GetAllPeers().Count} peers");
+
         foreach (var peer in Network.Connection.GetAllPeers())
+        {
+            GD.Print($"Sending packet to {peer}");
             Network.Steam.SendPacket(peer, packet);
+        }
     }
 
     public void UpdatePlayerState(LobbyPlayerData player, int characterIndex)
@@ -168,6 +174,12 @@ public partial class SteamLobbyManager : Node
         GD.Print($"Entered lobby: {CurrentLobbyId}");
         RegisterLobbyMembers();
         NotifyLobbyReady();
+    }
+
+    private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
+    {
+        GD.Print("[SteamLobbyManager] Lobby member update");
+        RegisterLobbyMembers();
     }
 
     private void NotifyLobbyReady()
