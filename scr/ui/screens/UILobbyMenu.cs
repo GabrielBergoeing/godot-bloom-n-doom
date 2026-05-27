@@ -23,6 +23,13 @@ public partial class UILobbyMenu : Control
         {
             UI.Network.Lobby.OnPlayerStateUpdated -= OnRemotePlayerUpdated;
             UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
+
+            // Drain any states that arrived before we subscribed
+            foreach (var kvp in UI.Network.Lobby.Players)
+            {
+                if (kvp.Key != UI.Network.Lobby.LocalSteamId)
+                    OnRemotePlayerUpdated(kvp.Value);
+            }
         }
     }
 
@@ -48,16 +55,12 @@ public partial class UILobbyMenu : Control
     private void OnPlayerJoined(LobbyPlayerData player)
     {
         var slot = FindFreeSlot();
-        if (slot == null)
-        {
-            GD.Print("No free slot.");
-            return;
-        }
+        if (slot == null) return;
 
         slot.AssignPlayer(player, this);
 
         if (UI.Network.IsOnline)
-            UI.Network.Lobby.UpdatePlayerState(player, 0);
+            UI.Network.Lobby.UpdatePlayerState(player, slot.Index);
 
         EvaluateStart();
     }

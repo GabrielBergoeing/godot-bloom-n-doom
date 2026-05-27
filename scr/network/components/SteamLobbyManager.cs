@@ -17,6 +17,8 @@ public partial class SteamLobbyManager : Node
     public ulong HostSteamId { get; private set; }
     public bool IsHost => SteamUser.GetSteamID().m_SteamID == HostSteamId;
 
+    public ulong LocalSteamId => SteamUser.GetSteamID().m_SteamID;
+
     private readonly Dictionary<
         ulong,
         LobbyPlayerStatePacket
@@ -230,9 +232,15 @@ public partial class SteamLobbyManager : Node
 
     private void EmitInitialPlayerState()
     {
+        GD.Print("[SteamLobbyManager] EmitInitialPlayerState");
+        foreach (var kvp in _players)
+        {
+            GD.Print($"[SteamLobbyManager] Re-broadcasting state for {kvp.Key}");
+            Broadcast(kvp.Value);
+        }
+
         foreach (LobbyPlayerData player in InputDeviceManager.Instance.LobbyPlayers)
             UpdatePlayerState(player, 0);
-        BroadcastKnownStates();
     }
 
     private void BroadcastKnownStates()

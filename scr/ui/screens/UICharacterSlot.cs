@@ -14,6 +14,7 @@ public partial class UICharacterSlot : TextureRect
 	private UILobbyMenu _menu;
 
 	private int _index = 0;
+	public int Index => _index;
 	private float _cooldown = 0f;
 	private float _inputBlockTimer = 0f;
 
