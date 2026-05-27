@@ -76,6 +76,12 @@ public partial class LobbyStateService : Node
         if (localReady && remoteReady)
             OnAllReady?.Invoke();
     }
+
+    public void RemoveRemotePlayer(ulong steamId)
+    {
+        _remoteStates.Remove(steamId);
+        OnStateChanged?.Invoke();
+    }
 }
 
 public class LocalPlayerState

@@ -7,6 +7,7 @@ public class LobbyPlayerStatePacket : NetworkPacket
     public int PlayerId;
     public int CharacterIndex;
     public bool LockedIn;
+    public int SlotIndex;
 
     public override void Serialize(PacketWriter writer)
     {
@@ -15,6 +16,7 @@ public class LobbyPlayerStatePacket : NetworkPacket
         writer.WriteInt(PlayerId);
         writer.WriteInt(CharacterIndex);
         writer.WriteBool(LockedIn);
+        writer.WriteInt(SlotIndex);
     }
 
     public override void Deserialize(PacketReader reader)
@@ -24,6 +26,7 @@ public class LobbyPlayerStatePacket : NetworkPacket
         PlayerId = reader.ReadInt();
         CharacterIndex = reader.ReadInt();
         LockedIn = reader.ReadBool();
+        SlotIndex = reader.ReadInt();
     }
 
     public static LobbyPlayerStatePacket FromBytes(byte[] data)

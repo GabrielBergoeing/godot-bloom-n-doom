@@ -9,6 +9,7 @@ public partial class SteamLobbyManager : Node
     public static SteamLobbyManager Instance;
 
     public event Action OnLobbyReady;
+    public event Action<ulong> OnPlayerLeft;
     public event Action<LobbyPlayerStatePacket> OnPlayerStateUpdated;
 
     public NetworkRoot Network => NetworkRoot.Instance;
@@ -44,6 +45,11 @@ public partial class SteamLobbyManager : Node
         router.RegisterHandler(
             (byte)NetworkPacketType.LobbyPlayerState,
             HandleLobbyPlayerState
+        );
+
+        router.RegisterHandler(
+            (byte)NetworkPacketType.LobbyPlayerLeft,
+            HandleLobbyPlayerLeft
         );
     }
 
@@ -140,7 +146,18 @@ public partial class SteamLobbyManager : Node
         }
     }
 
-    public void UpdatePlayerState(LobbyPlayerData player, int characterIndex)
+    public void HandleLobbyPlayerLeft(CSteamID sender, byte[] data)
+    {
+        GD.Print($"[SteamLobbyManager] Player left: {sender}");
+        _players.Remove(sender.m_SteamID);
+
+        Callable.From(() =>
+        {
+            OnPlayerLeft?.Invoke(sender.m_SteamID);
+        }).CallDeferred();
+    }
+
+    public void UpdatePlayerState(LobbyPlayerData player, int characterIndex, int slotIndex)
     {
         if (!Network.IsOnline) return;
 
@@ -150,10 +167,23 @@ public partial class SteamLobbyManager : Node
             Username = SteamFriends.GetPersonaName(),
             PlayerId = player.PlayerId,
             CharacterIndex = characterIndex,
-            LockedIn = player.LockedIn
+            LockedIn = player.LockedIn,
+            SlotIndex = slotIndex
         };
 
         _players[packet.SteamId] = packet;
+        Broadcast(packet);
+    }
+
+    public void BroadcastPlayerLeft()
+    {
+        ulong localId = LocalSteamId;
+        _players.Remove(localId);
+
+        LobbyPlayerLeftPacket packet = new LobbyPlayerLeftPacket
+        {
+            SteamId = localId
+        };
         Broadcast(packet);
     }
 

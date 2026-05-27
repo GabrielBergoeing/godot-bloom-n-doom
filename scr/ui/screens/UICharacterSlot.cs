@@ -13,6 +13,8 @@ public partial class UICharacterSlot : TextureRect
     private LobbyPlayerData _player;
     private UILobbyMenu _menu;
 
+	public int SlotIndex { get; set; }
+
     private int _index = 0;
     public int Index => _index;
     public bool IsRemote => _isRemote;
@@ -207,20 +209,22 @@ public partial class UICharacterSlot : TextureRect
             UI.SFX.PlayOnHover();
     }
 
-    private void UpdateNetwork()
-    {
-        if (UI.Network.IsOnline)
-            UI.Network.Lobby.UpdatePlayerState(_player, _index);
-    }
+	private void UpdateNetwork()
+	{
+		if (UI.Network.IsOnline)
+			UI.Network.Lobby.UpdatePlayerState(_player, _index, SlotIndex);
+	}
 
     private void ClearSlot()
     {
-		if(!UI.Network.IsOnline)
-        	InputDeviceManager.Instance.RemovePlayer(_player);
+		if (UI.Network.IsOnline)
+			UI.Network.Lobby.BroadcastPlayerLeft();
+		else
+			InputDeviceManager.Instance.RemovePlayer(_player);
 		
         LobbyStateService.Instance.RemoveLocalPlayer(_player);
         _player = null;
-		
+
         SetEmpty();
         _menu.NotifySlotUpdated(this);
     }
