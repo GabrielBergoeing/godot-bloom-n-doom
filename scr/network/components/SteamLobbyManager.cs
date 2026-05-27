@@ -29,6 +29,7 @@ public partial class SteamLobbyManager : Node
     private Callback<LobbyCreated_t> _lobbyCreated;
     private Callback<LobbyEnter_t> _lobbyEntered;
     private Callback<GameLobbyJoinRequested_t> _joinRequest;
+    private Callback<LobbyChatUpdate_t> _lobbyChatUpdate;
 
     public override void _Ready()
     {
