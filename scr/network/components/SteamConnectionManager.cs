@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public partial class SteamConnectionManager : Node
 {
     public static SteamConnectionManager Instance;
+    public NetworkRoot Network => NetworkRoot.Instance;
 
     private readonly Dictionary<
         ulong,
@@ -25,19 +26,18 @@ public partial class SteamConnectionManager : Node
     public void AddPeer(CSteamID steamId)
     {
         ulong id = steamId.m_SteamID;
-
         if (_peers.ContainsKey(id))
             return;
 
         _peers[id] = steamId;
-
         GD.Print($"[SteamConnectionManager] Peer connected: {id}");
+
+        Network.SetOnlineMode(true);
     }
 
     public void RemovePeer(CSteamID steamId)
     {
         ulong id = steamId.m_SteamID;
-
         if (!_peers.Remove(id))
             return;
 
@@ -57,5 +57,6 @@ public partial class SteamConnectionManager : Node
     public void Clear()
     {
         _peers.Clear();
+        Network.SetOnlineMode(false);
     }
 }

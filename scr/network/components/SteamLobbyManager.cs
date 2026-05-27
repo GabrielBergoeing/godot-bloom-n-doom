@@ -50,6 +50,7 @@ public partial class SteamLobbyManager : Node
     private void OnSceneReady()
     {
         _sceneReady = true;
+
         GD.Print($"[SteamLobbyManager] Scene ready, subscribers: {OnPlayerStateUpdated?.GetInvocationList().Length ?? 0}");
         foreach (var packet in _pendingPackets)
             OnPlayerStateUpdated?.Invoke(packet);
@@ -123,7 +124,7 @@ public partial class SteamLobbyManager : Node
     {
         if (!CurrentLobbyId.IsValid())
             return;
-
+        
         SteamMatchmaking.InviteUserToLobby(CurrentLobbyId, friendId);
     }
 
@@ -217,6 +218,7 @@ public partial class SteamLobbyManager : Node
 
     private void OnJoinRequested(GameLobbyJoinRequested_t callback)
     {
+        GD.Print("[SteamLobbyManager] Join requested, setting online mode");
         JoinLobby(callback.m_steamIDLobby);
     }
 
