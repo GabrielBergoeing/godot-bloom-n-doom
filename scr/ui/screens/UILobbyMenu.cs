@@ -19,6 +19,7 @@ public partial class UILobbyMenu : Control
 
     public override void _EnterTree()
     {
+        GD.Print("[UILobbyMenu] _EnterTree called");
         if (UI.Network.IsOnline)
         {
             UI.Network.Lobby.OnPlayerStateUpdated -= OnRemotePlayerUpdated;
@@ -28,6 +29,7 @@ public partial class UILobbyMenu : Control
 
     public override void _Ready()
     {
+        GD.Print("[UILobbyMenu] _Ready called");
         _slotsContainer = GetNode<HBoxContainer>("Slots");
 
         _slots = _slotsContainer
@@ -48,6 +50,7 @@ public partial class UILobbyMenu : Control
     public override void _Process(double delta)
     {
         if (!UI.Network.IsOnline) return;
+        if (_slots == null) return;
         
         foreach (var kvp in UI.Network.Lobby.Players)
         {

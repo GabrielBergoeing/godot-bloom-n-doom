@@ -233,14 +233,12 @@ public partial class SteamLobbyManager : Node
     private void EmitInitialPlayerState()
     {
         GD.Print("[SteamLobbyManager] EmitInitialPlayerState");
+        
         foreach (var kvp in _players)
         {
             GD.Print($"[SteamLobbyManager] Re-broadcasting state for {kvp.Key}");
             Broadcast(kvp.Value);
         }
-
-        foreach (LobbyPlayerData player in InputDeviceManager.Instance.LobbyPlayers)
-            UpdatePlayerState(player, 0);
     }
 
     private void BroadcastKnownStates()
