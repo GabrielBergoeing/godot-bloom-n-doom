@@ -55,9 +55,16 @@ public partial class SteamLobbyManager : Node
         _players[sender.m_SteamID] = packet;
 
         if (sender.m_SteamID != SteamUser.GetSteamID().m_SteamID)
-            OnPlayerStateUpdated?.Invoke(packet);
+            CallDeferred(nameof(InvokePlayerStateUpdated), sender.m_SteamID);
 
         GD.Print($"Updated player state for {sender}");
+    }
+
+    private void InvokePlayerStateUpdated(ulong steamId)
+    {
+        GD.Print("[SteamLobbyManager] Firing PlayerStateSignal");
+        if (_players.TryGetValue(steamId, out var packet))
+            OnPlayerStateUpdated?.Invoke(packet);
     }
 
     private void RegisterCallbacks()

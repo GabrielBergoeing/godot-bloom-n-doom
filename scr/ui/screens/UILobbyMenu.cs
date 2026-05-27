@@ -54,6 +54,7 @@ public partial class UILobbyMenu : Control
         
         foreach (var kvp in UI.Network.Lobby.Players)
         {
+            GD.Print($"[UILobbyMenu] _Process checking {kvp.Key}, remoteSlots has: {_remoteSlots.ContainsKey(kvp.Key)}");
             if (kvp.Key == UI.Network.Lobby.LocalSteamId) continue;
             if (_remoteSlots.ContainsKey(kvp.Key)) continue;
             
