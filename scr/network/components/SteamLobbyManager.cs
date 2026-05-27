@@ -182,6 +182,7 @@ public partial class SteamLobbyManager : Node
     {
         GD.Print("[SteamLobbyManager] Lobby member update");
         RegisterLobbyMembers();
+        CallDeferred(nameof(EmitInitialPlayerState));
     }
 
     private void NotifyLobbyReady()
@@ -222,6 +223,17 @@ public partial class SteamLobbyManager : Node
 
             Network.Connection.AddPeer(member);
             GD.Print($"Registered peer: {member}");
+        }
+    }
+
+    private void EmitInitialPlayerState()
+    {
+        foreach (LobbyPlayerData player in InputDeviceManager.Instance.LobbyPlayers)
+        {
+            UpdatePlayerState(
+                player,
+                0
+            );
         }
     }
 }

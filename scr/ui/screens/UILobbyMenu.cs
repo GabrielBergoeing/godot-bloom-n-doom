@@ -33,10 +33,7 @@ public partial class UILobbyMenu : Control
         
 
         if (UI.Network.IsOnline)
-        {
-            UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
-            CallDeferred(nameof(SendInitialStates));
-        }
+            SyncOnlineLobby();
     }
 
     private void OnPlayerJoined(LobbyPlayerData player)
@@ -144,9 +141,17 @@ public partial class UILobbyMenu : Control
         _remoteSlots[packet.SteamId] =
             freeSlot;
 
-        GD.Print(
-            $"Created remote slot for {packet.SteamId}"
-        );
+        GD.Print($"Created remote slot for {packet.SteamId}");
+        EvaluateStart();
+    }
+
+    private void SyncOnlineLobby()
+    {
+        UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
+        foreach (var kvp in UI.Network.Lobby.Players)
+            OnRemotePlayerUpdated(kvp.Value);
+
+        CallDeferred(nameof(SendInitialStates));
     }
 
     private void SendInitialStates()
