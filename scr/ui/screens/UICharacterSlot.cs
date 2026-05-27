@@ -215,10 +215,12 @@ public partial class UICharacterSlot : TextureRect
 
     private void ClearSlot()
     {
-        InputDeviceManager.Instance.RemovePlayer(_player);
+		if(!UI.Network.IsOnline)
+        	InputDeviceManager.Instance.RemovePlayer(_player);
+		
         LobbyStateService.Instance.RemoveLocalPlayer(_player);
-
         _player = null;
+		
         SetEmpty();
         _menu.NotifySlotUpdated(this);
     }

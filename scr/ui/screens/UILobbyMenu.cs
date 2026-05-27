@@ -16,7 +16,7 @@ public partial class UILobbyMenu : Control
 
     public override void _EnterTree()
     {
-        if (!UI.Network.IsOnline) return;
+        //if (!UI.Network.IsOnline) return;
         UI.Network.Lobby.OnPlayerStateUpdated -= OnRemotePlayerUpdated;
         UI.Network.Lobby.OnPlayerStateUpdated += OnRemotePlayerUpdated;
     }
@@ -72,6 +72,8 @@ public partial class UILobbyMenu : Control
 
     private void OnPlayerJoined(LobbyPlayerData player)
     {
+        if(HasOldSlot(player)) return;
+
         var slot = FindFreeSlot();
         if (slot == null) return;
 
@@ -179,5 +181,15 @@ public partial class UILobbyMenu : Control
         }
 
         GD.Print("[UILobbyMenu] Sent initial states");
+    }
+
+    private bool HasOldSlot(LobbyPlayerData player)
+    {
+        foreach (var slot in _slots)
+        {
+            if (slot.Player == player)
+                return true;
+        }
+        return false;
     }
 }
