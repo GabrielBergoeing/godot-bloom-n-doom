@@ -49,11 +49,11 @@ public partial class SteamLobbyManager : Node
 
     public void HandleLobbyPlayerState(CSteamID sender, byte[] data)
     {
-        LobbyPlayerStatePacket packet = LobbyPlayerStatePacket
-            .FromBytes(data);
-
+        LobbyPlayerStatePacket packet = LobbyPlayerStatePacket.FromBytes(data);
         _players[sender.m_SteamID] = packet;
-        OnPlayerStateUpdated?.Invoke(packet);
+
+        if (sender.m_SteamID != SteamUser.GetSteamID().m_SteamID)
+            OnPlayerStateUpdated?.Invoke(packet);
 
         GD.Print($"Updated player state for {sender}");
     }
@@ -144,8 +144,6 @@ public partial class SteamLobbyManager : Node
 
         // Store locally too
         _players[packet.SteamId] = packet;
-        OnPlayerStateUpdated?.Invoke(packet);
-
         Broadcast(packet);
     }
 
@@ -233,11 +231,17 @@ public partial class SteamLobbyManager : Node
     private void EmitInitialPlayerState()
     {
         foreach (LobbyPlayerData player in InputDeviceManager.Instance.LobbyPlayers)
+            UpdatePlayerState(player, 0);
+        BroadcastKnownStates();
+    }
+
+    private void BroadcastKnownStates()
+    {
+        foreach (var kvp in _players)
         {
-            UpdatePlayerState(
-                player,
-                0
-            );
+            if (kvp.Key == SteamUser.GetSteamID().m_SteamID)
+                continue;
+            Broadcast(kvp.Value);
         }
     }
 }
