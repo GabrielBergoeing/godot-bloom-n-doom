@@ -4,235 +4,222 @@ using System.Collections.Generic;
 
 public partial class UICharacterSlot : TextureRect
 {
-	private UIService UI => UIService.Instance;
+    private UIService UI => UIService.Instance;
 
-	private TextureRect _illustration;
-	private Label _name;
-	private TextureRect _lockIcon;
+    private TextureRect _illustration;
+    private Label _name;
+    private TextureRect _lockIcon;
 
-	private LobbyPlayerData _player;
-	private UILobbyMenu _menu;
+    private LobbyPlayerData _player;
+    private UILobbyMenu _menu;
 
-	private int _index = 0;
-	public int Index => _index;
-	private float _cooldown = 0f;
-	private float _inputBlockTimer = 0f;
+    private int _index = 0;
+    public int Index => _index;
+    public bool IsRemote => _isRemote;
 
-	private bool _isRemote;
-	private ulong _remoteSteamId;
+    private float _cooldown = 0f;
+    private float _inputBlockTimer = 0f;
 
-	[Export] public float NavCooldown = 0.2f;
+    private bool _isRemote;
+    private ulong _remoteSteamId;
 
-	public bool Occupied => _player != null;
-	public LobbyPlayerData Player => _player;
+    [Export] public float NavCooldown = 0.2f;
 
-	public override void _Ready()
-	{
-		_illustration = GetNode<TextureRect>("Illustration");
-		_name = GetNode<Label>("Name");
-		_lockIcon = GetNode<TextureRect>("LockIcon");
+    public bool Occupied => _player != null || _isRemote;
+    public LobbyPlayerData Player => _player;
 
-		SetEmpty();
-	}
+    public override void _Ready()
+    {
+        _illustration = GetNode<TextureRect>("Illustration");
+        _name = GetNode<Label>("Name");
+        _lockIcon = GetNode<TextureRect>("LockIcon");
 
-	public void AssignPlayer(LobbyPlayerData player, UILobbyMenu menu)
-	{
-		_player = player;
-		_menu = menu;
+        SetEmpty();
+    }
 
-		_inputBlockTimer = 0.25f;
-		_index = 0;
+    public void AssignPlayer(LobbyPlayerData player, UILobbyMenu menu)
+    {
+        _player = player;
+        _menu = menu;
+        _isRemote = false;
 
-		UpdateVisuals();
-	}
+        _inputBlockTimer = 0.25f;
+        _index = 0;
 
-	public override void _Process(double delta)
-	{
-		if (_player == null && !_isRemote)
-			return;
+        UpdateVisuals();
+    }
 
-		if (_isRemote)
-			return;
+    public override void _Process(double delta)
+    {
+        if (_player == null && !_isRemote)
+            return;
 
-		_cooldown -= (float)delta;
+        if (_isRemote)
+            return;
 
-		if (_inputBlockTimer > 0f)
-		{
-			_inputBlockTimer -= (float)delta;
-			return;
-		}
+        _cooldown -= (float)delta;
 
-		HandleNavigation();
-		HandleConfirm();
-		HandleCancel();
-	}
+        if (_inputBlockTimer > 0f)
+        {
+            _inputBlockTimer -= (float)delta;
+            return;
+        }
 
-	public void SetEmpty()
-	{
-		SelfModulate = Colors.DarkSlateGray;
-		_illustration.Texture = null;
-		_name.Text = "Press 'Start' to Join";
-		_lockIcon.Visible = false;
-	}
+        HandleNavigation();
+        HandleConfirm();
+        HandleCancel();
+    }
 
-	public void AssignRemotePlayer(LobbyPlayerStatePacket packet, UILobbyMenu menu)
-	{
-		_menu = menu;
-		_isRemote = true;
-		_remoteSteamId = packet.SteamId;
-		_index = packet.CharacterIndex;
+    public void SetEmpty()
+    {
+        _isRemote = false;
+        _remoteSteamId = 0;
+        _player = null;
 
-		if (_menu.Characters == null || _menu.Characters.Length == 0)
-		{
-			GD.PrintErr("[UICharacterSlot] CharacterDatabase not set or empty");
-			return;
-		}
+        SelfModulate = Colors.DarkSlateGray;
+        _illustration.Texture = null;
+        _name.Text = "Press 'Start' to Join";
+        _lockIcon.Visible = false;
+    }
 
-		_index = Mathf.Clamp(_index, 0, _menu.Characters.Length - 1);
-		CharacterData character = _menu.Characters[_index];
+    public void AssignRemotePlayer(LobbyPlayerStatePacket packet, UILobbyMenu menu)
+    {
+        _menu = menu;
+        _isRemote = true;
+        _player = null;
+        _remoteSteamId = packet.SteamId;
+        _index = packet.CharacterIndex;
 
-		_illustration.Texture = character.Illustration;
-		_name.Text = packet.Username;
-		_lockIcon.Visible = packet.LockedIn;
-		SelfModulate = packet.LockedIn ? character.LockedColor : character.ActiveColor;
-	}
+        if (_menu.Characters == null || _menu.Characters.Length == 0)
+        {
+            GD.PrintErr("[UICharacterSlot] CharacterDatabase not set or empty");
+            return;
+        }
 
-	private void HandleNavigation()
-	{
-		if (_player.LockedIn)
-			return;
+        _index = Mathf.Clamp(_index, 0, _menu.Characters.Length - 1);
+        CharacterData character = _menu.Characters[_index];
 
-		if (_cooldown > 0)
-			return;
+        _illustration.Texture = character.Illustration;
+        _name.Text = packet.Username;
+        _lockIcon.Visible = packet.LockedIn;
+        SelfModulate = packet.LockedIn ? character.LockedColor : character.ActiveColor;
+    }
 
-		float axis = GetVerticalAxis();
-		if (Mathf.Abs(axis) < 0.5f)
-			return;
+    private void HandleNavigation()
+    {
+        if (_player.LockedIn)
+            return;
 
-		int count = _menu.Characters.Length;
+        if (_cooldown > 0)
+            return;
 
-		_index = (_index + (axis > 0 ? 1 : -1) + count) % count;
-		_cooldown = NavCooldown;
+        float axis = GetVerticalAxis();
+        if (Mathf.Abs(axis) < 0.5f)
+            return;
 
-		UpdateVisuals();
-		UpdateNetwork();
-	}
+        int count = _menu.Characters.Length;
+        _index = (_index + (axis > 0 ? 1 : -1) + count) % count;
+        _cooldown = NavCooldown;
 
-	private void HandleConfirm()
-	{
-		if (_player.LockedIn)
-			return;
+        UpdateVisuals();
+        UpdateNetwork();
+    }
 
-		if (PressedAccept())
-		{
-			_player.LockedIn = true;
-			UI.SFX.PlayOnConfirm();
+    private void HandleConfirm()
+    {
+        if (_player.LockedIn)
+            return;
 
-			_player.SelectedCharacter =
-				_menu.Characters[_index];
+        if (PressedAccept())
+        {
+            _player.LockedIn = true;
+            _player.SelectedCharacter = _menu.Characters[_index];
 
-			UpdateVisuals();
-			UpdateNetwork();
+            UpdateVisuals();
+            UpdateNetwork();
+            _menu.NotifySlotUpdated(this);
+        }
+    }
 
-			_menu.NotifySlotUpdated();
-		}
-	}
+    private void HandleCancel()
+    {
+        if (!PressedCancel()) return;
 
-	private void HandleCancel()
-	{
-		if (!PressedCancel())
-			return;
+        if (_player.LockedIn)
+        {
+            _player.LockedIn = false;
+            UpdateVisuals();
+            UpdateNetwork();
+            _menu.NotifySlotUpdated(this);
+        }
+        else
+            ClearSlot();
+    }
 
-		if (_player.LockedIn)
-		{
-			_player.LockedIn = false;
-			UpdateVisuals();
-			_menu.NotifySlotUpdated();
-		}
-		else
-			ClearSlot();
-	}
+    private float GetVerticalAxis()
+    {
+        if (_player.DeviceType == "Keyboard")
+        {
+            if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.Up))
+                return 1;
+            if (Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.Down))
+                return -1;
+        }
+        else
+        {
+            return Input.GetJoyAxis(_player.DeviceId, JoyAxis.LeftY) * -1f;
+        }
+        return 0;
+    }
 
-	private float GetVerticalAxis()
-	{
-		if (_player.DeviceType == "Keyboard")
-		{
-			if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.Up))
-				return 1;
+    private bool PressedAccept()
+    {
+        if (_player.DeviceType == "Keyboard")
+            return Input.IsKeyPressed(Key.Enter);
 
-			if (Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.Down))
-				return -1;
-		}
-		else
-		{
-			return Input.GetJoyAxis(
-				_player.DeviceId,
-				JoyAxis.LeftY
-			) * -1f;
-		}
-		return 0;
-	}
+        return Input.IsJoyButtonPressed(_player.DeviceId, JoyButton.A);
+    }
 
-	private bool PressedAccept()
-	{
-		if (_player.DeviceType == "Keyboard")
-			return Input.IsKeyPressed(Key.Enter);
+    private bool PressedCancel()
+    {
+        if (_player.DeviceType == "Keyboard")
+            return Input.IsKeyPressed(Key.Backspace);
 
-		return Input.IsJoyButtonPressed(
-			_player.DeviceId,
-			JoyButton.A
-		);
-	}
+        return Input.IsJoyButtonPressed(_player.DeviceId, JoyButton.B);
+    }
 
-	private bool PressedCancel()
-	{
-		if (_player.DeviceType == "Keyboard")
-			return Input.IsKeyPressed(Key.Backspace);
+    private void UpdateVisuals()
+    {
+        if (_player == null)
+            return;
 
-		return Input.IsJoyButtonPressed(
-			_player.DeviceId,
-			JoyButton.B
-		);
-	}
+        CharacterData character = _menu.Characters[_index];
 
-	private void UpdateVisuals()
-	{
-		if (_player == null)
-			return;
+        _illustration.Texture = character.Illustration;
+        _name.Text = character.CharacterName;
+        _lockIcon.Visible = _player.LockedIn;
 
-		CharacterData character = _menu.Characters[_index];
+        SelfModulate = _player.LockedIn ? character.LockedColor : character.ActiveColor;
 
-		_illustration.Texture = character.Illustration;
-		_name.Text = character.CharacterName;
-		_lockIcon.Visible =_player.LockedIn;
+        if (_player.LockedIn)
+            UI.SFX.PlayOnConfirm();
+        else
+            UI.SFX.PlayOnHover();
+    }
 
-		// Colors
-		Color targetColor =
-			_player.LockedIn
-			? character.LockedColor
-			: character.ActiveColor;
+    private void UpdateNetwork()
+    {
+        if (UI.Network.IsOnline)
+            UI.Network.Lobby.UpdatePlayerState(_player, _index);
+    }
 
-		SelfModulate = targetColor;
+    private void ClearSlot()
+    {
+        InputDeviceManager.Instance.RemovePlayer(_player);
+        LobbyStateService.Instance.RemoveLocalPlayer(_player);
 
-		if(_player.LockedIn)
-			UI.SFX.PlayOnConfirm();
-		else
-			UI.SFX.PlayOnHover();
-	}
-
-	private void UpdateNetwork()
-	{
-		if(UI.Network.IsOnline)
-			UI.Network.Lobby.UpdatePlayerState(_player, _index);
-	}
-
-	private void ClearSlot()
-	{
-		InputDeviceManager.Instance.RemovePlayer(_player);
-
-		_player = null;
-		_menu.NotifySlotUpdated();
-
-		SetEmpty();
-	}
+        _player = null;
+        SetEmpty();
+        _menu.NotifySlotUpdated(this);
+    }
 }

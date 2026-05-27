@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dr0en1qkpipg8" path="res://scr/network/components/SteamPacketRouter.cs" id="4_drsno"]
 [ext_resource type="Script" uid="uid://c8x4577jjuwg7" path="res://scr/network/components/NetworkTickManager.cs" id="5_al7kj"]
 [ext_resource type="Script" uid="uid://wehx7858tjlm" path="res://scr/network/components/SteamLobbyManager.cs" id="7_drsno"]
+[ext_resource type="Script" uid="uid://b1u5w1yk5aljy" path="res://scr/network/services/LobbyStateService.cs" id="8_al7kj"]
 
 [node name="NetworkRoot" type="Node" unique_id=1059457770]
 script = ExtResource("1_e10rr")
@@ -28,3 +29,6 @@ script = ExtResource("2_s8h4n")
 
 [node name="SteamLobbyManager" type="Node" parent="." unique_id=644335405]
 script = ExtResource("7_drsno")
+
+[node name="LobbyStateService" type="Node" parent="SteamLobbyManager" unique_id=1252235710]
+script = ExtResource("8_al7kj")
