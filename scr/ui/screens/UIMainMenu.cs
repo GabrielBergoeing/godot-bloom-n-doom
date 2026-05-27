@@ -11,6 +11,7 @@ public partial class UIMainMenu : Control
 
     private Vector2 _logoStartPos;
     private float _floatTime = 0f;
+    private bool _onlineAvailable = false;
 
     private TextureRect _logo;
     private TextureButton _playButton;
@@ -27,7 +28,8 @@ public partial class UIMainMenu : Control
         _quitButton = GetNode<TextureButton>("Buttons/QuitButton");
 
         HookButtonSignals();
-        UI.Audio.StartBGM(UI.Paths.MainMenuBGM);
+        SubscribeNetworkSignals();
+        PlayMainMenuTrack();
         
         _logoStartPos = _logo.Position;
         _playButton.GrabFocus();
@@ -57,10 +59,29 @@ public partial class UIMainMenu : Control
         _quitButton.FocusEntered += HoverBTN;
     }
 
+    private void SubscribeNetworkSignals()
+    {
+        _onlineAvailable =
+            UI.Network != null &&
+            UI.Network.IsNetworkRunning();
+        
+
+        if (_onlineAvailable)
+        {
+            GD.Print("[UIMainMenu] Game is online");
+            UI.Network.Lobby.OnLobbyReady += HandleLobbyReady;
+        }
+    }
+
+    private async void PlayMainMenuTrack()
+    {    
+        await UI.Audio.StartBGM(UI.Paths.MainMenuBGM);
+    }
+
     private void PlayBTN()
     {
         UI.SFX.PlayOnConfirm();
-        UI.Scene.ChangeScene(UI.Paths.LobbyMenuScene);
+        HandleLobbyReady();
     }
 
     private void OnlineBTN()
@@ -71,8 +92,6 @@ public partial class UIMainMenu : Control
         UI.SFX.PlayOnConfirm();
         UI.Network.SetOnlineMode(true);
         UI.Network.Lobby.CreateLobby();
-
-        UI.Scene.ChangeScene(UI.Paths.LobbyMenuScene);
     }
 
     private void SettingsBTN()
@@ -94,10 +113,16 @@ public partial class UIMainMenu : Control
 
     private void UpdateOnlineButton()
     {
-        bool available = UI.Network != null && UI.Network.IsNetworkRunning();
-
-        _onlineButton.Disabled = !available;
-        if (!available)
+        _onlineButton.Disabled = !_onlineAvailable;
+        if (!_onlineAvailable)
             _onlineButton.Modulate = Colors.DarkGray;
+    }
+
+    private void HandleLobbyReady()
+    {
+        GD.Print("Changed Scene");
+        UI.Scene.ChangeScene(
+            UI.Paths.LobbyMenuScene
+        );
     }
 }

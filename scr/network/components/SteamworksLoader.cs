@@ -36,6 +36,12 @@ public partial class SteamworksLoader : Node
         }
     }
 
+    public override void _Process(double delta)
+    {
+        if (IsSteamInitialized)
+            SteamAPI.RunCallbacks();
+    }
+
     public override void _ExitTree()
     {
         if (!IsSteamInitialized)

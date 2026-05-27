@@ -7,6 +7,7 @@ public partial class SteamLobbyManager : Node
 {
     public static SteamLobbyManager Instance;
 
+    public event Action OnLobbyReady;
     public event Action<LobbyPlayerStatePacket> OnPlayerStateUpdated;
 
     public NetworkRoot Network => NetworkRoot.Instance;
@@ -138,32 +139,53 @@ public partial class SteamLobbyManager : Node
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
+        GD.Print("[SteamLobbyManager] OnLobbyCreated fired");
+
+        GD.Print($"Result: {callback.m_eResult}");
+        GD.Print($"Lobby ID: {callback.m_ulSteamIDLobby}");
+
         if (callback.m_eResult != EResult.k_EResultOK)
         {
-            GD.PrintErr("Failed creating lobby");
+            GD.PrintErr($"Failed creating lobby: {callback.m_eResult}");
             return;
         }
 
-        CurrentLobbyId =
-            new CSteamID(callback.m_ulSteamIDLobby);
-
-        HostSteamId =
-            SteamUser.GetSteamID().m_SteamID;
+        CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
+        HostSteamId = SteamUser.GetSteamID().m_SteamID;
 
         GD.Print($"Lobby created: {CurrentLobbyId}");
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
+        GD.Print("[SteamLobbyManager] OnLobbyEntered fired");
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
 
         HostSteamId = SteamMatchmaking
             .GetLobbyOwner(CurrentLobbyId)
             .m_SteamID;
         
-        EmitInitialPlayerState();
-        RegisterLobbyMembers();
         GD.Print($"Entered lobby: {CurrentLobbyId}");
+        RegisterLobbyMembers();
+        //EmitInitialPlayerState();
+        NotifyLobbyReady();
+
+        GD.Print($"Entered lobby: {CurrentLobbyId}");
+    }
+
+    private void NotifyLobbyReady()
+    {
+        GD.Print("[SteamLobbyManager] NotifyLobbyReady");
+
+        if (OnLobbyReady == null)
+        {
+            GD.PrintErr("NO SUBSCRIBERS");
+            return;
+        }
+
+        GD.Print("Invoking lobby ready");
+
+        OnLobbyReady.Invoke();
     }
 
     private void OnJoinRequested(GameLobbyJoinRequested_t callback)
