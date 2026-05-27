@@ -47,7 +47,6 @@ public partial class SteamNetworkManager : Node
             return;
 
         uint packetSize;
-        GD.Print("Polling packets");
 
         while (SteamNetworking.IsP2PPacketAvailable(
             out packetSize
