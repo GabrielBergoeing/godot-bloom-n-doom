@@ -23,6 +23,7 @@ public partial class SteamLobbyManager : Node
 
     // Scene readiness gate
     private bool _sceneReady = false;
+    private bool _emitPending = false;
     private readonly List<LobbyPlayerStatePacket> _pendingPackets = new();
 
     private Callback<LobbyCreated_t> _lobbyCreated;
@@ -189,7 +190,15 @@ public partial class SteamLobbyManager : Node
     {
         GD.Print("[SteamLobbyManager] Lobby member update");
         RegisterLobbyMembers();
-        CallDeferred(nameof(EmitInitialPlayerState));
+
+        if (_emitPending) return;
+        _emitPending = true;
+
+        Callable.From(() =>
+        {
+            _emitPending = false;
+            EmitInitialPlayerState();
+        }).CallDeferred();
     }
 
     private void NotifyLobbyReady()

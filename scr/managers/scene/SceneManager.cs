@@ -29,12 +29,17 @@ public partial class SceneManager : Node
         }
 
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-
-        GD.Print("[SceneManager] Scene ready");
-        OnSceneReady?.Invoke();
+        SendSceneChangeSignal();
 
         if (Fade != null)
             await Fade.FadeIn();
+    }
+
+    private async void SendSceneChangeSignal()
+    {
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        GD.Print("[SceneManager] Scene ready");
+        OnSceneReady?.Invoke();
     }
 
     private async void ReadyFadeScreen()
