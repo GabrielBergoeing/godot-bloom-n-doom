@@ -16,18 +16,14 @@ public partial class SteamLobbyManager : Node
 
     public ulong HostSteamId { get; private set; }
     public bool IsHost => SteamUser.GetSteamID().m_SteamID == HostSteamId;
-
     public ulong LocalSteamId => SteamUser.GetSteamID().m_SteamID;
 
-    private readonly Dictionary<
-        ulong,
-        LobbyPlayerStatePacket
-    > _players = new();
+    private readonly Dictionary<ulong, LobbyPlayerStatePacket> _players = new();
+    public IReadOnlyDictionary<ulong, LobbyPlayerStatePacket> Players => _players;
 
-    public IReadOnlyDictionary<
-        ulong,
-        LobbyPlayerStatePacket
-    > Players => _players;
+    // Scene readiness gate
+    private bool _sceneReady = false;
+    private readonly List<LobbyPlayerStatePacket> _pendingPackets = new();
 
     private Callback<LobbyCreated_t> _lobbyCreated;
     private Callback<LobbyEnter_t> _lobbyEntered;
@@ -38,6 +34,7 @@ public partial class SteamLobbyManager : Node
     {
         Instance = this;
         RegisterCallbacks();
+        SceneManager.Instance.OnSceneReady += OnSceneReady;
         GD.Print("[SteamLobbyManager] Ready");
     }
 
@@ -49,6 +46,16 @@ public partial class SteamLobbyManager : Node
         );
     }
 
+    // Called by SceneManager once the new scene's first frame is done
+    private void OnSceneReady()
+    {
+        _sceneReady = true;
+        GD.Print($"[SteamLobbyManager] Scene ready, flushing {_pendingPackets.Count} pending packets");
+        foreach (var packet in _pendingPackets)
+            OnPlayerStateUpdated?.Invoke(packet);
+        _pendingPackets.Clear();
+    }
+
     public void HandleLobbyPlayerState(CSteamID sender, byte[] data)
     {
         LobbyPlayerStatePacket packet = LobbyPlayerStatePacket.FromBytes(data);
@@ -56,40 +63,30 @@ public partial class SteamLobbyManager : Node
 
         GD.Print($"Updated player state for {sender}");
 
-        if (sender.m_SteamID == SteamUser.GetSteamID().m_SteamID)
+        if (sender.m_SteamID == LocalSteamId)
             return;
-        
+
         Callable.From(() =>
         {
-            GD.Print("[SteamLobbyManager] Firing PlayerStateSignal");
-            OnPlayerStateUpdated?.Invoke(packet);
+            if (_sceneReady)
+            {
+                GD.Print("[SteamLobbyManager] Firing PlayerStateSignal");
+                OnPlayerStateUpdated?.Invoke(packet);
+            }
+            else
+            {
+                GD.Print("[SteamLobbyManager] Scene not ready, queuing packet");
+                _pendingPackets.Add(packet);
+            }
         }).CallDeferred();
-    }
-
-    private void InvokePlayerStateUpdated(ulong steamId)
-    {
-        GD.Print("[SteamLobbyManager] Firing PlayerStateSignal");
-        if (_players.TryGetValue(steamId, out var packet))
-            OnPlayerStateUpdated?.Invoke(packet);
     }
 
     private void RegisterCallbacks()
     {
-        _lobbyCreated = Callback<LobbyCreated_t>.Create(
-            OnLobbyCreated
-        );
-
-        _lobbyEntered = Callback<LobbyEnter_t>.Create(
-            OnLobbyEntered
-        );
-
-        _joinRequest = Callback<GameLobbyJoinRequested_t>.Create(
-            OnJoinRequested
-        );
-
-        _lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(
-            OnLobbyChatUpdate
-        );
+        _lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+        _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        _joinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
+        _lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
     }
 
     public void CreateLobby(int maxPlayers = 4)
@@ -98,7 +95,6 @@ public partial class SteamLobbyManager : Node
             ELobbyType.k_ELobbyTypeFriendsOnly,
             maxPlayers
         );
-
         GD.Print("[SteamLobbyManager] Creating lobby...");
     }
 
@@ -114,7 +110,8 @@ public partial class SteamLobbyManager : Node
 
         SteamMatchmaking.LeaveLobby(CurrentLobbyId);
         CurrentLobbyId = default;
-
+        _sceneReady = false;
+        _pendingPackets.Clear();
         _players.Clear();
         Network.Connection.Clear();
 
@@ -126,18 +123,15 @@ public partial class SteamLobbyManager : Node
         if (!CurrentLobbyId.IsValid())
             return;
 
-        SteamMatchmaking.InviteUserToLobby(
-            CurrentLobbyId,
-            friendId
-        );
+        SteamMatchmaking.InviteUserToLobby(CurrentLobbyId, friendId);
     }
 
     public void Broadcast(NetworkPacket packet)
     {
         var peers = Network.Connection.GetAllPeers().ToList();
-        GD.Print($"Broadcasting packet to {peers} peers");
+        GD.Print($"Broadcasting packet to {peers.Count} peers");
 
-        foreach (var peer in Network.Connection.GetAllPeers())
+        foreach (var peer in peers)
         {
             GD.Print($"Sending packet to {peer}");
             Network.Steam.SendPacket(peer, packet);
@@ -150,14 +144,13 @@ public partial class SteamLobbyManager : Node
 
         LobbyPlayerStatePacket packet = new LobbyPlayerStatePacket
         {
-            SteamId = SteamUser.GetSteamID().m_SteamID,
+            SteamId = LocalSteamId,
             Username = SteamFriends.GetPersonaName(),
             PlayerId = player.PlayerId,
             CharacterIndex = characterIndex,
             LockedIn = player.LockedIn
         };
 
-        // Store locally too
         _players[packet.SteamId] = packet;
         Broadcast(packet);
     }
@@ -165,7 +158,6 @@ public partial class SteamLobbyManager : Node
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
         GD.Print("[SteamLobbyManager] OnLobbyCreated fired");
-
         GD.Print($"Result: {callback.m_eResult}");
         GD.Print($"Lobby ID: {callback.m_ulSteamIDLobby}");
 
@@ -176,7 +168,7 @@ public partial class SteamLobbyManager : Node
         }
 
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
-        HostSteamId = SteamUser.GetSteamID().m_SteamID;
+        HostSteamId = LocalSteamId;
 
         GD.Print($"Lobby created: {CurrentLobbyId}");
     }
@@ -185,11 +177,9 @@ public partial class SteamLobbyManager : Node
     {
         GD.Print("[SteamLobbyManager] OnLobbyEntered fired");
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
+        HostSteamId = SteamMatchmaking.GetLobbyOwner(CurrentLobbyId).m_SteamID;
+        _sceneReady = false;
 
-        HostSteamId = SteamMatchmaking
-            .GetLobbyOwner(CurrentLobbyId)
-            .m_SteamID;
-        
         GD.Print($"Entered lobby: {CurrentLobbyId}");
         RegisterLobbyMembers();
         NotifyLobbyReady();
@@ -213,7 +203,6 @@ public partial class SteamLobbyManager : Node
         }
 
         GD.Print("Invoking lobby ready");
-
         OnLobbyReady.Invoke();
     }
 
@@ -224,16 +213,12 @@ public partial class SteamLobbyManager : Node
 
     private void RegisterLobbyMembers()
     {
-        int count = SteamMatchmaking.GetNumLobbyMembers(
-            CurrentLobbyId
-        );
+        int count = SteamMatchmaking.GetNumLobbyMembers(CurrentLobbyId);
 
         Network.Connection.Clear();
         for (int i = 0; i < count; i++)
         {
-            CSteamID member =SteamMatchmaking.GetLobbyMemberByIndex(
-                CurrentLobbyId, i
-            );
+            CSteamID member = SteamMatchmaking.GetLobbyMemberByIndex(CurrentLobbyId, i);
 
             if (member == SteamUser.GetSteamID())
                 continue;
@@ -246,20 +231,10 @@ public partial class SteamLobbyManager : Node
     private void EmitInitialPlayerState()
     {
         GD.Print("[SteamLobbyManager] EmitInitialPlayerState");
-        
+
         foreach (var kvp in _players)
         {
             GD.Print($"[SteamLobbyManager] Re-broadcasting state for {kvp.Key}");
-            Broadcast(kvp.Value);
-        }
-    }
-
-    private void BroadcastKnownStates()
-    {
-        foreach (var kvp in _players)
-        {
-            if (kvp.Key == SteamUser.GetSteamID().m_SteamID)
-                continue;
             Broadcast(kvp.Value);
         }
     }

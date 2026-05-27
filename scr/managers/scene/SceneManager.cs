@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 public partial class SceneManager : Node
 {
     public static SceneManager Instance { get; private set; }
+    public event Action OnSceneReady;
+
     [Export] private UIFadeScreen Fade;
 
     public override void _Ready()
@@ -16,7 +18,6 @@ public partial class SceneManager : Node
     public async void ChangeScene(string scenePath)
     {
         GD.Print("[SceneManager] Starting scene transition...");
-
         if (Fade != null)
             await Fade.FadeOut();
 
@@ -28,6 +29,10 @@ public partial class SceneManager : Node
         }
 
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        GD.Print("[SceneManager] Scene ready");
+        OnSceneReady?.Invoke();
+
         if (Fade != null)
             await Fade.FadeIn();
     }
