@@ -47,11 +47,10 @@ public partial class SteamLobbyManager : Node
         );
     }
 
-    // Called by SceneManager once the new scene's first frame is done
     private void OnSceneReady()
     {
         _sceneReady = true;
-        GD.Print($"[SteamLobbyManager] Scene ready, flushing {_pendingPackets.Count} pending packets");
+        GD.Print($"[SteamLobbyManager] Scene ready, subscribers: {OnPlayerStateUpdated?.GetInvocationList().Length ?? 0}");
         foreach (var packet in _pendingPackets)
             OnPlayerStateUpdated?.Invoke(packet);
         _pendingPackets.Clear();
@@ -69,6 +68,7 @@ public partial class SteamLobbyManager : Node
 
         Callable.From(() =>
         {
+            GD.Print($"[SteamLobbyManager] About to fire, subscribers: {OnPlayerStateUpdated?.GetInvocationList().Length ?? 0}, sceneReady: {_sceneReady}");
             if (_sceneReady)
             {
                 GD.Print("[SteamLobbyManager] Firing PlayerStateSignal");
@@ -176,7 +176,7 @@ public partial class SteamLobbyManager : Node
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        GD.Print("[SteamLobbyManager] OnLobbyEntered fired");
+        GD.Print($"[SteamLobbyManager] OnLobbyEntered fired, resetting sceneReady (was {_sceneReady})");
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         HostSteamId = SteamMatchmaking.GetLobbyOwner(CurrentLobbyId).m_SteamID;
         _sceneReady = false;
