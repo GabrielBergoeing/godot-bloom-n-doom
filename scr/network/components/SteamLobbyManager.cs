@@ -118,7 +118,7 @@ public partial class SteamLobbyManager : Node
 
     public void Broadcast(NetworkPacket packet)
     {
-        GD.Print($"Broadcasting packet to {Network.Connection.GetAllPeers().Count} peers");
+        GD.Print($"Broadcasting packet to {Network.Connection.GetAllPeers()} peers");
 
         foreach (var peer in Network.Connection.GetAllPeers())
         {
@@ -142,6 +142,7 @@ public partial class SteamLobbyManager : Node
         };
 
         Broadcast(packet);
+        GD.Print($"Peers: {Network.Connection.GetAllPeers()}");
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)

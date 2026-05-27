@@ -163,6 +163,5 @@ public partial class UILobbyMenu : Control
         }
 
         GD.Print("[UILobbyMenu] Sent initial states");
-        GD.Print($"Peers: {Network.Connection.GetAllPeers().Count}");
     }
 }
