@@ -14,7 +14,7 @@ public partial class PlayerInput : Node
     public bool CanControl => canControl;
 
     private bool matchActive = true;
-
+    public bool IsLocalController = true;
 
     public bool InteractPressed { get; private set; }
     public bool SabotagePressed { get; private set; }
@@ -47,7 +47,7 @@ public partial class PlayerInput : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!canControl || !matchActive)
+        if (!canControl || !matchActive || !IsLocalController)
             return;
 
         if (IsKeyboard)
@@ -103,6 +103,12 @@ public partial class PlayerInput : Node
         HandleMovement();
         HandleShoot();
         UpdateFacingDir();
+    }
+
+	// Disables input processing for remote-controlled players
+    public void SetRemoteControlled(bool remote)
+    {
+        IsLocalController = !remote;
     }
 
     private void HandleMovement()

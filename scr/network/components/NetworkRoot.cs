@@ -10,6 +10,7 @@ public partial class NetworkRoot : Node
     public NetworkTickManager Tick { get; private set; }
     public SteamNetworkManager Steam { get; private set; }
     public SteamLobbyManager Lobby { get; private set; }
+    public SteamMatchManager Match { get; private set; }
 
     public bool IsOnline { get; private set; } = false;
 
@@ -27,6 +28,9 @@ public partial class NetworkRoot : Node
 
         Lobby = GetNode<SteamLobbyManager>("SteamLobbyManager");
         Lobby.Initialize(PacketRouter);
+
+        Match = GetNode<SteamMatchManager>("SteamMatchManager");
+        Match.Initialize(PacketRouter);
 
         GD.Print("[NetworkRoot] Initialized");
     }

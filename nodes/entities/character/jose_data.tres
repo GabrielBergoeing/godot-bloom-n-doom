@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_fqkrr")
+CharacterID = 2
 CharacterName = "Jose"
 Illustration = ExtResource("1_ag6my")
 Sprites = ExtResource("2_ktvv6")

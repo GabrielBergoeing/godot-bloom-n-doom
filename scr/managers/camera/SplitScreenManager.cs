@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public partial class SplitScreenManager : Node
 {
     public static SplitScreenManager Instance;
+    public NetworkRoot Network => NetworkRoot.Instance;
 
     [Export] public PackedScene UIPlayerViewportScene;
     [Export] public PackedScene PlayerScene;
@@ -26,9 +27,13 @@ public partial class SplitScreenManager : Node
 
         CreateLevel();
         SpawnPlayers();
+        
         UpdateViewportLayout();
         GameManager.Instance.StartMatch(_levelNode);
         CreateMatchResultsPanel();
+
+        if (Network.Match.IsHost && Network.IsOnline)
+            SteamMatchManager.Instance.BroadcastMatchStart();
     }
 
     private void CreateLevel()
@@ -45,7 +50,9 @@ public partial class SplitScreenManager : Node
     {
         var players = GameManager.Instance.LobbyPlayers;
         for (int i = 0; i < players.Count; i++)
+        {
             SpawnPlayer(players[i], i);
+        }
     }
 
     private void SpawnPlayer(LobbyPlayerData data, int index)

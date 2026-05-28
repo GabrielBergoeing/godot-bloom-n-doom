@@ -1,8 +1,11 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class Player : Entity
 {
+	public event Action<Vector2, float> OnTransformChanged;
+
 	[Export] private PackedScene HotbarScene;
 	[Export] private PackedScene TileInteractionScene;
 	[Export] private PackedScene WaterScene;
@@ -100,6 +103,13 @@ public partial class Player : Entity
 		pickup.SetItemData(data);
 	}
 
+	// Called by SteamMatchManager for remote players
+	public void SetNetworkPosition(Vector2 position, float rotation)
+	{
+		GlobalPosition = position;
+		Rotation = rotation;
+	}
+
 	private void GetPlayerSystems() 
 	{
 		Input = GetNode<PlayerInput>("PlayerInput");
@@ -143,5 +153,11 @@ public partial class Player : Entity
 		IrrigateState = new PlayerIrrigateState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 		ShootState = new PlayerShootState(this, stateMachine);
+	}
+
+	// Called each physics frame when online and local owner
+	private void BroadcastTransform()
+	{
+		OnTransformChanged?.Invoke(GlobalPosition, Rotation);
 	}
 }

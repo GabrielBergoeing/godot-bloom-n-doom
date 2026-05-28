@@ -6,5 +6,12 @@ public enum NetworkPacketType : byte
     LobbyPlayerState = 10,
     LobbyPlayerJoined = 11,
     LobbyPlayerLeft = 12,
-    LobbyStartGame = 13
+    LobbyStartGame = 13,
+
+    MatchStart = 20,
+    MatchPlayerSpawn = 21,
+    MatchPlayerInput = 22,
+    MatchPlayerTransform = 23,
+    MatchTimerSync = 24,
+    MatchEnd = 25
 }

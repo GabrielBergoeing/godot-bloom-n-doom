@@ -4,6 +4,7 @@ using Godot;
 public partial class CharacterData : Resource
 {
     [ExportGroup("Character Details")]
+    [Export] public int CharacterID;
     [Export] public string CharacterName = "";
     [Export] public Texture2D Illustration;
     [Export] public SpriteFrames Sprites;
