@@ -51,6 +51,8 @@ public partial class SteamLobbyManager : Node
             (byte)NetworkPacketType.LobbyPlayerLeft,
             HandleLobbyPlayerLeft
         );
+
+        Network.Steam.OnPeerSessionEstablished += OnPeerSessionEstablished;
     }
 
     private void OnSceneReady()
@@ -221,14 +223,19 @@ public partial class SteamLobbyManager : Node
     {
         GD.Print("[SteamLobbyManager] Lobby member update");
         RegisterLobbyMembers();
+    }
 
-        if (_emitPending) return;
-        _emitPending = true;
-
+    private void OnPeerSessionEstablished(CSteamID peer)
+    {
+        GD.Print($"[SteamLobbyManager] P2P session established with {peer}, sending state");
+        
         Callable.From(() =>
         {
-            _emitPending = false;
-            EmitInitialPlayerState();
+            foreach (var kvp in _players)
+            {
+                GD.Print($"[SteamLobbyManager] Sending state for {kvp.Key} to {peer}");
+                Network.Steam.SendPacket(peer, kvp.Value);
+            }
         }).CallDeferred();
     }
 
