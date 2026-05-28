@@ -27,4 +27,9 @@ public partial class UIService : Node
             Paths.HoverAudio
         );
     }
+
+    public async void PlayBGMTrack(string track)
+    {    
+        await Audio.StartBGM(track);
+    }
 }

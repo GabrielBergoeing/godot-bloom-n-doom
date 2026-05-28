@@ -43,7 +43,6 @@ public partial class SteamMatchManager : Node
         MatchStartPacket packet = BuildMatchStartPacket();
         GD.Print("[SteamMatchManager] Broadcasting match start");
 
-        Game.SetMatchRoster(packet.Players);
         Network.Lobby.Broadcast(packet);
     }
 
@@ -100,7 +99,6 @@ public partial class SteamMatchManager : Node
 
         Callable.From(() =>
         {
-            GameManager.Instance.SetMatchRoster(packet.Players);
             OnMatchStarted?.Invoke(packet);
         }).CallDeferred();
     }

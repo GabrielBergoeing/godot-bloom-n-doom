@@ -11,8 +11,6 @@ public partial class LobbyPlayerData : Resource
     public CharacterData SelectedCharacter;
     public bool LockedIn = false;
 
-    public bool IsOnlinePlayer => SteamId != 0;
-
     public LobbyPlayerData(int playerId, int deviceId, string deviceType, ulong steamId = 0)
     {
         PlayerId = playerId;

@@ -7,10 +7,7 @@ public partial class GameManager : Node
     private UIService UI => UIService.Instance;
 
     public LevelData CurrentLevel { get; private set; }
-
-    // Local players with input data
     public List<LobbyPlayerData> LobbyPlayers { get; private set; } = new();
-    public List<PlayerSpawnData> MatchRoster { get; private set; } = new();
 
     private LevelData _testLevel;
 
@@ -35,18 +32,9 @@ public partial class GameManager : Node
         LobbyPlayers.AddRange(players);
     }
 
-    // Called by SteamMatchManager once MatchStartPacket is built/received
-    public void SetMatchRoster(List<PlayerSpawnData> roster)
-    {
-        MatchRoster.Clear();
-        MatchRoster.AddRange(roster);
-        GD.Print($"[GameManager] Roster set: {MatchRoster.Count} players");
-    }
-
     public void ClearLobby()
     {
         LobbyPlayers.Clear();
-        MatchRoster.Clear();
     }
 
     public void SetLevel(LevelData levelData)
@@ -70,7 +58,7 @@ public partial class GameManager : Node
             return;
         }
 
-        AudioManager.Instance.StartBGM(CurrentLevel.BGMTrack);
+        UI.PlayBGMTrack(CurrentLevel.BGMTrack);
         match.StartMatch();
     }
 }

@@ -29,7 +29,7 @@ public partial class UIMainMenu : Control
 
         HookButtonSignals();
         SubscribeNetworkSignals();
-        PlayMainMenuTrack();
+        UI.PlayBGMTrack(UI.Paths.MainMenuBGM);
         
         _logoStartPos = _logo.Position;
         _playButton.GrabFocus();
@@ -71,11 +71,6 @@ public partial class UIMainMenu : Control
             GD.Print("[UIMainMenu] Game is online");
             UI.Network.Lobby.OnLobbyReady += HandleLobbyReady;
         }
-    }
-
-    private async void PlayMainMenuTrack()
-    {    
-        await UI.Audio.StartBGM(UI.Paths.MainMenuBGM);
     }
 
     private void PlayBTN()

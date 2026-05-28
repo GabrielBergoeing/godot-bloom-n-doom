@@ -20,6 +20,8 @@ public partial class Player : Entity
 	public PlayerSFX SFX { get; private set; }
 
 	public int PlayerId { get; private set; }
+	public ulong OwnerSteamId { get; private set; }
+	public bool IsLocallyControlled { get; private set; }
 	public List<Pickup> PickupsInRange = new();
 
 	// States
@@ -108,6 +110,14 @@ public partial class Player : Entity
 	{
 		GlobalPosition = position;
 		Rotation = rotation;
+	}
+
+	public void SetNetworkOwnership(ulong ownerSteamId, ulong localSteamId)
+	{
+		OwnerSteamId = ownerSteamId;
+		IsLocallyControlled = (ownerSteamId == localSteamId);
+
+		Input.SetRemoteControlled(!IsLocallyControlled);
 	}
 
 	private void GetPlayerSystems() 

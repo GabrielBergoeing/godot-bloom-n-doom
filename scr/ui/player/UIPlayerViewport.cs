@@ -20,6 +20,8 @@ public partial class UIPlayerViewport : SubViewportContainer
     private UIPlayerWater _uiWater;
     private UIPlayerTimer _uiPlayerTimer;
 
+    public Player LinkedPlayer { get; private set; }
+
     public override void _Ready()
 	{
 		_subPort = GetNode<SubViewport>("SubViewport");
@@ -61,6 +63,8 @@ public partial class UIPlayerViewport : SubViewportContainer
         if (newPlayerNode == null || _cam == null)
             return;
 
+        LinkedPlayer = newPlayerNode;
+
 		var remote = newPlayerNode.GetNode<RemoteTransform2D>("RemoteTransform2D");
 		remote.RemotePath = _cam.GetPath();
     }
@@ -98,6 +102,11 @@ public partial class UIPlayerViewport : SubViewportContainer
             _cam.Zoom = new Vector2(DebugCameraScale, DebugCameraScale);
         
         ScaleUI(1f / gridSpaces);
+    }
+
+    public Player GetLinkedPlayer()
+    {
+        return LinkedPlayer;
     }
 
     private void SetPackedScenes()
