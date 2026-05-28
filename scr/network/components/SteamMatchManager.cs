@@ -44,6 +44,7 @@ public partial class SteamMatchManager : Node
         GD.Print("[SteamMatchManager] Broadcasting match start");
 
         Network.Lobby.Broadcast(packet);
+        Callable.From(() => OnMatchStarted?.Invoke(packet)).CallDeferred();
     }
 
     public void BroadcastTransform(int playerId, Vector2 position, float rotation)
@@ -69,16 +70,41 @@ public partial class SteamMatchManager : Node
 
         foreach (var player in Game.LobbyPlayers)
         {
+            int charIndex = 0;
+            if (player.SelectedCharacter != null)
+                charIndex = player.SelectedCharacter.CharacterID;
+            else
+            {
+                var state = Network.LobbyService.GetPlayerChar(player.PlayerId);
+                if (state != -1)
+                    charIndex = state;
+            }
+
+            GD.Print($"[SteamMatchManager] Adding local player {player.PlayerId}, char {charIndex}");
+
             packet.Players.Add(new PlayerSpawnData
             {
-                SteamId = player.SteamId,
+                SteamId = LocalSteamId,
                 PlayerId = player.PlayerId,
-                CharacterIndex = player.SelectedCharacter.CharacterID,
+                CharacterIndex = charIndex,
                 SpawnIndex = spawnIndex++,
-                IsLocalOwner = (LocalSteamId == player.SteamId)
+                IsLocalOwner = true
             });
         }
 
+        foreach (var kvp in LobbyStateService.Instance.RemoteStates)
+        {
+            GD.Print($"[SteamMatchManager] Adding remote player {kvp.Value.PlayerId} (Steam: {kvp.Key}), char {kvp.Value.CharacterIndex}");
+
+            packet.Players.Add(new PlayerSpawnData
+            {
+                SteamId = kvp.Key,
+                PlayerId = kvp.Value.PlayerId,
+                CharacterIndex = kvp.Value.CharacterIndex,
+                SpawnIndex = spawnIndex++,
+                IsLocalOwner = false
+            });
+        }
         return packet;
     }
 
@@ -96,11 +122,7 @@ public partial class SteamMatchManager : Node
             p.IsLocalOwner = p.SteamId == localSteamId;
 
         GD.Print($"[SteamMatchManager] Match start received, {packet.Players.Count} players");
-
-        Callable.From(() =>
-        {
-            OnMatchStarted?.Invoke(packet);
-        }).CallDeferred();
+        Callable.From(() => OnMatchStarted?.Invoke(packet)).CallDeferred();
     }
 
     private void HandlePlayerTransform(CSteamID sender, byte[] data)

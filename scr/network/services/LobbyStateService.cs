@@ -63,6 +63,14 @@ public partial class LobbyStateService : Node
         _localStates.Clear();
     }
 
+    public int GetPlayerChar(int playerId)
+    {
+        var state = _localStates.Find(s => s.Player.PlayerId == playerId);
+        if (state != null)
+            return state.CharacterIndex;
+        return -1;
+    }
+
     private void EvaluateReady()
     {
         int total = _localStates.Count + _remoteStates.Count;

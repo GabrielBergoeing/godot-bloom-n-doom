@@ -12,6 +12,8 @@ public partial class NetworkRoot : Node
     public SteamLobbyManager Lobby { get; private set; }
     public SteamMatchManager Match { get; private set; }
 
+    public LobbyStateService LobbyService => LobbyStateService.Instance;
+
     public bool IsOnline { get; private set; } = false;
 
     public override void _Ready()
