@@ -30,20 +30,17 @@ public partial class InputDeviceManager : Node
         // Keyboard
         if (@event is InputEventKey key && key.Pressed)
         {
-            deviceId = 0;
+            deviceId = -1;
             type = "Keyboard";
-
-            if (key.Keycode == Key.Enter)
-                joinPressed = true;
+            joinPressed = (key.Keycode == Key.Enter);
         }
 
         // Controller
         if (@event is InputEventJoypadButton btn && btn.Pressed)
         {
+            deviceId = btn.Device;
             type = "Controller";
-
-            if (btn.ButtonIndex == JoyButton.Start)
-                joinPressed = true;
+            joinPressed = (btn.ButtonIndex == JoyButton.Start);
         }
 
         if (!joinPressed)

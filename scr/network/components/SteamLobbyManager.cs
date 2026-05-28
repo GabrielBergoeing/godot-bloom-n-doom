@@ -10,6 +10,7 @@ public partial class SteamLobbyManager : Node
 
     public event Action OnLobbyReady;
     public event Action<ulong> OnPlayerLeft;
+    public event Action<int> OnStartGame;
     public event Action<LobbyPlayerStatePacket> OnPlayerStateUpdated;
 
     public NetworkRoot Network => NetworkRoot.Instance;
@@ -50,6 +51,11 @@ public partial class SteamLobbyManager : Node
         router.RegisterHandler(
             (byte)NetworkPacketType.LobbyPlayerLeft,
             HandleLobbyPlayerLeft
+        );
+
+        router.RegisterHandler(
+            (byte)NetworkPacketType.LobbyStartGame,
+            HandleLobbyStartGame
         );
 
         Network.Steam.OnPeerSessionEstablished += OnPeerSessionEstablished;
@@ -187,6 +193,23 @@ public partial class SteamLobbyManager : Node
             SteamId = localId
         };
         Broadcast(packet);
+    }
+
+    public void BroadcastStartGame(int levelIndex)
+    {
+        LobbyStartGamePacket packet = new LobbyStartGamePacket { Seed = levelIndex };
+        Broadcast(packet);
+    }
+
+    public void HandleLobbyStartGame(CSteamID sender, byte[] data)
+    {
+        LobbyStartGamePacket packet = new LobbyStartGamePacket();
+        PacketReader reader = new PacketReader(data);
+        reader.ReadByte();
+        packet.Deserialize(reader);
+
+        GD.Print($"[SteamLobbyManager] Start game received, level index: {packet.Seed}");
+        Callable.From(() => OnStartGame?.Invoke(packet.Seed)).CallDeferred();
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)

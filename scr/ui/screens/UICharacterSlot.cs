@@ -162,15 +162,11 @@ public partial class UICharacterSlot : TextureRect
     {
         if (_player.DeviceType == "Keyboard")
         {
-            if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.Up))
-                return 1;
-            if (Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.Down))
-                return -1;
+            if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.Up)) return 1;
+            if (Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.Down)) return -1;
         }
         else
-        {
             return Input.GetJoyAxis(_player.DeviceId, JoyAxis.LeftY) * -1f;
-        }
         return 0;
     }
 
