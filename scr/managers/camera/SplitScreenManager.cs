@@ -9,6 +9,7 @@ public partial class SplitScreenManager : Node
     [Export] public PackedScene UIPlayerViewportScene;
     [Export] public PackedScene PlayerScene;
     [Export] public PackedScene MatchResultsScene;
+    [Export] public CharacterDatabase CharacterDatabase;
 
     private GridContainer _screenContainer;
     private Node _levelNode;
@@ -90,53 +91,55 @@ public partial class SplitScreenManager : Node
 
     private void SpawnOfflinePlayer(LobbyPlayerData data, int spawnIndex)
     {
-        Player player = CreatePlayer(data);
-        player.Position = _matchManager.GetSpawnPosition(
-            spawnIndex
-        );
+        CharacterData character = data.SelectedCharacter
+            ?? CharacterDatabase.Characters[0];
 
+        Player player = PlayerScene.Instantiate<Player>();
+        LevelNode.AddChild(player);
+
+        player.Setup(data.PlayerId, data.DeviceId, data.DeviceType, character.Sprites);
+        player.Position = _matchManager.GetSpawnPosition(spawnIndex);
+
+        _matchManager.RegisterPlayer(player);
         CreateLocalViewport(player);
     }
 
     private void SpawnNetworkPlayer(PlayerSpawnData data)
     {
-        LobbyPlayerData lobbyData = GameManager.Instance.LobbyPlayers
-            .Find(p => p.PlayerId == data.PlayerId);
+        bool isLocal = data.IsLocalOwner;
 
-        if (lobbyData == null)
+        // Resolve character from database using index from packet
+        CharacterData character = CharacterDatabase.GetCharacter(data.CharacterIndex);
+        if (character == null)
         {
-            GD.PrintErr($"Missing LobbyPlayerData for {data.PlayerId}");
+            GD.PrintErr($"[SplitScreenManager] No character at index {data.CharacterIndex}");
             return;
         }
 
-        Player player = CreatePlayer(lobbyData);
-        player.Position = _matchManager.GetSpawnPosition(
-            data.SpawnIndex
-        );
-
-        player.SetNetworkOwnership(
-            data.SteamId,
-            Network.Lobby.LocalSteamId
-        );
-
-        if (!player.IsLocallyControlled) return;
-        CreateLocalViewport(player);
-    }
-
-    private Player CreatePlayer(LobbyPlayerData data)
-    {
         Player player = PlayerScene.Instantiate<Player>();
         LevelNode.AddChild(player);
 
-        player.Setup(
-            data.PlayerId,
-            data.DeviceId,
-            data.DeviceType,
-            data.SelectedCharacter.Sprites
-        );
+        if (isLocal)
+        {
+            LobbyPlayerData lobbyData = GameManager.Instance.LobbyPlayers
+                .Find(p => p.PlayerId == data.PlayerId);
 
-        _matchManager.RegisterPlayer(player);
-        return player;
+            int deviceId = lobbyData?.DeviceId ?? -1;
+            string deviceType = lobbyData?.DeviceType ?? "Keyboard";
+
+            player.Setup(data.PlayerId, deviceId, deviceType, character.Sprites);
+            player.Position = _matchManager.GetSpawnPosition(data.SpawnIndex);
+            _matchManager.RegisterPlayer(player);
+
+            CreateLocalViewport(player);
+        }
+        else
+        {
+            player.Setup(data.PlayerId, -1, "Remote", character.Sprites);
+            player.Position = _matchManager.GetSpawnPosition(data.SpawnIndex);
+            player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
+            _matchManager.RegisterPlayer(player);
+        }
     }
 
     private void CreateLocalViewport(Player player)

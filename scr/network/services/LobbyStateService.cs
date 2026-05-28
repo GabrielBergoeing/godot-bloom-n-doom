@@ -67,6 +67,7 @@ public partial class LobbyStateService : Node
     {
         int total = _localStates.Count + _remoteStates.Count;
         if (total < MinimumPlayers) return;
+        if (_localStates.Count == 0) return;
 
         bool localReady = _localStates.TrueForAll(s => s.LockedIn);
         bool remoteReady = true;
