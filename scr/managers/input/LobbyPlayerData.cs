@@ -6,14 +6,18 @@ public partial class LobbyPlayerData : Resource
     public int DeviceId;
     public string DeviceType;
 
-    public CharacterData SelectedCharacter;
+    public ulong SteamId;
 
+    public CharacterData SelectedCharacter;
     public bool LockedIn = false;
 
-    public LobbyPlayerData(int playerId, int deviceId, string deviceType)
+    public bool IsOnlinePlayer => SteamId != 0;
+
+    public LobbyPlayerData(int playerId, int deviceId, string deviceType, ulong steamId = 0)
     {
         PlayerId = playerId;
         DeviceId = deviceId;
         DeviceType = deviceType;
+        SteamId = steamId;
     }
 }

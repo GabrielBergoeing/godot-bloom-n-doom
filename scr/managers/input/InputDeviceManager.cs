@@ -24,11 +24,10 @@ public partial class InputDeviceManager : Node
 
         int deviceId = @event.Device;
         string type = "";
-
         bool joinPressed = false;
 
         // Keyboard
-        if (@event is InputEventKey key && key.Pressed)
+        if (@event is InputEventKey key && key.Pressed && !key.Echo)
         {
             deviceId = -1;
             type = "Keyboard";
@@ -36,7 +35,7 @@ public partial class InputDeviceManager : Node
         }
 
         // Controller
-        if (@event is InputEventJoypadButton btn && btn.Pressed)
+        if (@event is InputEventJoypadButton btn && btn.Pressed && !btn.Echo)
         {
             deviceId = btn.Device;
             type = "Controller";
@@ -67,19 +66,17 @@ public partial class InputDeviceManager : Node
     private void RegisterPlayer(int deviceId, string type)
     {
         int playerId = _nextPlayerId++;
+        ulong steamId = NetworkRoot.Instance.GetSteamID();
 
         var player = new LobbyPlayerData(
             playerId,
             deviceId,
-            type
+            type,
+            steamId
         );
 
         LobbyPlayers.Add(player);
-
-        GD.Print($"Player Joined: {playerId}");
-
-        EmitSignal(
-            SignalName.PlayerJoined,
+        EmitSignal(SignalName.PlayerJoined,
             player
         );
     }

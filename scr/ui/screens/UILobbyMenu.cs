@@ -116,7 +116,7 @@ public partial class UILobbyMenu : Control
     private void ConfirmPlayers()
     {
         var players = _slots
-            .Where(s => s.Occupied && !s.IsRemote)
+            .Where(s => s.Occupied)
             .Select(s => s.Player)
             .ToArray();
 
@@ -201,7 +201,6 @@ public partial class UILobbyMenu : Control
         foreach (UICharacterSlot slot in _slots)
         {
             if (!slot.Occupied) continue;
-
             UI.Network.Lobby.UpdatePlayerState(slot.Player, slot.Index, slot.SlotIndex);
         }
 

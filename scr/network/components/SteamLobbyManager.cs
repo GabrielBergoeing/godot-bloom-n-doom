@@ -17,8 +17,8 @@ public partial class SteamLobbyManager : Node
     public CSteamID CurrentLobbyId { get; private set; }
 
     public ulong HostSteamId { get; private set; }
-    public bool IsHost => SteamUser.GetSteamID().m_SteamID == HostSteamId;
     public ulong LocalSteamId => SteamUser.GetSteamID().m_SteamID;
+    public bool IsHost => LocalSteamId == HostSteamId;
 
     private readonly Dictionary<ulong, LobbyPlayerStatePacket> _players = new();
     public IReadOnlyDictionary<ulong, LobbyPlayerStatePacket> Players => _players;

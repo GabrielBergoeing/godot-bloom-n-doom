@@ -38,6 +38,13 @@ public partial class NetworkRoot : Node
         return Loader.IsSteamAvailable;
     }
 
+    public ulong GetSteamID()
+    {
+        if(!IsNetworkRunning)
+            return 0;
+        return Lobby.LocalSteamId;
+    }
+
     public void SetOnlineMode(bool mode)
     {
         if(IsNetworkRunning())

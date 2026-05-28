@@ -72,6 +72,7 @@ public partial class UILevelSelectMenu : Control
             {
                 _waitingLabel.Visible = true;
                 _waitingLabel.Text = "Waiting for host to select level...";
+                _firstButton.ReleaseFocus();
             }
 
             SetButtonsDisabled(true);
@@ -111,6 +112,7 @@ public partial class UILevelSelectMenu : Control
 
         LevelData level = Levels[index];
 
+        SyncOnlineState(index);
         UI.SFX.PlayOnConfirm();
         UI.Game.LoadLevel(level);
     }
@@ -127,6 +129,15 @@ public partial class UILevelSelectMenu : Control
 
         LevelData level = Levels[levelIndex];
         UI.Game.LoadLevel(level);
+    }
+
+    private void SyncOnlineState(int index)
+    {
+        if (!UI.Network.IsOnline || !UI.Network.Lobby.IsHost)
+            return;
+
+        GD.Print($"[UILevelSelectMenu] Broadcasting level {index}");
+        UI.Network.Lobby.BroadcastStartGame(index);
     }
 
     private void HoverBTN(int index)
