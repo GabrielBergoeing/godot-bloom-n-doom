@@ -4,9 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="1_aeb35"]
 [ext_resource type="PackedScene" uid="uid://caqu1dbhafgwi" path="res://nodes/ui/screens/ui_character_slot.tscn" id="1_fi1wo"]
 [ext_resource type="Resource" uid="uid://c187xkokt0o1m" path="res://nodes/entities/character/character_database.tres" id="2_ckiie"]
+[ext_resource type="LabelSettings" uid="uid://chtwobs2vbvrg" path="res://art/fonts/curse_casual.tres" id="3_1hxf1"]
+[ext_resource type="Script" uid="uid://bjoyme7xnvsmc" path="res://scr/ui/screens/UILobbyCountdown.cs" id="4_oux34"]
 [ext_resource type="Script" uid="uid://b1qyhpwkaa46o" path="res://scr/managers/input/InputDeviceManager.cs" id="5_jbfl5"]
 
-[node name="LobbyMenu" type="Control" unique_id=1024515571]
+[node name="LobbyMenu" type="Control" unique_id=1024515571 node_paths=PackedStringArray("_countdown")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +19,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6wuiq")
 CharacterDatabase = ExtResource("2_ckiie")
+_countdown = NodePath("LobbyCountdown")
+
+[node name="LobbyCountdown" type="Label" parent="." unique_id=276661495]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -7.5
+offset_right = 7.5
+offset_bottom = 37.0
+grow_horizontal = 2
+text = "5"
+label_settings = ExtResource("3_1hxf1")
+script = ExtResource("4_oux34")
 
 [node name="Slots" type="HBoxContainer" parent="." unique_id=546197419]
 layout_mode = 1
