@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using Steamworks;
 
 public partial class SteamNetworkManager : Node
@@ -6,7 +7,7 @@ public partial class SteamNetworkManager : Node
     public static SteamNetworkManager Instance;
 
     public event Action<CSteamID> OnPeerSessionEstablished;
-    
+
     public NetworkRoot Network => NetworkRoot.Instance;
 
     private SteamPacketRouter _packetRouter;
@@ -58,22 +59,13 @@ public partial class SteamNetworkManager : Node
     private void OnP2PSessionRequest(P2PSessionRequest_t callback)
     {
         GD.Print($"Accepted P2P session from {callback.m_steamIDRemote}");
-
-        SteamNetworking.AcceptP2PSessionWithUser(
-            callback.m_steamIDRemote
-        );
+        SteamNetworking.AcceptP2PSessionWithUser(callback.m_steamIDRemote);
+        OnPeerSessionEstablished?.Invoke(callback.m_steamIDRemote);
     }
 
     private void OnP2PConnectFail(P2PSessionConnectFail_t callback)
     {
         GD.PrintErr($"P2P connect failed: {callback.m_eP2PSessionError}");
-    }
-
-    private void OnP2PSessionRequest(P2PSessionRequest_t callback)
-    {
-        GD.Print($"Accepted P2P session from {callback.m_steamIDRemote}");
-        SteamNetworking.AcceptP2PSessionWithUser(callback.m_steamIDRemote);
-        OnPeerSessionEstablished?.Invoke(callback.m_steamIDRemote);
     }
 
     private void ReceivePackets()
