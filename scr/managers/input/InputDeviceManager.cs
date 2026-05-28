@@ -35,7 +35,7 @@ public partial class InputDeviceManager : Node
         }
 
         // Controller
-        if (@event is InputEventJoypadButton btn && btn.Pressed && !btn.Echo)
+        if (@event is InputEventJoypadButton btn && btn.Pressed)
         {
             deviceId = btn.Device;
             type = "Controller";

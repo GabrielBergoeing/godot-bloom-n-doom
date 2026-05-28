@@ -40,7 +40,7 @@ public partial class NetworkRoot : Node
 
     public ulong GetSteamID()
     {
-        if(!IsNetworkRunning)
+        if(!IsNetworkRunning())
             return 0;
         return Lobby.LocalSteamId;
     }
