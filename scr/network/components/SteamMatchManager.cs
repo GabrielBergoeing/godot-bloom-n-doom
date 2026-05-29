@@ -75,27 +75,19 @@ public partial class SteamMatchManager : Node
         MatchStartPacket packet = new();
         int spawnIndex = 0;
 
+        // Local players — SteamId must be set by this point via OnPlayerJoined
         foreach (var player in Game.LobbyPlayers)
         {
-            // Resolve character ID with fallback chain
-            int charId = 0;
+            if (player.SteamId == 0)
+                GD.PrintErr($"[SteamMatchManager] WARNING: Player {player.PlayerId} has SteamId 0 — ownership will break");
 
-            if (player.SelectedCharacter != null)
-            {
-                charId = player.SelectedCharacter.CharacterID;
-            }
-            else
-            {
-                var state = LobbyStateService.Instance.LocalStates
-                    .FirstOrDefault(s => s.Player.PlayerId == player.PlayerId);
+            int charId = player.SelectedCharacter?.CharacterID
+                ?? LobbyStateService.Instance.LocalStates
+                    .FirstOrDefault(s => s.Player.PlayerId == player.PlayerId)
+                    ?.CharacterIndex
+                ?? 0;
 
-                if (state != null)
-                    charId = state.CharacterIndex;
-
-                GD.PrintErr($"[SteamMatchManager] Player {player.PlayerId} has no SelectedCharacter, using state index {charId}");
-            }
-
-            GD.Print($"[SteamMatchManager] Adding player -> PlayerId: {player.PlayerId}, SteamId: {player.SteamId}, Character: {charId}, Spawn: {spawnIndex}, Local: True");
+            GD.Print($"[SteamMatchManager] Adding local -> PlayerId: {player.PlayerId}, SteamId: {player.SteamId}, Char: {charId}, Spawn: {spawnIndex}");
 
             packet.Players.Add(new PlayerSpawnData
             {
@@ -103,14 +95,14 @@ public partial class SteamMatchManager : Node
                 PlayerId = player.PlayerId,
                 CharacterIndex = charId,
                 SpawnIndex = spawnIndex++,
-                IsLocalOwner = true // always true for local players on host
+                IsLocalOwner = true
             });
         }
 
-        // Add remote players
+        // Remote players from LobbyStateService
         foreach (var kvp in LobbyStateService.Instance.RemoteStates)
         {
-            GD.Print($"[SteamMatchManager] Adding remote -> PlayerId: {kvp.Value.PlayerId}, SteamId: {kvp.Key}, Character: {kvp.Value.CharacterIndex}, Spawn: {spawnIndex}");
+            GD.Print($"[SteamMatchManager] Adding remote -> PlayerId: {kvp.Value.PlayerId}, SteamId: {kvp.Key}, Char: {kvp.Value.CharacterIndex}, Spawn: {spawnIndex}");
 
             packet.Players.Add(new PlayerSpawnData
             {

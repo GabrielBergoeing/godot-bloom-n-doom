@@ -119,28 +119,19 @@ public partial class SplitScreenManager : Node
 
     private void SpawnNetworkPlayer(PlayerSpawnData data)
     {
-        bool isLocal = data.IsLocalOwner;
-
-        GD.Print(
-            $"[SplitScreenManager] SpawnNetworkPlayer -> " +
-            $"PlayerId: {data.PlayerId}, " +
-            $"SteamId: {data.SteamId}, " +
-            $"Local: {isLocal}, " +
-            $"Char: {data.CharacterIndex}, " +
-            $"Spawn: {data.SpawnIndex}"
-        );
+        GD.Print($"[SplitScreenManager] SpawnNetworkPlayer -> PlayerId: {data.PlayerId}, SteamId: {data.SteamId}, Local: {data.IsLocalOwner}, Char: {data.CharacterIndex}, Spawn: {data.SpawnIndex}");
 
         CharacterData character = CharacterDatabase.GetCharacter(data.CharacterIndex);
         if (character == null)
         {
-            GD.PrintErr($"[SplitScreenManager] No character at index {data.CharacterIndex}");
-            return;
+            GD.PrintErr($"[SplitScreenManager] Character not found for index {data.CharacterIndex}, using fallback");
+            character = CharacterDatabase.Characters[0];
         }
 
         Player player = PlayerScene.Instantiate<Player>();
         LevelNode.AddChild(player);
 
-        if (isLocal)
+        if (data.IsLocalOwner)
         {
             GD.Print($"[SplitScreenManager] Configuring LOCAL player {data.PlayerId}");
 
@@ -151,21 +142,15 @@ public partial class SplitScreenManager : Node
             string deviceType = lobbyData?.DeviceType ?? "Keyboard";
 
             player.Setup(data.PlayerId, deviceId, deviceType, character.Sprites);
-            player.Position = _matchManager.GetSpawnPosition(data.SpawnIndex);
-             GD.Print($"[SplitScreenManager] Local player {data.PlayerId} spawned at {player.Position}");
-            _matchManager.RegisterPlayer(player);
-
+            _matchManager.RegisterPlayer(player, data.SpawnIndex);
             CreateLocalViewport(player);
         }
         else
         {
             GD.Print($"[SplitScreenManager] Configuring REMOTE player {data.PlayerId}");
             player.Setup(data.PlayerId, -1, "Remote", character.Sprites);
-            player.Position = _matchManager.GetSpawnPosition(data.SpawnIndex);
-            
-            GD.Print($"[SplitScreenManager] Remote player {data.PlayerId} spawned at {player.Position}");
             player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
-            _matchManager.RegisterPlayer(player);
+            _matchManager.RegisterPlayer(player, data.SpawnIndex);
         }
     }
 

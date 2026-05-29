@@ -19,6 +19,7 @@ public partial class Player : Entity
 	public PlayerWaterFX WaterFX { get; private set; }
 	public PlayerSFX SFX { get; private set; }
 
+	public int SpawnIndex { get; set; }
 	public int PlayerId { get; private set; }
 	public ulong OwnerSteamId { get; private set; }
 	public bool IsLocallyControlled { get; private set; }

@@ -52,7 +52,6 @@ public partial class MatchManager : Node
 
     public void StartMatch()
     {
-        InitializePlayers();
         GiveStartingItems();
 
         isPlayingMatch = true;
@@ -87,17 +86,23 @@ public partial class MatchManager : Node
         return new Vector2(index * 32, 0);
     }
 
-    private void InitializePlayers()
+    private void SpawnRegisteredPlayers()
     {
-        players.Clear();
-
-        foreach (Node child in GetTree().GetNodesInGroup("players"))
+        for (int i = 0; i < players.Count; i++)
         {
-            if (child is Player player)
-                players.Add(player);
+            Player player = players[i];
+            Vector2 pos = GetSpawnPosition(player.SpawnIndex);
+            player.Position = pos;
+            GD.Print($"[MatchManager] Spawned Player {player.PlayerId} at {pos}");
         }
+    }
 
-        GD.Print($"[MatchManager] Registered {players.Count} players");
+    public void RegisterPlayer(Player player, int spawnIndex)
+    {
+        if (players.Contains(player)) return;
+        player.SpawnIndex = spawnIndex;
+        players.Add(player);
+        GD.Print($"[MatchManager] Registered Player {player.PlayerId} at spawn {spawnIndex}");
     }
 
     private void GiveStartingItems()
