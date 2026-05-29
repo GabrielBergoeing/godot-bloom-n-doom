@@ -36,7 +36,10 @@ public partial class SplitScreenManager : Node
     public override void _ExitTree()
     {
         if (Network.IsOnline)
+        {
             SteamMatchManager.Instance.OnMatchStarted -= OnMatchStarted;
+            SteamMatchManager.Instance.ResetMatchScene();
+        }
     }
 
     private void StartOfflineMatch()
@@ -50,6 +53,9 @@ public partial class SplitScreenManager : Node
     {
         GD.Print("[SplitScreenManager] PrepareOnlineMatch");
         SteamMatchManager.Instance.OnMatchStarted += OnMatchStarted;
+
+        // Tell SteamMatchManager the scene is ready to receive the packet
+        SteamMatchManager.Instance.NotifyMatchSceneReady();
 
         if (Network.Match.IsHost)
         {
@@ -124,7 +130,6 @@ public partial class SplitScreenManager : Node
             $"Spawn: {data.SpawnIndex}"
         );
 
-        // Resolve character from database using index from packet
         CharacterData character = CharacterDatabase.GetCharacter(data.CharacterIndex);
         if (character == null)
         {

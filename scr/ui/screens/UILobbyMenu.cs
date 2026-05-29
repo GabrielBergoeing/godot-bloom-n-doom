@@ -77,6 +77,9 @@ public partial class UILobbyMenu : Control
         var slot = FindFreeSlot();
         if (slot == null) return;
 
+        if (UI.Network.IsOnline)
+            player.SteamId = UI.Network.Lobby.LocalSteamId;
+
         int slotIndex = System.Array.IndexOf(_slots, slot);
         slot.SlotIndex = slotIndex;
         slot.AssignPlayer(player, this);

@@ -66,13 +66,10 @@ public partial class InputDeviceManager : Node
     private void RegisterPlayer(int deviceId, string type)
     {
         int playerId = _nextPlayerId++;
-        ulong steamId = NetworkRoot.Instance.GetSteamID();
-
         var player = new LobbyPlayerData(
             playerId,
             deviceId,
-            type,
-            steamId
+            type
         );
 
         LobbyPlayers.Add(player);

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Steamworks;
 
@@ -17,6 +18,9 @@ public partial class SteamMatchManager : Node
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
+
+    private bool _matchSceneReady = false;
+    private MatchStartPacket _pendingMatchPacket = null;
 
     public override void _Ready()
     {
@@ -73,41 +77,73 @@ public partial class SteamMatchManager : Node
 
         foreach (var player in Game.LobbyPlayers)
         {
-            int charIndex = 0;
+            // Resolve character ID with fallback chain
+            int charId = 0;
 
             if (player.SelectedCharacter != null)
-                charIndex = player.SelectedCharacter.CharacterID;
+            {
+                charId = player.SelectedCharacter.CharacterID;
+            }
+            else
+            {
+                var state = LobbyStateService.Instance.LocalStates
+                    .FirstOrDefault(s => s.Player.PlayerId == player.PlayerId);
 
-            ulong steamId = player.SteamId;
-            bool isLocal = steamId == LocalSteamId;
+                if (state != null)
+                    charId = state.CharacterIndex;
 
-            GD.Print(
-                $"[SteamMatchManager] Adding player -> " +
-                $"PlayerId: {player.PlayerId}, " +
-                $"SteamId: {steamId}, " +
-                $"Character: {charIndex}, " +
-                $"Spawn: {spawnIndex}, " +
-                $"Local: {isLocal}"
-            );
+                GD.PrintErr($"[SteamMatchManager] Player {player.PlayerId} has no SelectedCharacter, using state index {charId}");
+            }
 
-            packet.Players.Add(
-                new PlayerSpawnData
-                {
-                    SteamId = steamId,
-                    PlayerId = player.PlayerId,
-                    CharacterIndex = charIndex,
-                    SpawnIndex = spawnIndex++,
-                    IsLocalOwner = isLocal
-                }
-            );
+            GD.Print($"[SteamMatchManager] Adding player -> PlayerId: {player.PlayerId}, SteamId: {player.SteamId}, Character: {charId}, Spawn: {spawnIndex}, Local: True");
+
+            packet.Players.Add(new PlayerSpawnData
+            {
+                SteamId = player.SteamId,
+                PlayerId = player.PlayerId,
+                CharacterIndex = charId,
+                SpawnIndex = spawnIndex++,
+                IsLocalOwner = true // always true for local players on host
+            });
         }
 
-        GD.Print(
-            $"[SteamMatchManager] Packet build complete " +
-            $"({packet.Players.Count} players)"
-        );
+        // Add remote players
+        foreach (var kvp in LobbyStateService.Instance.RemoteStates)
+        {
+            GD.Print($"[SteamMatchManager] Adding remote -> PlayerId: {kvp.Value.PlayerId}, SteamId: {kvp.Key}, Character: {kvp.Value.CharacterIndex}, Spawn: {spawnIndex}");
 
+            packet.Players.Add(new PlayerSpawnData
+            {
+                SteamId = kvp.Key,
+                PlayerId = kvp.Value.PlayerId,
+                CharacterIndex = kvp.Value.CharacterIndex,
+                SpawnIndex = spawnIndex++,
+                IsLocalOwner = false
+            });
+        }
+
+        GD.Print($"[SteamMatchManager] Packet complete ({packet.Players.Count} players)");
         return packet;
+    }
+
+    // Call this from SplitScreenManager after subscribing
+    public void NotifyMatchSceneReady()
+    {
+        _matchSceneReady = true;
+        GD.Print("[SteamMatchManager] Match scene ready");
+
+        if (_pendingMatchPacket != null)
+        {
+            GD.Print("[SteamMatchManager] Flushing pending match start packet");
+            OnMatchStarted?.Invoke(_pendingMatchPacket);
+            _pendingMatchPacket = null;
+        }
+    }
+
+    public void ResetMatchScene()
+    {
+        _matchSceneReady = false;
+        _pendingMatchPacket = null;
     }
 
     private void HandleMatchStart(CSteamID sender, byte[] data)
@@ -119,13 +155,25 @@ public partial class SteamMatchManager : Node
         MatchStartPacket packet = new();
         packet.Deserialize(reader);
 
-        // Mark which players are local on this machine
         ulong localSteamId = Network.Lobby.LocalSteamId;
         foreach (var p in packet.Players)
+        {
             p.IsLocalOwner = p.SteamId == localSteamId;
+            GD.Print($"[SteamMatchManager] Player {p.PlayerId} SteamId:{p.SteamId} IsLocal:{p.IsLocalOwner}");
+        }
 
         GD.Print($"[SteamMatchManager] Match start received, {packet.Players.Count} players");
-        Callable.From(() => OnMatchStarted?.Invoke(packet)).CallDeferred();
+
+        Callable.From(() =>
+        {
+            if (_matchSceneReady)
+                OnMatchStarted?.Invoke(packet);
+            else
+            {
+                GD.Print("[SteamMatchManager] Match scene not ready, queuing packet");
+                _pendingMatchPacket = packet;
+            }
+        }).CallDeferred();
     }
 
     private void HandlePlayerTransform(CSteamID sender, byte[] data)
