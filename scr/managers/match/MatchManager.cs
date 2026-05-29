@@ -52,6 +52,9 @@ public partial class MatchManager : Node
 
     public void StartMatch()
     {
+        if(!NetworkRoot.Instance.IsOnline)
+            InitializePlayers();
+            
         GiveStartingItems();
 
         isPlayingMatch = true;
@@ -87,6 +90,18 @@ public partial class MatchManager : Node
         return new Vector2(index * 32, 0);
     }
 
+    private void InitializePlayers()
+    {
+        players.Clear();
+
+        foreach (Node child in GetTree().GetNodesInGroup("players"))
+        {
+            if (child is Player player)
+                players.Add(player);
+        }
+
+        GD.Print($"[MatchManager] Registered {players.Count} players");
+    }
 
     private void SpawnRegisteredPlayers()
     {

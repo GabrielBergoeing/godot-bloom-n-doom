@@ -135,6 +135,7 @@ public partial class UICharacterSlot : TextureRect
         if (PressedAccept())
         {
             _player.LockedIn = true;
+            _player.CharacterIndex = _index;
             _player.SelectedCharacter = _menu.Characters[_index];
 
             UpdateVisuals();

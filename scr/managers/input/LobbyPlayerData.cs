@@ -7,6 +7,7 @@ public partial class LobbyPlayerData : Resource
     public string DeviceType;
 
     public ulong SteamId;
+    public int CharacterIndex;
 
     public CharacterData SelectedCharacter;
     public bool LockedIn = false;

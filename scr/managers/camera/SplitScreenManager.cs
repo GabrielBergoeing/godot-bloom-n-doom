@@ -121,7 +121,9 @@ public partial class SplitScreenManager : Node
     {
         GD.Print($"[SplitScreenManager] SpawnNetworkPlayer -> PlayerId: {data.PlayerId}, SteamId: {data.SteamId}, Local: {data.IsLocalOwner}, Char: {data.CharacterIndex}, Spawn: {data.SpawnIndex}");
 
-        CharacterData character = CharacterDatabase.GetCharacter(data.CharacterIndex);
+        CharacterData character = data.CharacterIndex < CharacterDatabase.Characters.Length
+            ? CharacterDatabase.Characters[data.CharacterIndex]
+            : CharacterDatabase.Characters[0];
         if (character == null)
         {
             GD.PrintErr($"[SplitScreenManager] Character not found for index {data.CharacterIndex}, using fallback");

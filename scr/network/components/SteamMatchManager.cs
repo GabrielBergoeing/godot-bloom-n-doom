@@ -83,22 +83,17 @@ public partial class SteamMatchManager : Node
             if (player.SteamId == 0)
                 GD.PrintErr($"[SteamMatchManager] WARNING: Player {player.PlayerId} has SteamId 0 — ownership will break");
 
-            int charId = player.SelectedCharacter?.CharacterID
-                ?? LobbyStateService.Instance.LocalStates
-                    .FirstOrDefault(s => s.Player.PlayerId == player.PlayerId)
-                    ?.CharacterIndex
-                ?? 0;
-
-            GD.Print($"[SteamMatchManager] Adding local -> PlayerId: {player.PlayerId}, SteamId: {player.SteamId}, Char: {charId}, Spawn: {spawnIndex}");
+            GD.Print($"[SteamMatchManager] Adding local -> PlayerId: {player.PlayerId}, SteamId: {player.SteamId}, Char: {player.CharacterIndex}, Spawn: {spawnIndex}");
 
             packet.Players.Add(new PlayerSpawnData
             {
                 SteamId = player.SteamId,
-                PlayerId = player.PlayerId,
-                CharacterIndex = charId,
-                SpawnIndex = spawnIndex++,
+                PlayerId = spawnIndex,
+                CharacterIndex = player.CharacterIndex,
+                SpawnIndex = spawnIndex,
                 IsLocalOwner = true
             });
+            spawnIndex++;
         }
 
         // Remote players from LobbyStateService
@@ -109,11 +104,12 @@ public partial class SteamMatchManager : Node
             packet.Players.Add(new PlayerSpawnData
             {
                 SteamId = kvp.Key,
-                PlayerId = kvp.Value.PlayerId,
+                PlayerId = spawnIndex,
                 CharacterIndex = kvp.Value.CharacterIndex,
-                SpawnIndex = spawnIndex++,
+                SpawnIndex = spawnIndex,
                 IsLocalOwner = false
             });
+            spawnIndex++;
         }
 
         GD.Print($"[SteamMatchManager] Packet complete ({packet.Players.Count} players)");
