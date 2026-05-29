@@ -59,24 +59,14 @@ public partial class SteamworksLoader : Node
 
     private void AutoloadSteamLibrary()
     {
-        string platformFolder;
         string libraryName;
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            platformFolder = "win64";
             libraryName = "steam_api64.dll";
-        }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            platformFolder = "linux64";
             libraryName = "libsteam_api.so";
-        }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            platformFolder = "macos";
             libraryName = "libsteam_api.dylib";
-        }
         else
         {
             GD.PrintErr("[SteamworksLoader] Unsupported platform");
@@ -85,9 +75,6 @@ public partial class SteamworksLoader : Node
 
         string libraryPath = Path.Combine(
             AppContext.BaseDirectory,
-            "api",
-            "steamworks",
-            platformFolder,
             libraryName
         );
 

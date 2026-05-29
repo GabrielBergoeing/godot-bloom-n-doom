@@ -41,10 +41,11 @@ public partial class SteamMatchManager : Node
         if (!IsHost) return;
 
         MatchStartPacket packet = BuildMatchStartPacket();
-        GD.Print("[SteamMatchManager] Broadcasting match start");
+        GD.Print($"[SteamMatchManager] Broadcasting match start with {packet.Players.Count} players");
 
         Network.Lobby.Broadcast(packet);
         Callable.From(() => OnMatchStarted?.Invoke(packet)).CallDeferred();
+        GD.Print("[SteamMatchManager] Local OnMatchStarted invoke");
     }
 
     public void BroadcastTransform(int playerId, Vector2 position, float rotation)
@@ -65,6 +66,7 @@ public partial class SteamMatchManager : Node
 
     private MatchStartPacket BuildMatchStartPacket()
     {
+        GD.Print("[SteamMatchManager] Building MatchStartPacket");
         MatchStartPacket packet = new();
         int spawnIndex = 0;
 
@@ -80,7 +82,13 @@ public partial class SteamMatchManager : Node
                     charIndex = state;
             }
 
-            GD.Print($"[SteamMatchManager] Adding local player {player.PlayerId}, char {charIndex}");
+            GD.Print(
+                $"[SteamMatchManager] Adding LOCAL player -> " +
+                $"PlayerId: {player.PlayerId}, " +
+                $"SteamId: {LocalSteamId}, " +
+                $"Character: {charIndex}, " +
+                $"Spawn: {spawnIndex}"
+            );
 
             packet.Players.Add(new PlayerSpawnData
             {
@@ -94,7 +102,13 @@ public partial class SteamMatchManager : Node
 
         foreach (var kvp in LobbyStateService.Instance.RemoteStates)
         {
-            GD.Print($"[SteamMatchManager] Adding remote player {kvp.Value.PlayerId} (Steam: {kvp.Key}), char {kvp.Value.CharacterIndex}");
+            GD.Print(
+                $"[SteamMatchManager] Adding REMOTE player -> " +
+                $"PlayerId: {kvp.Value.PlayerId}, " +
+                $"SteamId: {kvp.Key}, " +
+                $"Character: {kvp.Value.CharacterIndex}, " +
+                $"Spawn: {spawnIndex}"
+            );
 
             packet.Players.Add(new PlayerSpawnData
             {
@@ -105,11 +119,13 @@ public partial class SteamMatchManager : Node
                 IsLocalOwner = false
             });
         }
+        GD.Print($"[SteamMatchManager] Packet build complete ({packet.Players.Count} players)");
         return packet;
     }
 
     private void HandleMatchStart(CSteamID sender, byte[] data)
     {
+        GD.Print($"[SteamMatchManager] HandleMatchStart from {sender.m_SteamID}");
         PacketReader reader = new PacketReader(data);
         reader.ReadByte();
 

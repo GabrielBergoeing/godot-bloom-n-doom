@@ -16,6 +16,7 @@
     </Reference>
 
     <Content Include="api/steamworks/linux64/libsteam_api.so">
+      <Link>libsteam_api.so</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
 
@@ -30,6 +31,7 @@
     </Reference>
 
     <Content Include="api/steamworks/win64/steam_api64.dll">
+      <Link>steam_api64.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
 
@@ -44,6 +46,7 @@
     </Reference>
 
     <Content Include="api/steamworks/macos/libsteam_api.dylib">
+      <Link>libsteam_api.dylib</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
 
