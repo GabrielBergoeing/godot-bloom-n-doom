@@ -48,6 +48,8 @@ public partial class SteamMatchManager : Node
         GD.Print($"[SteamMatchManager] Broadcasting match start with {packet.Players.Count} players");
 
         Network.Lobby.Broadcast(packet);
+        Network.LobbyService.Clear();
+
         Callable.From(() => OnMatchStarted?.Invoke(packet)).CallDeferred();
         GD.Print("[SteamMatchManager] Local OnMatchStarted invoke");
     }
@@ -70,7 +72,7 @@ public partial class SteamMatchManager : Node
 
     private MatchStartPacket BuildMatchStartPacket()
     {
-        GD.Print("[SteamMatchManager] Building MatchStartPacket");
+        GD.Print($"[SteamMatchManager] Building packet — LocalPlayers: {Game.LobbyPlayers.Count}, RemoteStates: {LobbyStateService.Instance.RemoteStates.Count}");
 
         MatchStartPacket packet = new();
         int spawnIndex = 0;

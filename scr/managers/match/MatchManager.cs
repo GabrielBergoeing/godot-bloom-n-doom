@@ -58,6 +58,7 @@ public partial class MatchManager : Node
         hasPrintedResults = false;
 
         GD.Print("[MatchManager] Match Started");
+        Callable.From(SpawnRegisteredPlayers).CallDeferred();
     }
 
     public void EndMatch()
@@ -86,13 +87,13 @@ public partial class MatchManager : Node
         return new Vector2(index * 32, 0);
     }
 
+
     private void SpawnRegisteredPlayers()
     {
-        for (int i = 0; i < players.Count; i++)
+        foreach (Player player in players)
         {
-            Player player = players[i];
             Vector2 pos = GetSpawnPosition(player.SpawnIndex);
-            player.Position = pos;
+            player.GlobalPosition = pos;
             GD.Print($"[MatchManager] Spawned Player {player.PlayerId} at {pos}");
         }
     }

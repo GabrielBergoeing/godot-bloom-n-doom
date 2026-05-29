@@ -130,6 +130,7 @@ public partial class SteamLobbyManager : Node
         _pendingPackets.Clear();
         _players.Clear();
         Network.Connection.Clear();
+        Network.LobbyService.Clear();
 
         GD.Print("[SteamLobbyManager] Left lobby");
     }

@@ -33,7 +33,7 @@ public partial class UILobbyMenu : Control
         Lobby.OnPlayerLeft -= OnRemotePlayerLeft;
         _countdown.OnCountdownComplete -= ExecuteConfirm;
         State.OnAllReady -= ConfirmPlayers;
-        State.Clear();
+        //State.Clear();
     }
 
     public override void _Ready()
