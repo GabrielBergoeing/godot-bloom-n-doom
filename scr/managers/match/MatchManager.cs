@@ -52,16 +52,15 @@ public partial class MatchManager : Node
 
     public void StartMatch()
     {
-        if(!NetworkRoot.Instance.IsOnline)
-            InitializePlayers();
-            
         GiveStartingItems();
 
         isPlayingMatch = true;
         hasPrintedResults = false;
 
         GD.Print("[MatchManager] Match Started");
-        Callable.From(SpawnRegisteredPlayers).CallDeferred();
+        Callable.From(() =>
+            Callable.From(SpawnRegisteredPlayers).CallDeferred()
+        ).CallDeferred();
     }
 
     public void EndMatch()
@@ -73,36 +72,20 @@ public partial class MatchManager : Node
         EmitSignal(SignalName.MatchEnded);
     }
 
-    public void RegisterPlayer(Player player)
-    {
-        if (players.Contains(player))
-            return;
-
-        players.Add(player);
-        GD.Print($"[MatchManager] Registered Player {player.PlayerId}");
-    }
-
     public Vector2 GetSpawnPosition(int index)
     {
         if (index < PlayerSpawnPoints.Count && PlayerSpawnPoints[index] != null)
-            return PlayerSpawnPoints[index].GlobalPosition;
-
-        return new Vector2(index * 32, 0);
-    }
-
-    private void InitializePlayers()
-    {
-        players.Clear();
-
-        foreach (Node child in GetTree().GetNodesInGroup("players"))
         {
-            if (child is Player player)
-                players.Add(player);
+            Vector2 pos = PlayerSpawnPoints[index].GlobalPosition;
+            GD.Print($"[MatchManager] GetSpawnPosition({index}) -> {pos} (from SpawnPoint)");
+            return pos;
         }
 
-        GD.Print($"[MatchManager] Registered {players.Count} players");
+        Vector2 fallback = new Vector2(index * 32, 0);
+        GD.PrintErr($"[MatchManager] GetSpawnPosition({index}) -> {fallback} (FALLBACK, SpawnPoints count: {PlayerSpawnPoints.Count})");
+        return fallback;
     }
-
+    
     private void SpawnRegisteredPlayers()
     {
         foreach (Player player in players)

@@ -111,9 +111,7 @@ public partial class SplitScreenManager : Node
         LevelNode.AddChild(player);
 
         player.Setup(data.PlayerId, data.DeviceId, data.DeviceType, character.Sprites);
-        player.Position = _matchManager.GetSpawnPosition(spawnIndex);
-
-        _matchManager.RegisterPlayer(player);
+        _matchManager.RegisterPlayer(player, spawnIndex);
         CreateLocalViewport(player);
     }
 
