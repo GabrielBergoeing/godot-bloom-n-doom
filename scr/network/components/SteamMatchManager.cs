@@ -67,59 +67,46 @@ public partial class SteamMatchManager : Node
     private MatchStartPacket BuildMatchStartPacket()
     {
         GD.Print("[SteamMatchManager] Building MatchStartPacket");
+
         MatchStartPacket packet = new();
         int spawnIndex = 0;
 
         foreach (var player in Game.LobbyPlayers)
         {
             int charIndex = 0;
+
             if (player.SelectedCharacter != null)
                 charIndex = player.SelectedCharacter.CharacterID;
-            else
-            {
-                var state = Network.LobbyService.GetPlayerChar(player.PlayerId);
-                if (state != -1)
-                    charIndex = state;
-            }
+
+            ulong steamId = player.SteamId;
+            bool isLocal = steamId == LocalSteamId;
 
             GD.Print(
-                $"[SteamMatchManager] Adding LOCAL player -> " +
+                $"[SteamMatchManager] Adding player -> " +
                 $"PlayerId: {player.PlayerId}, " +
-                $"SteamId: {LocalSteamId}, " +
+                $"SteamId: {steamId}, " +
                 $"Character: {charIndex}, " +
-                $"Spawn: {spawnIndex}"
+                $"Spawn: {spawnIndex}, " +
+                $"Local: {isLocal}"
             );
 
-            packet.Players.Add(new PlayerSpawnData
-            {
-                SteamId = LocalSteamId,
-                PlayerId = player.PlayerId,
-                CharacterIndex = charIndex,
-                SpawnIndex = spawnIndex++,
-                IsLocalOwner = true
-            });
-        }
-
-        foreach (var kvp in LobbyStateService.Instance.RemoteStates)
-        {
-            GD.Print(
-                $"[SteamMatchManager] Adding REMOTE player -> " +
-                $"PlayerId: {kvp.Value.PlayerId}, " +
-                $"SteamId: {kvp.Key}, " +
-                $"Character: {kvp.Value.CharacterIndex}, " +
-                $"Spawn: {spawnIndex}"
+            packet.Players.Add(
+                new PlayerSpawnData
+                {
+                    SteamId = steamId,
+                    PlayerId = player.PlayerId,
+                    CharacterIndex = charIndex,
+                    SpawnIndex = spawnIndex++,
+                    IsLocalOwner = isLocal
+                }
             );
-
-            packet.Players.Add(new PlayerSpawnData
-            {
-                SteamId = kvp.Key,
-                PlayerId = kvp.Value.PlayerId,
-                CharacterIndex = kvp.Value.CharacterIndex,
-                SpawnIndex = spawnIndex++,
-                IsLocalOwner = false
-            });
         }
-        GD.Print($"[SteamMatchManager] Packet build complete ({packet.Players.Count} players)");
+
+        GD.Print(
+            $"[SteamMatchManager] Packet build complete " +
+            $"({packet.Players.Count} players)"
+        );
+
         return packet;
     }
 
