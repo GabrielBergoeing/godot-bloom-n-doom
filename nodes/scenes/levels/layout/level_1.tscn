@@ -9,6 +9,20 @@
 
 [node name="Level1Scene" type="Node" unique_id=1205820897]
 
+[node name="PlayerSpawnPoints" type="Node" parent="." unique_id=821880884]
+
+[node name="Position 1" type="Node2D" parent="PlayerSpawnPoints" unique_id=424894748]
+position = Vector2(240, 240)
+
+[node name="Position 2" type="Node2D" parent="PlayerSpawnPoints" unique_id=2006309048]
+position = Vector2(240, 400)
+
+[node name="Position 3" type="Node2D" parent="PlayerSpawnPoints" unique_id=808259902]
+position = Vector2(400, 400)
+
+[node name="Position 4" type="Node2D" parent="PlayerSpawnPoints" unique_id=51063319]
+position = Vector2(400, 240)
+
 [node name="MatchManager" type="Node" parent="." unique_id=631921640 node_paths=PackedStringArray("PlayerSpawnPoints")]
 script = ExtResource("1_o848v")
 PlayerSpawnPoints = [NodePath("../PlayerSpawnPoints/Position 1"), NodePath("../PlayerSpawnPoints/Position 2"), NodePath("../PlayerSpawnPoints/Position 3"), NodePath("../PlayerSpawnPoints/Position 4")]
@@ -24,17 +38,3 @@ script = ExtResource("6_lll2g")
 PlantsRoot = NodePath("Plants")
 
 [node name="Plants" type="Node2D" parent="World" unique_id=1861978808]
-
-[node name="PlayerSpawnPoints" type="Node" parent="." unique_id=821880884]
-
-[node name="Position 1" type="Node2D" parent="PlayerSpawnPoints" unique_id=424894748]
-position = Vector2(240, 240)
-
-[node name="Position 2" type="Node2D" parent="PlayerSpawnPoints" unique_id=2006309048]
-position = Vector2(240, 400)
-
-[node name="Position 3" type="Node2D" parent="PlayerSpawnPoints" unique_id=808259902]
-position = Vector2(400, 400)
-
-[node name="Position 4" type="Node2D" parent="PlayerSpawnPoints" unique_id=51063319]
-position = Vector2(400, 240)

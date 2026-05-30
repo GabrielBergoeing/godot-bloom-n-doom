@@ -7,7 +7,21 @@
 [ext_resource type="TileSet" uid="uid://uibwpl1ch1ll" path="res://nodes/tilesets/terrain.tres" id="5_b64om"]
 [ext_resource type="Script" uid="uid://vy3gx11kcbk8" path="res://scr/managers/map/farm/FarmManager.cs" id="6_4jmiv"]
 
-[node name="Level1Scene" type="Node" unique_id=1205820897]
+[node name="Level5Scene" type="Node" unique_id=1205820897]
+
+[node name="PlayerSpawnPoints" type="Node" parent="." unique_id=821880884]
+
+[node name="Position 1" type="Node2D" parent="PlayerSpawnPoints" unique_id=424894748]
+position = Vector2(240, 240)
+
+[node name="Position 2" type="Node2D" parent="PlayerSpawnPoints" unique_id=2006309048]
+position = Vector2(240, 400)
+
+[node name="Position 3" type="Node2D" parent="PlayerSpawnPoints" unique_id=808259902]
+position = Vector2(400, 400)
+
+[node name="Position 4" type="Node2D" parent="PlayerSpawnPoints" unique_id=51063319]
+position = Vector2(400, 240)
 
 [node name="MatchManager" type="Node" parent="." unique_id=631921640 node_paths=PackedStringArray("PlayerSpawnPoints")]
 script = ExtResource("1_vrdg7")
@@ -24,17 +38,3 @@ script = ExtResource("6_4jmiv")
 PlantsRoot = NodePath("Plants")
 
 [node name="Plants" type="Node2D" parent="World" unique_id=1861978808]
-
-[node name="PlayerSpawnPoints" type="Node" parent="." unique_id=821880884]
-
-[node name="Position 1" type="Node2D" parent="PlayerSpawnPoints" unique_id=424894748]
-position = Vector2(240, 240)
-
-[node name="Position 2" type="Node2D" parent="PlayerSpawnPoints" unique_id=2006309048]
-position = Vector2(240, 400)
-
-[node name="Position 3" type="Node2D" parent="PlayerSpawnPoints" unique_id=808259902]
-position = Vector2(400, 400)
-
-[node name="Position 4" type="Node2D" parent="PlayerSpawnPoints" unique_id=51063319]
-position = Vector2(400, 240)
