@@ -7,6 +7,7 @@ public partial class MatchManager : Node
 {
     public static MatchManager Instance;
     public GameManager Game => GameManager.Instance;
+    public NetworkRoot Network => NetworkRoot.Instance;
 
     [Signal]  public delegate void MatchEndedEventHandler();
 
@@ -26,6 +27,9 @@ public partial class MatchManager : Node
 
     public float MatchDuration;
     public float Timer { get; private set; }
+
+    private const float TimerSyncInterval = 5f;
+    private float _timerSyncClock = 0f;
 
     public bool IsMatchRunning => isPlayingMatch && !hasPrintedResults;
 
@@ -49,7 +53,23 @@ public partial class MatchManager : Node
         {
             Timer = 0f;
             EndMatch();
+            return;
         }
+
+        if (Network.IsOnline && Network.Lobby.IsHost)
+            SyncOnlineTimer(delta);
+    }
+
+    public void SubscribeToTimerSync()
+    {
+        if (NetworkRoot.Instance.IsOnline && !NetworkRoot.Instance.Lobby.IsHost)
+            SteamMatchManager.Instance.OnTimerSyncReceived += OnTimerSyncReceived;
+    }
+
+    public void UnsubscribeFromTimerSync()
+    {
+        if (SteamMatchManager.Instance != null)
+            SteamMatchManager.Instance.OnTimerSyncReceived -= OnTimerSyncReceived;
     }
 
     public void StartMatch()
@@ -70,6 +90,16 @@ public partial class MatchManager : Node
 
         _results = GetResults();
         EmitSignal(SignalName.MatchEnded);
+    }
+
+    private void SyncOnlineTimer(double delta)
+    {
+        _timerSyncClock -= (float)delta;
+        if (_timerSyncClock <= 0f)
+        {
+            _timerSyncClock = TimerSyncInterval;
+            SteamMatchManager.Instance.BroadcastTimerSync(Timer);
+        }
     }
 
     private void CacheSpawnPositions()
@@ -143,6 +173,15 @@ public partial class MatchManager : Node
     {
         foreach (Player player in players)
             player.Input.SetMatchStatus(false);
+    }
+
+    private void OnTimerSyncReceived(float timeRemaining)
+    {
+        if (Mathf.Abs(Timer - timeRemaining) > 1f)
+        {
+            GD.Print($"[MatchManager] Timer corrected: {Timer:F1} -> {timeRemaining:F1}");
+            Timer = timeRemaining;
+        }
     }
 
     public Array<Player> GetPlayers() => players;

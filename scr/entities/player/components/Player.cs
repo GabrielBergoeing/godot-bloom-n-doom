@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public partial class Player : Entity
 {
-	public event Action<Vector2, float> OnTransformChanged;
-
 	[Export] private PackedScene HotbarScene;
 	[Export] private PackedScene TileInteractionScene;
 	[Export] private PackedScene WaterScene;
@@ -18,6 +16,7 @@ public partial class Player : Entity
 	public PlayerWater Water { get; private set; }
 	public PlayerWaterFX WaterFX { get; private set; }
 	public PlayerSFX SFX { get; private set; }
+	public PlayerOnline Online { get; private set; }
 
 	public int SpawnIndex { get; set; }
 	public int PlayerId { get; private set; }
@@ -106,19 +105,18 @@ public partial class Player : Entity
 		pickup.SetItemData(data);
 	}
 
-	// Called by SteamMatchManager for remote players
-	public void SetNetworkPosition(Vector2 position, float rotation)
-	{
-		GlobalPosition = position;
-		Rotation = rotation;
-	}
-
 	public void SetNetworkOwnership(ulong ownerSteamId, ulong localSteamId)
 	{
 		OwnerSteamId = ownerSteamId;
 		IsLocallyControlled = (ownerSteamId == localSteamId);
 
 		Input.SetRemoteControlled(!IsLocallyControlled);
+
+		if (NetworkRoot.Instance.IsOnline)
+		{
+			Online = new PlayerOnline();
+			AddChild(Online);
+		}
 	}
 
 	private void GetPlayerSystems() 
@@ -164,11 +162,5 @@ public partial class Player : Entity
 		IrrigateState = new PlayerIrrigateState(this, stateMachine);
 		PrepareGroundState = new PlayerPrepareGroundState(this, stateMachine);
 		ShootState = new PlayerShootState(this, stateMachine);
-	}
-
-	// Called each physics frame when online and local owner
-	private void BroadcastTransform()
-	{
-		OnTransformChanged?.Invoke(GlobalPosition, Rotation);
 	}
 }

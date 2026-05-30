@@ -6,12 +6,14 @@ public class MatchPlayerTransformPacket : NetworkPacket
     public int PlayerId;
     public Vector2 Position;
     public float Rotation;
+    public string Action;
 
     public override void Serialize(PacketWriter writer)
     {
         writer.WriteInt(PlayerId);
         writer.WriteVector2(Position);
         writer.WriteFloat(Rotation);
+        writer.WriteString(Action ?? "idle");
     }
 
     public override void Deserialize(PacketReader reader)
@@ -19,5 +21,6 @@ public class MatchPlayerTransformPacket : NetworkPacket
         PlayerId = reader.ReadInt();
         Position = reader.ReadVector2();
         Rotation = reader.ReadFloat();
+        Action = reader.ReadString();
     }
 }

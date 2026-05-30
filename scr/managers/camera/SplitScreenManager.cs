@@ -39,6 +39,7 @@ public partial class SplitScreenManager : Node
         {
             SteamMatchManager.Instance.OnMatchStarted -= OnMatchStarted;
             SteamMatchManager.Instance.ResetMatchScene();
+            _matchManager?.UnsubscribeFromTimerSync();
         }
     }
 
@@ -198,6 +199,10 @@ public partial class SplitScreenManager : Node
     {
         UpdateViewportLayout();
         GameManager.Instance.StartMatch(_levelNode);
+
+        if (Network.IsOnline)
+            _matchManager.SubscribeToTimerSync();
+
         CreateMatchResultsPanel();
     }
 

@@ -15,6 +15,7 @@ public partial class SteamMatchManager : Node
 
     public event Action<MatchStartPacket> OnMatchStarted;
     public event Action<MatchPlayerTransformPacket> OnPlayerTransformReceived;
+    public event Action<float> OnTimerSyncReceived;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -37,6 +38,11 @@ public partial class SteamMatchManager : Node
             (byte)NetworkPacketType.MatchStart,
             HandleMatchStart
         );
+
+        router.RegisterHandler(
+            (byte)NetworkPacketType.MatchTimerSync,
+            HandleTimerSync
+        );
     }
 
     // Called by host after level is selected
@@ -54,13 +60,14 @@ public partial class SteamMatchManager : Node
         GD.Print("[SteamMatchManager] Local OnMatchStarted invoke");
     }
 
-    public void BroadcastTransform(int playerId, Vector2 position, float rotation)
+    public void BroadcastTransform(int playerId, Vector2 position, float rotation, string action)
     {
         MatchPlayerTransformPacket packet = new()
         {
             PlayerId = playerId,
             Position = position,
-            Rotation = rotation
+            Rotation = rotation,
+            Action = action
         };
         Network.Lobby.Broadcast(packet);
     }
@@ -179,5 +186,22 @@ public partial class SteamMatchManager : Node
         Callable.From(() =>
             OnPlayerTransformReceived?.Invoke(packet)
         ).CallDeferred();
+    }
+
+    public void BroadcastTimerSync(float timeRemaining)
+    {
+        MatchTimerSyncPacket packet = new() { TimeRemaining = timeRemaining };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    private void HandleTimerSync(CSteamID sender, byte[] data)
+    {
+        PacketReader reader = new PacketReader(data);
+        reader.ReadByte();
+        MatchTimerSyncPacket packet = new();
+        packet.Deserialize(reader);
+
+        Callable.From(() => OnTimerSyncReceived?.Invoke(packet.TimeRemaining))
+            .CallDeferred();
     }
 }

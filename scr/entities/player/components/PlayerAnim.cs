@@ -4,7 +4,7 @@ public partial class PlayerAnim : AnimatedSprite2D
 {
     private Player player;
 
-    private string CurrentAction = "idle";
+    public string CurrentAction { get; private set; } = "idle";
 
     public override void _Ready()
     {
