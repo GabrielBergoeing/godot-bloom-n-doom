@@ -15,6 +15,7 @@ public partial class MatchManager : Node
     [Export] public Array<ItemData> StartingItems = new();
 
     private readonly Array<Player> players = new();
+    private readonly List<Vector2> _spawnPositions = new();
 
     private readonly ScoreTally scoreTally = new();
     private List<ScoreResult> _results = new();
@@ -34,6 +35,7 @@ public partial class MatchManager : Node
 
         MatchDuration = Game.CurrentLevel.MatchDuration;
         Timer = MatchDuration;
+        CacheSpawnPositions();
     }
 
     public override void _Process(double delta)
@@ -58,9 +60,7 @@ public partial class MatchManager : Node
         hasPrintedResults = false;
 
         GD.Print("[MatchManager] Match Started");
-        Callable.From(() =>
-            Callable.From(SpawnRegisteredPlayers).CallDeferred()
-        ).CallDeferred();
+        Callable.From(SpawnRegisteredPlayers).CallDeferred();
     }
 
     public void EndMatch()
@@ -72,17 +72,27 @@ public partial class MatchManager : Node
         EmitSignal(SignalName.MatchEnded);
     }
 
+    private void CacheSpawnPositions()
+    {
+        _spawnPositions.Clear();
+        foreach (var point in PlayerSpawnPoints)
+        {
+            if (point != null)
+                _spawnPositions.Add(point.Position);
+        }
+        GD.Print($"[MatchManager] Cached {_spawnPositions.Count} spawn positions");
+    }
+
     public Vector2 GetSpawnPosition(int index)
     {
-        if (index < PlayerSpawnPoints.Count && PlayerSpawnPoints[index] != null)
+        if (index < _spawnPositions.Count)
         {
-            Vector2 pos = PlayerSpawnPoints[index].GlobalPosition;
-            GD.Print($"[MatchManager] GetSpawnPosition({index}) -> {pos} (from SpawnPoint)");
-            return pos;
+            GD.Print($"[MatchManager] GetSpawnPosition({index}) -> {_spawnPositions[index]}");
+            return _spawnPositions[index];
         }
 
         Vector2 fallback = new Vector2(index * 32, 0);
-        GD.PrintErr($"[MatchManager] GetSpawnPosition({index}) -> {fallback} (FALLBACK, SpawnPoints count: {PlayerSpawnPoints.Count})");
+        GD.PrintErr($"[MatchManager] GetSpawnPosition({index}) fallback -> {fallback}");
         return fallback;
     }
     
@@ -91,7 +101,7 @@ public partial class MatchManager : Node
         foreach (Player player in players)
         {
             Vector2 pos = GetSpawnPosition(player.SpawnIndex);
-            player.GlobalPosition = pos;
+            player.Position = pos;
             GD.Print($"[MatchManager] Spawned Player {player.PlayerId} at {pos}");
         }
     }
