@@ -141,4 +141,11 @@ public partial class PlayerHotbar : Node
         currentSlot = index;
         OnSlotChanged?.Invoke();
     }
+
+    public void SetSlotForRemote(int index, ItemData data, int amount)
+    {
+        if (index < 0 || index >= slots.Length) return;
+        slots[index] = (data == null || amount <= 0) ? null : new ItemStack(data, amount);
+        OnSlotChanged?.Invoke();
+    }
 }

@@ -148,6 +148,20 @@ public partial class PlayerOnline : Node
     private void HandleHotbarSync(MatchPlayerHotbarPacket packet)
     {
         if (packet.OwnerSteamId != OwnerSteamId) return;
+
+        GD.Print($"[PlayerOnline] Hotbar sync — slot {packet.SlotIndex}, item '{packet.ItemId}', amount {packet.Amount}");
+
         _player.Hotbar.SelectSlot(packet.SlotIndex);
+
+        if (!string.IsNullOrEmpty(packet.ItemId))
+        {
+            ItemData item = ItemDatabase.Instance?.GetItem(packet.ItemId);
+            if (item != null)
+                _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
+            else
+                GD.PrintErr($"[PlayerOnline] Hotbar sync item not found: {packet.ItemId}");
+        }
+        else
+            _player.Hotbar.SetSlotForRemote(packet.SlotIndex, null, 0);
     }
 }

@@ -29,12 +29,16 @@ public partial class Pickup : Area2D
 
     public void Pick(Player player)
     {
+        GD.Print("[Pickup] Picking item");
         if (NetworkRoot.Instance.IsOnline)
         {
             if (NetworkRoot.Instance.Lobby.IsHost)
                 PickupNetworkService.Instance.CollectPickup(NetworkPickupId, player);
             else if (player.IsLocallyControlled)
+            {
                 SteamMatchManager.Instance.RequestPickupCollect(NetworkPickupId, player.OwnerSteamId);
+                GD.Print("[Pickup] Requested to pick item");
+            }
         }
         else
         {

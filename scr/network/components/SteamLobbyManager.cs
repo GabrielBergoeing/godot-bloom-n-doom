@@ -146,13 +146,9 @@ public partial class SteamLobbyManager : Node
     public void Broadcast(NetworkPacket packet)
     {
         var peers = Network.Connection.GetAllPeers().ToList();
-        GD.Print($"Broadcasting packet to {peers.Count} peers");
 
         foreach (var peer in peers)
-        {
-            GD.Print($"Sending packet to {peer}");
             Network.Steam.SendPacket(peer, packet);
-        }
     }
 
     public void HandleLobbyPlayerLeft(CSteamID sender, byte[] data)

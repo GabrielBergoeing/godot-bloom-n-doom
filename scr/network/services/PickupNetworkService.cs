@@ -100,11 +100,17 @@ public partial class PickupNetworkService : Node
         if (!Network.Lobby.IsHost) return false;
 
         if (!_activePickups.TryGetValue(networkPickupId, out Pickup pickup))
+        {
+            GD.PrintErr($"[PickupNetworkService] Pickup {networkPickupId} not in active pickups");
             return false;
+        }
 
         ItemData data = pickup.ItemData;
         if (!collector.Hotbar.CanAddItem(data))
+        {
+            GD.Print($"[PickupNetworkService] Hotbar full for player {collector.PlayerId}");
             return false;
+        }
 
         collector.Hotbar.AddItem(data);
 
@@ -114,6 +120,18 @@ public partial class PickupNetworkService : Node
 
         RemovePickupNode(networkPickupId);
         Match.BroadcastPickupCollected(networkPickupId);
+
+        if (!collector.IsLocallyControlled)
+        {
+            var stack = collector.Hotbar.GetCurrentStack();
+            Match.BroadcastHotbarSlot(
+                collector.OwnerSteamId,
+                collector.Hotbar.CurrentSlot,
+                stack?.Data?.ItemId ?? "",
+                stack?.Amount ?? 0
+            );
+            GD.Print($"[PickupNetworkService] Broadcast hotbar for remote collector {collector.OwnerSteamId}");
+        }
 
         GD.Print($"[PickupNetworkService] Pickup {networkPickupId} collected by Player {collector.PlayerId}");
         return true;
