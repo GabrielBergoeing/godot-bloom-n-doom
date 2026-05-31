@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://wehx7858tjlm" path="res://scr/network/components/SteamLobbyManager.cs" id="7_drsno"]
 [ext_resource type="Script" uid="uid://b1u5w1yk5aljy" path="res://scr/network/services/LobbyStateService.cs" id="8_al7kj"]
 [ext_resource type="Script" uid="uid://6q6jj3qklsl2" path="res://scr/network/components/SteamMatchManager.cs" id="9_sc0fn"]
+[ext_resource type="Script" uid="uid://yyqwsh2s45yx" path="res://scr/network/services/PickupNetworkService.cs" id="10_crypa"]
 
 [node name="NetworkRoot" type="Node" unique_id=1059457770]
 script = ExtResource("1_e10rr")
@@ -38,3 +39,4 @@ script = ExtResource("8_al7kj")
 script = ExtResource("9_sc0fn")
 
 [node name="PickupNetworkService" type="Node" parent="SteamMatchManager" unique_id=1768420687]
+script = ExtResource("10_crypa")
