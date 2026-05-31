@@ -79,7 +79,6 @@ public partial class SteamNetworkManager : Node
             out packetSize
         ))
         {
-            GD.Print($"[SteamNetworkManager] Packet available: {packetSize}");
             byte[] buffer = new byte[packetSize];
 
             if (SteamNetworking.ReadP2PPacket(
@@ -88,8 +87,7 @@ public partial class SteamNetworkManager : Node
                 out uint bytesRead,
                 out CSteamID remoteId
             ))
-
-            GD.Print($"[SteamNetworkManager] Received {bytesRead} bytes from {remoteId}");
+            
                 _packetRouter.RoutePacket(remoteId, buffer);
         }
     }

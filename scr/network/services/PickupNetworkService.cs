@@ -67,6 +67,7 @@ public partial class PickupNetworkService : Node
 
     private void OnHostPickupSpawned(Pickup pickup)
     {
+        GD.Print($"[PickupNetworkService] Host registering pickup {pickup.ItemData?.ItemId}");
         int id = _nextPickupId++;
         pickup.NetworkPickupId = id;
         _activePickups[id] = pickup;
@@ -77,7 +78,11 @@ public partial class PickupNetworkService : Node
 
     private void HandlePickupSpawnRequest(MatchPickupSpawnRequestPacket packet)
     {
-        if (!Network.Lobby.IsHost) return;
+        if (!Network.Lobby.IsHost)
+        {
+            GD.Print("[PickupNetworkService] Ignoring spawn request on peer");
+            return;
+        }
 
         ItemData item = ItemDB.GetItem(packet.ItemId);
         if (item == null)
@@ -138,7 +143,6 @@ public partial class PickupNetworkService : Node
 
     private Pickup CreatePickupNode(ItemData data, Vector2 position, int networkId)
     {
-
         if (data.PickupScene == null) return null;
         if (_levelNode == null) return null;
 
@@ -163,11 +167,14 @@ public partial class PickupNetworkService : Node
     private void HandlePickupCollectRequest(MatchPickupCollectRequestPacket packet)
     {
         if (!Network.Lobby.IsHost) return;
+        GD.Print($"[PickupNetworkService] Collect request from {packet.RequesterSteamId}, pickup {packet.NetworkPickupId}");
 
-        // Find the player by SteamId
         var players = GetTree().GetNodesInGroup("players");
         foreach (var node in players)
         {
+            if (node is Player p)
+                GD.Print($"[PickupNetworkService] Checking player {p.PlayerId}, OwnerSteamId: {p.OwnerSteamId}");
+
             if (node is Player player && player.OwnerSteamId == packet.RequesterSteamId)
             {
                 CollectPickup(packet.NetworkPickupId, player);
