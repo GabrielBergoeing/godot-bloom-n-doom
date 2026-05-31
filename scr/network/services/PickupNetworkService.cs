@@ -18,11 +18,6 @@ public partial class PickupNetworkService : Node
     public override void _Ready()
     {
         Instance = this;
-
-        Match.OnPickupSpawned += HandleRemotePickupSpawned;
-        Match.OnPickupCollected += HandleRemotePickupCollected;
-        Match.OnPickupSpawnRequested += HandlePickupSpawnRequest;
-        Match.OnPickupCollectRequested += HandlePickupCollectRequest;
         GD.Print($"[PickupNetworkService] _Ready — IsOnline: {Network.IsOnline}");
     }
 
@@ -47,6 +42,10 @@ public partial class PickupNetworkService : Node
     public void Initialize(Node levelNode)
     {
         GD.Print($"[PickupNetworkService] Initialize — IsHost: {Network.IsOnline && Network.Lobby.IsHost}, Event: {Event != null}");
+        Match.OnPickupSpawned += HandleRemotePickupSpawned;
+        Match.OnPickupCollected += HandleRemotePickupCollected;
+        Match.OnPickupSpawnRequested += HandlePickupSpawnRequest;
+        Match.OnPickupCollectRequested += HandlePickupCollectRequest;
         
         if (!Network.IsOnline || !Network.Lobby.IsHost) return;
 
