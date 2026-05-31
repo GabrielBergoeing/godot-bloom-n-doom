@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://d11ag0xerwtnc"]
+
+[ext_resource type="Script" uid="uid://oepk1p4vp5cl" path="res://scr/managers/scene/GameManager.cs" id="1_1f5s6"]
+[ext_resource type="Resource" uid="uid://ds5u51nwccji0" path="res://nodes/items/core/item_database.tres" id="2_cdqi3"]
+
+[node name="GameManager" type="Node" unique_id=510934357]
+script = ExtResource("1_1f5s6")
+_itemDatabase = ExtResource("2_cdqi3")

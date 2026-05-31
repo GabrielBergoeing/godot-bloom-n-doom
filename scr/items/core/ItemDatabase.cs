@@ -3,7 +3,11 @@ using Godot;
 [GlobalClass]
 public partial class ItemDatabase : Resource
 {
+    public static ItemDatabase Instance { get; private set; }
+
     [Export] public ItemData[] Items;
+
+    public static void Register(ItemDatabase db) => Instance = db;
 
     public ItemData GetItem(string itemId)
     {
@@ -11,7 +15,7 @@ public partial class ItemDatabase : Resource
             if (item.ItemId == itemId)
                 return item;
 
-        GD.PrintErr($"[ItemDatabase] Item not found: '{itemId}' — available IDs: {string.Join(", ", System.Array.ConvertAll(Items, i => i.ItemId))}");
+        GD.PrintErr($"[ItemDatabase] Item not found: '{itemId}'");
         return null;
     }
 }

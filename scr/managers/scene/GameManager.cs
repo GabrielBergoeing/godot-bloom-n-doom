@@ -6,6 +6,8 @@ public partial class GameManager : Node
     public static GameManager Instance { get; private set; }
     private UIService UI => UIService.Instance;
 
+    [Export] private ItemDatabase _itemDatabase;
+
     public LevelData CurrentLevel { get; private set; }
     public List<LobbyPlayerData> LobbyPlayers { get; private set; } = new();
 
@@ -23,6 +25,9 @@ public partial class GameManager : Node
         _testLevel = GD.Load<LevelData>(
             "res://nodes/scenes/levels/data/test_level.tres"
         );
+
+        if (_itemDatabase != null)
+            ItemDatabase.Register(_itemDatabase);
         ProcessMode = ProcessModeEnum.Always;
     }
 

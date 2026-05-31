@@ -52,7 +52,6 @@ public partial class PlayerHotbar : Node
 
     public bool AddItem(ItemData data, int amount = 1)
     {
-        // Try stacking
         if (data.Stackable)
         {
             for (int i = 0; i < slots.Length; i++)
@@ -60,18 +59,19 @@ public partial class PlayerHotbar : Node
                 if (slots[i] != null && slots[i].Data == data && !slots[i].IsFull())
                 {
                     slots[i].Amount++;
+                    OnSlotChanged?.Invoke();
                     return true;
                 }
             }
         }
 
-        // Find empty slot
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] == null)
             {
                 slots[i] = new ItemStack(data, amount);
-                SelectSlot(i);
+                currentSlot = i;          // set index directly
+                OnSlotChanged?.Invoke();  // fire once after slot is populated
                 return true;
             }
         }

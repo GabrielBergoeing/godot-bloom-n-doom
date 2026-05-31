@@ -10,8 +10,6 @@ public partial class PickupNetworkService : Node
     private EventManager Event => EventManager.Instance;
     private NetworkRoot Network => NetworkRoot.Instance;
 
-    [Export] public ItemDatabase ItemDB { get; private set; }
-
     private readonly Dictionary<int, Pickup> _activePickups = new();
     private int _nextPickupId = 0;
 
@@ -84,7 +82,7 @@ public partial class PickupNetworkService : Node
             return;
         }
 
-        ItemData item = ItemDB.GetItem(packet.ItemId);
+        ItemData item = ItemDatabase.Instance?.GetItem(packet.ItemId);
         if (item == null)
         {
             GD.PrintErr($"[PickupNetworkService] Spawn request for unknown item: {packet.ItemId}");
@@ -141,7 +139,7 @@ public partial class PickupNetworkService : Node
     {
         if (Network.Lobby.IsHost) return;
 
-        ItemData data = ItemDB.GetItem(packet.ItemId);
+        ItemData data = ItemDatabase.Instance?.GetItem(packet.ItemId);
         if (data == null)
         {
             GD.PrintErr($"[PickupNetworkService] Unknown item: {packet.ItemId}");
