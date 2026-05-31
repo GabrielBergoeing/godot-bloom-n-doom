@@ -13,6 +13,7 @@ public partial class NetworkRoot : Node
     public SteamMatchManager Match { get; private set; }
 
     public LobbyStateService LobbyService => LobbyStateService.Instance;
+    public PickupNetworkService PickupService => PickupNetworkService.Instance;
 
     public bool IsOnline { get; private set; } = false;
 
@@ -42,6 +43,11 @@ public partial class NetworkRoot : Node
         if(Loader == null)
             return false;
         return Loader.IsSteamAvailable;
+    }
+
+    public bool IsHost()
+    {
+        return IsOnline && Lobby.IsHost;
     }
 
     public ulong GetSteamID()

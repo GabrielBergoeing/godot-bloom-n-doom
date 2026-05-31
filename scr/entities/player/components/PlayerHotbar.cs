@@ -89,7 +89,7 @@ public partial class PlayerHotbar : Node
         for (int i = 0; i < removeAmount; i++)
         {
             if (!consume)
-                Player.SpawnPickup(stack.Data);
+                Player.DropItem(stack.Data);
         }
 
         stack.Amount -= removeAmount;
@@ -113,7 +113,7 @@ public partial class PlayerHotbar : Node
         var stack = GetCurrentStack();
         if (stack == null) return;
 
-        Player.SpawnPickup(stack.Data);
+        Player.DropItem(stack.Data);
 
         stack.Amount--;
 

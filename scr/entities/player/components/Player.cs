@@ -87,28 +87,18 @@ public partial class Player : Entity
 		return closest;
 	}
 
-	public void SpawnPickup(ItemData data)
+	public void DropItem(ItemData data)
 	{
-		if (data?.PickupScene == null)
-			return;
-
-		var pickup = data.PickupScene.Instantiate<Pickup>();
-		if (pickup == null)
+		if (!NetworkRoot.Instance.IsOnline)
 		{
-			GD.PrintErr("PickupScene is not a Pickup!");
+			EventManager.Instance.SpawnItem(data, GlobalPosition);
 			return;
 		}
 
-		var level = SplitScreenManager.Instance?.LevelNode;
-		if (level == null)
-		{
-			GD.PrintErr("LevelNode not found!");
-			return;
-		}
-
-		level.AddChild(pickup);
-		pickup.GlobalPosition = GlobalPosition;
-		pickup.SetItemData(data);
+		if (NetworkRoot.Instance.Lobby.IsHost)
+			EventManager.Instance.SpawnItem(data, GlobalPosition);
+		else
+			Online.RequestPickupSpawn(data, GlobalPosition);
 	}
 
 	public void SetNetworkOwnership(ulong ownerSteamId, ulong localSteamId)

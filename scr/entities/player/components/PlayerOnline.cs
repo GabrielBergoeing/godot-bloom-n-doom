@@ -3,17 +3,15 @@ using Godot;
 public partial class PlayerOnline : Node
 {
     private Player _player;
-    private SteamMatchManager _match;
+    private SteamMatchManager Match => SteamMatchManager.Instance;
 
     [Export] public float BroadcastInterval = 0.05f;
     private float _broadcastTimer = 0f;
 
-    // Ownership — moved from Player
     public ulong OwnerSteamId { get; private set; }
     public bool IsLocallyControlled { get; private set; }
     public Vector2 FacingDir { get; private set; } = Vector2.Down;
 
-    // Remote interpolation targets
     private Vector2 _targetPosition;
     private float _targetRotation;
     private string _targetAction;
@@ -24,7 +22,6 @@ public partial class PlayerOnline : Node
     public override void _Ready()
     {
         _player = GetParent<Player>();
-        _match = SteamMatchManager.Instance;
 
         if (_player == null)
         {
@@ -32,7 +29,7 @@ public partial class PlayerOnline : Node
             return;
         }
 
-        if (_match == null)
+        if (Match == null)
         {
             GD.PrintErr("[PlayerOnline] SteamMatchManager not found");
             return;
@@ -41,12 +38,12 @@ public partial class PlayerOnline : Node
 
     public override void _ExitTree()
     {
-        if (_match == null) return;
+        if (Match == null) return;
 
         if (!IsLocallyControlled)
         {
-            _match.OnPlayerTransformReceived -= OnTransformReceived;
-            _match.OnHotbarSyncReceived -= OnHotbarSyncReceived;
+            Match.OnPlayerTransformReceived -= OnTransformReceived;
+            Match.OnHotbarSyncReceived -= HandleHotbarSync;
         }
         else
         {
@@ -57,12 +54,12 @@ public partial class PlayerOnline : Node
 
     public override void _Process(double delta)
     {
-        if (_player == null || _match == null) return;
+        if (_player == null || Match == null) return;
 
         if (IsLocallyControlled)
-            HandleBroadcast((float)delta);
+            HandleTransformBroadcast((float)delta);
         else
-            HandleInterpolation(delta);
+            HandleTransformInterpolation(delta);
     }
 
     public void Initialize(ulong ownerSteamId, ulong localSteamId)
@@ -74,8 +71,8 @@ public partial class PlayerOnline : Node
 
         if (!IsLocallyControlled)
         {
-            _match.OnPlayerTransformReceived += OnTransformReceived;
-            _match.OnHotbarSyncReceived += OnHotbarSyncReceived;
+            Match.OnPlayerTransformReceived += OnTransformReceived;
+            Match.OnHotbarSyncReceived += HandleHotbarSync;
         }
         else
         {
@@ -85,14 +82,19 @@ public partial class PlayerOnline : Node
         _player.Input.SetRemoteControlled(!IsLocallyControlled);
     }
 
-    private void HandleBroadcast(float delta)
+    public void RequestPickupSpawn(ItemData data, Vector2 spawnPos)
+    {
+        Match.RequestPickupSpawn(OwnerSteamId, data.ItemId, spawnPos);
+    }
+
+    private void HandleTransformBroadcast(float delta)
     {
         _broadcastTimer -= delta;
         if (_broadcastTimer > 0f) return;
 
         _broadcastTimer = BroadcastInterval;
 
-        _match.BroadcastTransform(
+        Match.BroadcastTransform(
             _player.PlayerId,
             OwnerSteamId,
             _player.GlobalPosition,
@@ -113,7 +115,7 @@ public partial class PlayerOnline : Node
         FacingDir = packet.FacingDir;
     }
 
-    private void HandleInterpolation(double delta)
+    private void HandleTransformInterpolation(double delta)
     {
         if (!_hasTarget) return;
 
@@ -135,7 +137,7 @@ public partial class PlayerOnline : Node
     private void BroadcastHotbarState()
     {
         var stack = _player.Hotbar.GetCurrentStack();
-        _match.BroadcastHotbarSlot(
+        Match.BroadcastHotbarSlot(
             OwnerSteamId,
             _player.Hotbar.CurrentSlot,
             stack?.Data?.ItemId ?? "",
@@ -143,7 +145,7 @@ public partial class PlayerOnline : Node
         );
     }
 
-    private void OnHotbarSyncReceived(MatchPlayerHotbarPacket packet)
+    private void HandleHotbarSync(MatchPlayerHotbarPacket packet)
     {
         if (packet.OwnerSteamId != OwnerSteamId) return;
         _player.Hotbar.SelectSlot(packet.SlotIndex);

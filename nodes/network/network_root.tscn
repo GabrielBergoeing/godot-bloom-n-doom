@@ -36,3 +36,5 @@ script = ExtResource("8_al7kj")
 
 [node name="SteamMatchManager" type="Node" parent="." unique_id=976437122]
 script = ExtResource("9_sc0fn")
+
+[node name="PickupNetworkService" type="Node" parent="SteamMatchManager" unique_id=1768420687]

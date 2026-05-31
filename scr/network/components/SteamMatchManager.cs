@@ -17,9 +17,9 @@ public partial class SteamMatchManager : Node
     public event Action<MatchPlayerTransformPacket> OnPlayerTransformReceived;
     public event Action<float> OnTimerSyncReceived;
     public event Action<MatchPlayerHotbarPacket> OnHotbarSyncReceived;
-    public event Action<MatchPickupPacket> OnPickupSpawned;
+    public event Action<MatchPickupSpawnedPacket> OnPickupSpawned;
     public event Action<MatchPickupCollectedPacket> OnPickupCollected;
-
+    public event Action<MatchPickupSpawnRequestPacket> OnPickupSpawnRequested;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -39,8 +39,10 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchTimerSync, HandleTimerSync);
 
         router.RegisterHandler((byte)NetworkPacketType.MatchPlayerHotbar, HandleHotbarSync);
-        //router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawned, HandlePickupSpawned);
-        //router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollected, HandlePickupCollected);
+        router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawned, HandlePickupSpawned);
+        router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollected, HandlePickupCollected);
+        router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawnRequest, HandlePickupSpawnRequest);
+
     }
 
     public void BroadcastMatchStart()
@@ -89,9 +91,9 @@ public partial class SteamMatchManager : Node
         Network.Lobby.Broadcast(packet);
     }
 
-    public void BroadcastPickupSpawned(int itemId, Vector2 position, int networkPickupId)
+    public void BroadcastPickupSpawned(string itemId, Vector2 position, int networkPickupId)
     {
-        MatchPickupPacket packet = new()
+        MatchPickupSpawnedPacket packet = new()
         {
             ItemId = itemId,
             Position = position,
@@ -105,6 +107,17 @@ public partial class SteamMatchManager : Node
         MatchPickupCollectedPacket packet = new()
         {
             NetworkPickupId = networkPickupId
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void RequestPickupSpawn(ulong requesterSteamId, string itemId, Vector2 position)
+    {
+        MatchPickupSpawnRequestPacket packet = new()
+        {
+            RequesterSteamId = requesterSteamId,
+            ItemId = itemId,
+            Position = position
         };
         Network.Lobby.Broadcast(packet);
     }
@@ -238,7 +251,7 @@ public partial class SteamMatchManager : Node
     {
         var reader = new PacketReader(data);
         reader.ReadByte();
-        var packet = new MatchPickupPacket();
+        var packet = new MatchPickupSpawnedPacket();
         packet.Deserialize(reader);
         Callable.From(() => OnPickupSpawned?.Invoke(packet)).CallDeferred();
     }
@@ -259,5 +272,14 @@ public partial class SteamMatchManager : Node
         var packet = new MatchPlayerHotbarPacket();
         packet.Deserialize(reader);
         Callable.From(() => OnHotbarSyncReceived?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandlePickupSpawnRequest(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchPickupSpawnRequestPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnPickupSpawnRequested?.Invoke(packet)).CallDeferred();
     }
 }

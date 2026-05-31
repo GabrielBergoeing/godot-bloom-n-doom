@@ -1,10 +1,16 @@
 using Godot;
+using System;
 using Godot.Collections;
 
 public partial class EventManager : Node
 {
+	public static EventManager Instance;
 	public GameManager Game => GameManager.Instance;
 	public FarmManager Farm => FarmManager.Instance;
+	public NetworkRoot Network => NetworkRoot.Instance;
+
+	public event Action<Pickup> OnPickupSpawned;
+	public event Action<Pickup> OnPickupDropped;
 
 	private LevelData _data;
 
@@ -14,11 +20,14 @@ public partial class EventManager : Node
 
 	public override void _Ready()
 	{
+		Instance = this;
 		_data = Game.CurrentLevel;
 	}
 
 	public override void _Process(double delta)
 	{
+		if (Network.IsOnline && !Network.Lobby.IsHost) return;
+
 		seedTimer += delta;
 		toolTimer += delta;
 		rareTimer += delta;
@@ -42,12 +51,35 @@ public partial class EventManager : Node
 		}
 	}
 
+	public Pickup SpawnItem(ItemData item, Vector2 spawnPos)
+	{
+		var pickup = item.PickupScene.Instantiate<Pickup>();
+		pickup.SetItemData(item);
+
+		var level = SplitScreenManager.Instance.LevelNode;
+		if (level == null) return null;
+
+		level.AddChild(pickup);
+		pickup.Position = spawnPos;
+
+		OnPickupSpawned?.Invoke(pickup);
+		return pickup;
+	}
+
+	public Pickup DropItem(ItemData item, Vector2 position)
+    {
+        var pickup = SpawnItem(item, position);
+        if (pickup != null)
+            OnPickupDropped?.Invoke(pickup);
+        return pickup;
+    }
+
 	private void SpawnRandomItem(Array<SpawnEntry> table)
 	{
 		if (table.Count == 0)
 			return;
 
-		Vector2? spawnPos = GetRandomFreePosition();
+		Vector2 spawnPos = GetRandomFreePosition();
 		if (spawnPos == null)
 			return;
 
@@ -55,18 +87,7 @@ public partial class EventManager : Node
 		if (item == null || item.PickupScene == null)
 			return;
 
-		var pickup =
-			item.PickupScene.Instantiate<Pickup>();
-		pickup.SetItemData(item);
-
-		var level =
-			SplitScreenManager.Instance.LevelNode;
-
-		if (level == null)
-			return;
-
-		level.AddChild(pickup);
-		pickup.Position = spawnPos.Value;
+		SpawnItem(item, spawnPos);
 	}
 
 	private ItemData GetWeightedItem(Array<SpawnEntry> table)
@@ -94,10 +115,10 @@ public partial class EventManager : Node
 		return null;
 	}
 
-	private Vector2? GetRandomFreePosition()
+	private Vector2 GetRandomFreePosition()
 	{
 		if (Farm == null)
-			return null;
+			return new Vector2(1, 1);
 
 		Rect2I bounds = Farm.GetUsedRect();
 
@@ -127,7 +148,7 @@ public partial class EventManager : Node
 				return worldPos;
 		}
 
-		return null;
+		return new Vector2(1, 1);
 	}
 
 	private bool CanSpawnAt(Vector2I cell)

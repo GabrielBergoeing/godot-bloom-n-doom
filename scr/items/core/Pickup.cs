@@ -6,14 +6,14 @@ public partial class Pickup : Area2D
     [Export] public ItemData ItemData;
 
     public Action<Player> OnPickup;
-    private Sprite2D Sprite;
+    public int NetworkPickupId { get; set; } = -1;
+
+    private Sprite2D _sprite;
 
     public override void _Ready()
     {
-        Sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
-
-        if (Sprite != null && ItemData?.Icon != null)
-            Sprite.Texture = ItemData.Icon;
+        _sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+        UpdateVisual();
 
         BodyEntered += OnBodyEntered;
         BodyExited += OnBodyExited;
@@ -25,14 +25,22 @@ public partial class Pickup : Area2D
         UpdateVisual();
     }
 
+    public ItemData GetItemData() => ItemData;
+
     public void Pick(Player player)
     {
-        var hotbar = player.GetNodeOrNull<PlayerHotbar>("PlayerHotbar");
-
-        if (hotbar != null && hotbar.AddItem(ItemData))
+        if (NetworkRoot.Instance.IsOnline)
         {
-            OnPickup?.Invoke(player);
-            QueueFree();
+            if (NetworkRoot.Instance.Lobby.IsHost)
+                PickupNetworkService.Instance.CollectPickup(NetworkPickupId, player);
+        }
+        else
+        {
+            if (player.Hotbar.AddItem(ItemData))
+            {
+                OnPickup?.Invoke(player);
+                QueueFree();
+            }
         }
     }
 
@@ -48,17 +56,10 @@ public partial class Pickup : Area2D
             player.PickupsInRange.Remove(this);
     }
 
-
     private void UpdateVisual()
     {
-        if (Sprite == null) return;
-
-        if (ItemData?.Icon != null)
-        {
-            Sprite.Texture = ItemData.Icon;
-            Sprite.Visible = true;
-        }
-        else
-            Sprite.Visible = false;
+        if (_sprite == null) return;
+        _sprite.Texture = ItemData?.Icon;
+        _sprite.Visible = ItemData?.Icon != null;
     }
 }
