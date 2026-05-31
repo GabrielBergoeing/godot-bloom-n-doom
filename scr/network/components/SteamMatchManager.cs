@@ -45,7 +45,6 @@ public partial class SteamMatchManager : Node
         );
     }
 
-    // Called by host after level is selected
     public void BroadcastMatchStart()
     {
         if (!IsHost) return;
@@ -60,7 +59,7 @@ public partial class SteamMatchManager : Node
         GD.Print("[SteamMatchManager] Local OnMatchStarted invoke");
     }
 
-    public void BroadcastTransform(int playerId, ulong ownerSteamId, Vector2 position, float rotation, string action)
+    public void BroadcastTransform(int playerId, ulong ownerSteamId, Vector2 position, float rotation, string action, Vector2 facingDir)
     {
         MatchPlayerTransformPacket packet = new()
         {
@@ -68,7 +67,8 @@ public partial class SteamMatchManager : Node
             OwnerSteamId = ownerSteamId,
             Position = position,
             Rotation = rotation,
-            Action = action
+            Action = action,
+            FacingDir = facingDir
         };
         Network.Lobby.Broadcast(packet);
     }

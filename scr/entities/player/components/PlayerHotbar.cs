@@ -22,7 +22,10 @@ public partial class PlayerHotbar : Node
     public void HandleInput(PlayerInput input)
     {
         if (input.SlotPressed.HasValue)
+        {
+            GD.Print($"[PlayerHotbar] Value pressed is {input.SlotPressed.Value}");
             SelectSlot(input.SlotPressed.Value);
+        }
     }
 
     public bool CanAddItem(ItemData data, int amount = 1)

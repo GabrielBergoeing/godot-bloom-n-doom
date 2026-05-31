@@ -8,6 +8,7 @@ public class MatchPlayerTransformPacket : NetworkPacket
     public Vector2 Position;
     public float Rotation;
     public string Action;
+    public Vector2 FacingDir;
 
     public override void Serialize(PacketWriter writer)
     {
@@ -16,6 +17,7 @@ public class MatchPlayerTransformPacket : NetworkPacket
         writer.WriteVector2(Position);
         writer.WriteFloat(Rotation);
         writer.WriteString(Action ?? "idle");
+        writer.WriteVector2(FacingDir);
     }
 
     public override void Deserialize(PacketReader reader)
@@ -25,5 +27,6 @@ public class MatchPlayerTransformPacket : NetworkPacket
         Position = reader.ReadVector2();
         Rotation = reader.ReadFloat();
         Action = reader.ReadString();
+        FacingDir = reader.ReadVector2();
     }
 }

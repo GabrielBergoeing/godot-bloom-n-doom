@@ -61,8 +61,13 @@ public partial class Player : Entity
 		Anim.Setup(sprites);
 	}
 
-	public Vector2 GetFacingDirection() =>
-		Input.FacingDir;
+	public Vector2 GetFacingDirection() 
+	{
+		if (IsLocallyControlled)
+			return Input.FacingDir;
+		else
+			return Online.FacingDir;
+	}
 
 	public Pickup GetPickupNearby()
 	{

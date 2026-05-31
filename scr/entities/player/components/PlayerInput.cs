@@ -54,6 +54,8 @@ public partial class PlayerInput : Node
         {
             if (@event is not InputEventKey key)
                 return;
+            
+            GD.Print($"[PlayerInput] Pressed {key.Keycode}");
 
             if (!key.Pressed || key.Echo)
                 return;
@@ -68,7 +70,11 @@ public partial class PlayerInput : Node
                 SabotagePressed = true;
 
             if (key.Keycode == Key.Key1) SlotPressed = 0;
-            if (key.Keycode == Key.Key2) SlotPressed = 1;
+            if (key.Keycode == Key.Key2) 
+            {
+                GD.Print("[PlayerInput] Confirmed Pressed Key 2");
+                SlotPressed = 1;
+            }
             if (key.Keycode == Key.Key3) SlotPressed = 2;
             if (key.Keycode == Key.Key4) SlotPressed = 3;
         }

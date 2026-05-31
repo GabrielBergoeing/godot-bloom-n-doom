@@ -11,6 +11,7 @@ public partial class PlayerOnline : Node
     // Ownership — moved from Player
     public ulong OwnerSteamId { get; private set; }
     public bool IsLocallyControlled { get; private set; }
+    public Vector2 FacingDir { get; private set; } = Vector2.Down;
 
     // Remote interpolation targets
     private Vector2 _targetPosition;
@@ -84,19 +85,20 @@ public partial class PlayerOnline : Node
             OwnerSteamId,
             _player.GlobalPosition,
             _player.Rotation,
-            _player.Anim.CurrentAction
+            _player.Anim.CurrentAction,
+            _player.GetFacingDirection()
         );
     }
 
     private void OnTransformReceived(MatchPlayerTransformPacket packet)
     {
-        // Match by SteamId, not PlayerId, to avoid cross-machine ID collision
         if (packet.OwnerSteamId != OwnerSteamId) return;
 
         _targetPosition = packet.Position;
         _targetRotation = packet.Rotation;
         _targetAction = packet.Action;
         _hasTarget = true;
+        FacingDir = packet.FacingDir;
     }
 
     private void HandleInterpolation(double delta)
