@@ -18,9 +18,6 @@ public partial class PickupNetworkService : Node
     public override void _Ready()
     {
         Instance = this;
-        _levelNode = SplitScreenManager.Instance?.LevelNode;
-
-        if (!Network.IsOnline) return;
 
         Match.OnPickupSpawned += HandleRemotePickupSpawned;
         Match.OnPickupCollected += HandleRemotePickupCollected;
@@ -47,7 +44,7 @@ public partial class PickupNetworkService : Node
     }
 
     // In PickupNetworkService.Initialize:
-    public void Initialize()
+    public void Initialize(Node levelNode)
     {
         GD.Print($"[PickupNetworkService] Initialize — IsHost: {Network.IsOnline && Network.Lobby.IsHost}, Event: {Event != null}");
         
@@ -59,6 +56,7 @@ public partial class PickupNetworkService : Node
             return;
         }
 
+        _levelNode = levelNode;
         Event.OnPickupSpawned += OnHostPickupSpawned;
         Event.OnPickupDropped += OnHostPickupSpawned;
         GD.Print("[PickupNetworkService] Subscribed to EventManager");
