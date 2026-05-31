@@ -20,6 +20,7 @@ public partial class SteamMatchManager : Node
     public event Action<MatchPickupSpawnedPacket> OnPickupSpawned;
     public event Action<MatchPickupCollectedPacket> OnPickupCollected;
     public event Action<MatchPickupSpawnRequestPacket> OnPickupSpawnRequested;
+    public event Action<MatchPickupCollectRequestPacket> OnPickupCollectRequested;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -42,7 +43,7 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawned, HandlePickupSpawned);
         router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollected, HandlePickupCollected);
         router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawnRequest, HandlePickupSpawnRequest);
-
+        router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollectRequest, HandlePickupCollectRequest);
     }
 
     public void BroadcastMatchStart()
@@ -118,6 +119,16 @@ public partial class SteamMatchManager : Node
             RequesterSteamId = requesterSteamId,
             ItemId = itemId,
             Position = position
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void RequestPickupCollect(int networkPickupId, ulong requesterSteamId)
+    {
+        MatchPickupCollectRequestPacket packet = new()
+        {
+            NetworkPickupId = networkPickupId,
+            RequesterSteamId = requesterSteamId
         };
         Network.Lobby.Broadcast(packet);
     }
@@ -281,5 +292,14 @@ public partial class SteamMatchManager : Node
         var packet = new MatchPickupSpawnRequestPacket();
         packet.Deserialize(reader);
         Callable.From(() => OnPickupSpawnRequested?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandlePickupCollectRequest(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchPickupCollectRequestPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnPickupCollectRequested?.Invoke(packet)).CallDeferred();
     }
 }

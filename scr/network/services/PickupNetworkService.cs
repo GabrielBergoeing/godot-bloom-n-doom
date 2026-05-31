@@ -22,10 +22,10 @@ public partial class PickupNetworkService : Node
 
         if (!Network.IsOnline) return;
 
-        // All machines: listen for network pickup events
         Match.OnPickupSpawned += HandleRemotePickupSpawned;
         Match.OnPickupCollected += HandleRemotePickupCollected;
         Match.OnPickupSpawnRequested += HandlePickupSpawnRequest;
+        Match.OnPickupCollectRequested += HandlePickupCollectRequest;
     }
 
     public override void _ExitTree()
@@ -41,6 +41,7 @@ public partial class PickupNetworkService : Node
             Match.OnPickupSpawned -= HandleRemotePickupSpawned;
             Match.OnPickupCollected -= HandleRemotePickupCollected;
             Match.OnPickupSpawnRequested -= HandlePickupSpawnRequest;
+            Match.OnPickupCollectRequested -= HandlePickupCollectRequest;
         }
     }
 
@@ -90,6 +91,11 @@ public partial class PickupNetworkService : Node
             return false;
 
         collector.Hotbar.AddItem(data);
+
+        foreach (var node in GetTree().GetNodesInGroup("players"))
+            if (node is Player p)
+                p.PickupsInRange.Remove(pickup);
+
         RemovePickupNode(networkPickupId);
         Match.BroadcastPickupCollected(networkPickupId);
 
@@ -139,5 +145,23 @@ public partial class PickupNetworkService : Node
         if (!_activePickups.TryGetValue(networkId, out Pickup pickup)) return;
         pickup.QueueFree();
         _activePickups.Remove(networkId);
+    }
+
+    private void HandlePickupCollectRequest(MatchPickupCollectRequestPacket packet)
+    {
+        if (!Network.Lobby.IsHost) return;
+
+        // Find the player by SteamId
+        var players = GetTree().GetNodesInGroup("players");
+        foreach (var node in players)
+        {
+            if (node is Player player && player.OwnerSteamId == packet.RequesterSteamId)
+            {
+                CollectPickup(packet.NetworkPickupId, player);
+                return;
+            }
+        }
+
+        GD.PrintErr($"[PickupNetworkService] Collect request from unknown player {packet.RequesterSteamId}");
     }
 }

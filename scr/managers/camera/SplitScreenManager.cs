@@ -202,7 +202,10 @@ public partial class SplitScreenManager : Node
         GameManager.Instance.StartMatch(_levelNode);
 
         if (Network.IsOnline)
+        {
             _matchManager.SubscribeToTimerSync();
+            Network.PickupService.Initialize();
+        }
 
         CreateMatchResultsPanel();
     }

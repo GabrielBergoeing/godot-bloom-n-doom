@@ -33,11 +33,14 @@ public partial class Pickup : Area2D
         {
             if (NetworkRoot.Instance.Lobby.IsHost)
                 PickupNetworkService.Instance.CollectPickup(NetworkPickupId, player);
+            else if (player.IsLocallyControlled)
+                SteamMatchManager.Instance.RequestPickupCollect(NetworkPickupId, player.OwnerSteamId);
         }
         else
         {
             if (player.Hotbar.AddItem(ItemData))
             {
+                player.PickupsInRange.Remove(this);
                 OnPickup?.Invoke(player);
                 QueueFree();
             }

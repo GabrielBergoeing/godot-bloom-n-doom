@@ -18,5 +18,6 @@ public enum NetworkPacketType : byte
     MatchPlayerHotbar = 26,
     MatchPickupSpawned = 27,
     MatchPickupCollected = 28,
-    MatchPickupSpawnRequest = 29
+    MatchPickupSpawnRequest = 29,
+    MatchPickupCollectRequest = 30
 }
