@@ -18,7 +18,7 @@ public partial class PickupNetworkService : Node
     public override void _Ready()
     {
         Instance = this;
-        GD.Print($"[PickupNetworkService] _Ready — IsOnline: {Network.IsOnline}");
+        GD.Print($"[PickupNetworkService] Ready ");
     }
 
     public override void _ExitTree()
