@@ -29,11 +29,17 @@ public partial class PlayerOnline : Node
             GD.PrintErr("[PlayerOnline] No Player parent found");
             return;
         }
+
+        if (!_player.IsLocallyControlled)
+        {
+            _match.OnPlayerTransformReceived += OnTransformReceived;
+            GD.Print($"[PlayerOnline] Transform signal in player with Steam ID {_player.OwnerSteamId}");
+        }
     }
 
     public override void _ExitTree()
     {
-        if (_match != null && !IsLocallyControlled)
+        if (_match != null && !_player.IsLocallyControlled)
             _match.OnPlayerTransformReceived -= OnTransformReceived;
     }
 
@@ -41,22 +47,10 @@ public partial class PlayerOnline : Node
     {
         if (_player == null) return;
 
-        if (IsLocallyControlled)
+        if (_player.IsLocallyControlled)
             HandleBroadcast((float)delta);
         else
             HandleInterpolation(delta);
-    }
-
-    public void Initialize(ulong ownerSteamId, ulong localSteamId)
-    {
-        OwnerSteamId = ownerSteamId;
-		IsLocallyControlled = (ownerSteamId == localSteamId);
-
-		if (!IsLocallyControlled)
-        {
-            _match.OnPlayerTransformReceived += OnTransformReceived;
-            GD.Print($"[PlayerOnline] Transform signal in player with Steam ID {OwnerSteamId}");
-        }
     }
 
     private void HandleBroadcast(float delta)

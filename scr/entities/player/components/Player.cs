@@ -20,6 +20,8 @@ public partial class Player : Entity
 
 	public int SpawnIndex { get; set; }
 	public int PlayerId { get; private set; }
+	public ulong OwnerSteamId { get; private set; }
+	public bool IsLocallyControlled { get; private set; }
 	public List<Pickup> PickupsInRange = new();
 
 	// States
@@ -105,11 +107,14 @@ public partial class Player : Entity
 
 	public void SetNetworkOwnership(ulong ownerSteamId, ulong localSteamId)
 	{
-		Input.SetRemoteControlled(ownerSteamId != localSteamId);
+		OwnerSteamId = ownerSteamId;
+		IsLocallyControlled = (ownerSteamId == localSteamId);
+
+		Input.SetRemoteControlled(!IsLocallyControlled);
+
 		if (NetworkRoot.Instance.IsOnline)
 		{
 			Online = new PlayerOnline();
-			Online.Initialize(ownerSteamId, localSteamId);
 			AddChild(Online);
 		}
 	}
