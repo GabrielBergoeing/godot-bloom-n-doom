@@ -143,6 +143,7 @@ public partial class SplitScreenManager : Node
             string deviceType = lobbyData?.DeviceType ?? "Keyboard";
 
             player.Setup(data.PlayerId, deviceId, deviceType, character.Sprites);
+            player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
             _matchManager.RegisterPlayer(player, data.SpawnIndex);
             CreateLocalViewport(player);
         }

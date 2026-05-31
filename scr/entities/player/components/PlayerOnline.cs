@@ -1,17 +1,18 @@
 using Godot;
-using System;
 
 public partial class PlayerOnline : Node
 {
     private Player _player;
     private SteamMatchManager _match;
 
-    [Export] private float BroadcastInterval = 0.05f;
+    [Export] public float BroadcastInterval = 0.05f;
     private float _broadcastTimer = 0f;
 
+    // Ownership — moved from Player
     public ulong OwnerSteamId { get; private set; }
-	public bool IsLocallyControlled { get; private set; }
+    public bool IsLocallyControlled { get; private set; }
 
+    // Remote interpolation targets
     private Vector2 _targetPosition;
     private float _targetRotation;
     private string _targetAction;
@@ -30,27 +31,45 @@ public partial class PlayerOnline : Node
             return;
         }
 
-        if (!_player.IsLocallyControlled)
+        if (_match == null)
         {
-            _match.OnPlayerTransformReceived += OnTransformReceived;
-            GD.Print($"[PlayerOnline] Transform signal in player with Steam ID {_player.OwnerSteamId}");
+            GD.PrintErr("[PlayerOnline] SteamMatchManager not found");
+            return;
         }
     }
 
     public override void _ExitTree()
     {
-        if (_match != null && !_player.IsLocallyControlled)
+        if (_match != null && !IsLocallyControlled)
             _match.OnPlayerTransformReceived -= OnTransformReceived;
     }
 
     public override void _Process(double delta)
     {
-        if (_player == null) return;
+        if (_player == null || _match == null) return;
 
-        if (_player.IsLocallyControlled)
+        if (IsLocallyControlled)
             HandleBroadcast((float)delta);
         else
             HandleInterpolation(delta);
+    }
+
+    public void Initialize(ulong ownerSteamId, ulong localSteamId)
+    {
+        OwnerSteamId = ownerSteamId;
+        IsLocallyControlled = ownerSteamId == localSteamId;
+
+        GD.Print($"[PlayerOnline] Initialized — SteamId: {ownerSteamId}, Local: {IsLocallyControlled}");
+
+        if (!IsLocallyControlled)
+        {
+            _match.OnPlayerTransformReceived += OnTransformReceived;
+            GD.Print($"[PlayerOnline] Subscribed to transforms for SteamId {OwnerSteamId}");
+        }
+        else
+            GD.Print($"[PlayerOnline] Local player ready, will broadcast at {BroadcastInterval}s intervals");
+
+        _player.Input.SetRemoteControlled(!IsLocallyControlled);
     }
 
     private void HandleBroadcast(float delta)
@@ -59,10 +78,10 @@ public partial class PlayerOnline : Node
         if (_broadcastTimer > 0f) return;
 
         _broadcastTimer = BroadcastInterval;
-        GD.Print("[PlayerOnline] Broadcasting position");
 
         _match.BroadcastTransform(
             _player.PlayerId,
+            OwnerSteamId,
             _player.GlobalPosition,
             _player.Rotation,
             _player.Anim.CurrentAction
@@ -71,7 +90,8 @@ public partial class PlayerOnline : Node
 
     private void OnTransformReceived(MatchPlayerTransformPacket packet)
     {
-        if (packet.PlayerId != _player.PlayerId) return;
+        // Match by SteamId, not PlayerId, to avoid cross-machine ID collision
+        if (packet.OwnerSteamId != OwnerSteamId) return;
 
         _targetPosition = packet.Position;
         _targetRotation = packet.Rotation;
@@ -82,8 +102,6 @@ public partial class PlayerOnline : Node
     private void HandleInterpolation(double delta)
     {
         if (!_hasTarget) return;
-
-        GD.Print("[PlayerOnline] Interpolating Position");
 
         _player.GlobalPosition = _player.GlobalPosition.Lerp(
             _targetPosition,

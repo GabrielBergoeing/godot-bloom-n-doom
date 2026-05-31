@@ -60,11 +60,12 @@ public partial class SteamMatchManager : Node
         GD.Print("[SteamMatchManager] Local OnMatchStarted invoke");
     }
 
-    public void BroadcastTransform(int playerId, Vector2 position, float rotation, string action)
+    public void BroadcastTransform(int playerId, ulong ownerSteamId, Vector2 position, float rotation, string action)
     {
         MatchPlayerTransformPacket packet = new()
         {
             PlayerId = playerId,
+            OwnerSteamId = ownerSteamId,
             Position = position,
             Rotation = rotation,
             Action = action
