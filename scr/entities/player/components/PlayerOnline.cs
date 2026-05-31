@@ -41,8 +41,18 @@ public partial class PlayerOnline : Node
 
     public override void _ExitTree()
     {
-        if (_match != null && !IsLocallyControlled)
+        if (_match == null) return;
+
+        if (!IsLocallyControlled)
+        {
             _match.OnPlayerTransformReceived -= OnTransformReceived;
+            _match.OnHotbarSyncReceived -= OnHotbarSyncReceived;
+        }
+        else
+        {
+            if (_player?.Hotbar != null)
+                _player.Hotbar.OnSlotChanged -= BroadcastHotbarState;
+        }
     }
 
     public override void _Process(double delta)
@@ -65,10 +75,12 @@ public partial class PlayerOnline : Node
         if (!IsLocallyControlled)
         {
             _match.OnPlayerTransformReceived += OnTransformReceived;
-            GD.Print($"[PlayerOnline] Subscribed to transforms for SteamId {OwnerSteamId}");
+            _match.OnHotbarSyncReceived += OnHotbarSyncReceived;
         }
         else
-            GD.Print($"[PlayerOnline] Local player ready, will broadcast at {BroadcastInterval}s intervals");
+        {
+            _player.Hotbar.OnSlotChanged += BroadcastHotbarState;
+        }
 
         _player.Input.SetRemoteControlled(!IsLocallyControlled);
     }
@@ -118,5 +130,22 @@ public partial class PlayerOnline : Node
 
         if (_targetAction != null)
             _player.Anim.SetAction(_targetAction);
+    }
+
+    private void BroadcastHotbarState()
+    {
+        var stack = _player.Hotbar.GetCurrentStack();
+        _match.BroadcastHotbarSlot(
+            OwnerSteamId,
+            _player.Hotbar.CurrentSlot,
+            stack?.Data?.ItemId ?? "",
+            stack?.Amount ?? 0
+        );
+    }
+
+    private void OnHotbarSyncReceived(MatchPlayerHotbarPacket packet)
+    {
+        if (packet.OwnerSteamId != OwnerSteamId) return;
+        _player.Hotbar.SelectSlot(packet.SlotIndex);
     }
 }

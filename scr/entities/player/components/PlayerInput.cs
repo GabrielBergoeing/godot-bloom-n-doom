@@ -40,9 +40,9 @@ public partial class PlayerInput : Node
         canControl = newState;
     }
 
-    public void SetMatchStatus(bool matchStatus)
+    public void SetMatchStatus(bool status)
     {
-        bool matchActive = matchStatus;
+        bool matchActive = status;
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -60,9 +60,6 @@ public partial class PlayerInput : Node
             if (!key.Pressed || key.Echo)
                 return;
 
-            if (key.Device != DeviceId)
-                return;
-
             if (key.Keycode == Key.E)
                 InteractPressed = true;
 
@@ -70,11 +67,7 @@ public partial class PlayerInput : Node
                 SabotagePressed = true;
 
             if (key.Keycode == Key.Key1) SlotPressed = 0;
-            if (key.Keycode == Key.Key2) 
-            {
-                GD.Print("[PlayerInput] Confirmed Pressed Key 2");
-                SlotPressed = 1;
-            }
+            if (key.Keycode == Key.Key2) SlotPressed = 1;
             if (key.Keycode == Key.Key3) SlotPressed = 2;
             if (key.Keycode == Key.Key4) SlotPressed = 3;
         }

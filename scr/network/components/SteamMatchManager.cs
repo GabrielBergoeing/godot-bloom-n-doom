@@ -16,6 +16,10 @@ public partial class SteamMatchManager : Node
     public event Action<MatchStartPacket> OnMatchStarted;
     public event Action<MatchPlayerTransformPacket> OnPlayerTransformReceived;
     public event Action<float> OnTimerSyncReceived;
+    public event Action<MatchPlayerHotbarPacket> OnHotbarSyncReceived;
+    public event Action<MatchPickupPacket> OnPickupSpawned;
+    public event Action<MatchPickupCollectedPacket> OnPickupCollected;
+
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -30,19 +34,13 @@ public partial class SteamMatchManager : Node
 
     public void Initialize(SteamPacketRouter router)
     {
-        router.RegisterHandler(
-            (byte)NetworkPacketType.MatchPlayerTransform,
-            HandlePlayerTransform
-        );
-        router.RegisterHandler(
-            (byte)NetworkPacketType.MatchStart,
-            HandleMatchStart
-        );
+        router.RegisterHandler((byte)NetworkPacketType.MatchPlayerTransform, HandlePlayerTransform);
+        router.RegisterHandler((byte)NetworkPacketType.MatchStart, HandleMatchStart);
+        router.RegisterHandler((byte)NetworkPacketType.MatchTimerSync, HandleTimerSync);
 
-        router.RegisterHandler(
-            (byte)NetworkPacketType.MatchTimerSync,
-            HandleTimerSync
-        );
+        router.RegisterHandler((byte)NetworkPacketType.MatchPlayerHotbar, HandleHotbarSync);
+        //router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawned, HandlePickupSpawned);
+        //router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollected, HandlePickupCollected);
     }
 
     public void BroadcastMatchStart()
@@ -69,6 +67,44 @@ public partial class SteamMatchManager : Node
             Rotation = rotation,
             Action = action,
             FacingDir = facingDir
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastTimerSync(float timeRemaining)
+    {
+        MatchTimerSyncPacket packet = new() { TimeRemaining = timeRemaining };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastHotbarSlot(ulong ownerSteamId, int slotIndex, string itemId, int amount)
+    {
+        MatchPlayerHotbarPacket packet = new()
+        {
+            OwnerSteamId = ownerSteamId,
+            SlotIndex = slotIndex,
+            ItemId = itemId,
+            Amount = amount
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastPickupSpawned(int itemId, Vector2 position, int networkPickupId)
+    {
+        MatchPickupPacket packet = new()
+        {
+            ItemId = itemId,
+            Position = position,
+            NetworkPickupId = networkPickupId
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastPickupCollected(int networkPickupId)
+    {
+        MatchPickupCollectedPacket packet = new()
+        {
+            NetworkPickupId = networkPickupId
         };
         Network.Lobby.Broadcast(packet);
     }
@@ -189,20 +225,39 @@ public partial class SteamMatchManager : Node
         ).CallDeferred();
     }
 
-    public void BroadcastTimerSync(float timeRemaining)
-    {
-        MatchTimerSyncPacket packet = new() { TimeRemaining = timeRemaining };
-        Network.Lobby.Broadcast(packet);
-    }
-
     private void HandleTimerSync(CSteamID sender, byte[] data)
     {
         PacketReader reader = new PacketReader(data);
         reader.ReadByte();
         MatchTimerSyncPacket packet = new();
         packet.Deserialize(reader);
+        Callable.From(() => OnTimerSyncReceived?.Invoke(packet.TimeRemaining)).CallDeferred();
+    }
 
-        Callable.From(() => OnTimerSyncReceived?.Invoke(packet.TimeRemaining))
-            .CallDeferred();
+    private void HandlePickupSpawned(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchPickupPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnPickupSpawned?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandlePickupCollected(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchPickupCollectedPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnPickupCollected?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleHotbarSync(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchPlayerHotbarPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnHotbarSyncReceived?.Invoke(packet)).CallDeferred();
     }
 }

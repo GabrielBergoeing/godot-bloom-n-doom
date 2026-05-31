@@ -136,7 +136,7 @@ public partial class PlayerHotbar : Node
         RemoveItem(currentSlot, 1, consume: true);
     }
 
-    private void SelectSlot(int index)
+    public void SelectSlot(int index)
     {
         currentSlot = index;
         OnSlotChanged?.Invoke();
