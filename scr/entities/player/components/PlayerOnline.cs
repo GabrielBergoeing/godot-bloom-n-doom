@@ -9,6 +9,9 @@ public partial class PlayerOnline : Node
     [Export] private float BroadcastInterval = 0.05f;
     private float _broadcastTimer = 0f;
 
+    public ulong OwnerSteamId { get; private set; }
+	public bool IsLocallyControlled { get; private set; }
+
     private Vector2 _targetPosition;
     private float _targetRotation;
     private string _targetAction;
@@ -26,14 +29,11 @@ public partial class PlayerOnline : Node
             GD.PrintErr("[PlayerOnline] No Player parent found");
             return;
         }
-
-        if (!_player.IsLocallyControlled)
-            _match.OnPlayerTransformReceived += OnTransformReceived;
     }
 
     public override void _ExitTree()
     {
-        if (_match != null && !_player.IsLocallyControlled)
+        if (_match != null && !IsLocallyControlled)
             _match.OnPlayerTransformReceived -= OnTransformReceived;
     }
 
@@ -41,10 +41,22 @@ public partial class PlayerOnline : Node
     {
         if (_player == null) return;
 
-        if (_player.IsLocallyControlled)
+        if (IsLocallyControlled)
             HandleBroadcast((float)delta);
         else
             HandleInterpolation(delta);
+    }
+
+    public void Initialize(ulong ownerSteamId, ulong localSteamId)
+    {
+        OwnerSteamId = ownerSteamId;
+		IsLocallyControlled = (ownerSteamId == localSteamId);
+
+		if (!IsLocallyControlled)
+        {
+            _match.OnPlayerTransformReceived += OnTransformReceived;
+            GD.Print($"[PlayerOnline] Transform signal in player with Steam ID {OwnerSteamId}");
+        }
     }
 
     private void HandleBroadcast(float delta)
@@ -53,6 +65,7 @@ public partial class PlayerOnline : Node
         if (_broadcastTimer > 0f) return;
 
         _broadcastTimer = BroadcastInterval;
+        GD.Print("[PlayerOnline] Broadcasting position");
 
         _match.BroadcastTransform(
             _player.PlayerId,
@@ -75,6 +88,8 @@ public partial class PlayerOnline : Node
     private void HandleInterpolation(double delta)
     {
         if (!_hasTarget) return;
+
+        GD.Print("[PlayerOnline] Interpolating Position");
 
         _player.GlobalPosition = _player.GlobalPosition.Lerp(
             _targetPosition,

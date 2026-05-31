@@ -107,21 +107,14 @@ public partial class Plant : Node2D
 
     private void OnBodyEntered(Node body)
     {
-        if (!data.EnableWaterStorage || !IsMature())
-            return;
+        if (!data.EnableWaterStorage || !IsMature()) return;
+        if (body is not Player player || player.PlayerId == OwnerPlayerIndex) return;
         
-        GD.Print(body);
-        
-        if (body is not Player player || player.PlayerId == OwnerPlayerIndex)
-            return;
-        
-        GD.Print("Player Spotted");
         int stealAmount = Mathf.Min(
             data.WaterStealAmount,
             player.Water.CurrentWater
         );
 
-        GD.Print("Cactus has stolen water!");
         player.Water.ConsumeWater(stealAmount);
         Health.StashWaterReserve(stealAmount);
     }

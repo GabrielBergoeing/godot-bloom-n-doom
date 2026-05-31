@@ -33,7 +33,6 @@ public partial class UILobbyCountdown : Label
     {
         if (_running) return;
 
-        GD.Print("[UILobbyCountdown] Countdown started");
         _timer = CountdownDuration;
         _running = true;
         Visible = true;
@@ -44,7 +43,6 @@ public partial class UILobbyCountdown : Label
     {
         if (!_running) return;
 
-        GD.Print("[UILobbyCountdown] Countdown cancelled");
         _running = false;
         _timer = -1f;
         Visible = false;
@@ -55,7 +53,6 @@ public partial class UILobbyCountdown : Label
 
     private void Complete()
     {
-        GD.Print("[UILobbyCountdown] Countdown complete");
         _running = false;
         _timer = -1f;
         Visible = false;

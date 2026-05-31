@@ -119,8 +119,6 @@ public partial class UILevelSelectMenu : Control
 
     private void OnStartGameReceived(int levelIndex)
     {
-        GD.Print($"[UILevelSelectMenu] Host selected level {levelIndex}");
-
         if (levelIndex < 0 || levelIndex >= Levels.Count)
         {
             GD.PrintErr($"[UILevelSelectMenu] Invalid level index: {levelIndex}");
@@ -135,8 +133,7 @@ public partial class UILevelSelectMenu : Control
     {
         if (!UI.Network.IsOnline || !UI.Network.Lobby.IsHost)
             return;
-
-        GD.Print($"[UILevelSelectMenu] Broadcasting level {index}");
+    
         UI.Network.Lobby.BroadcastStartGame(index);
     }
 

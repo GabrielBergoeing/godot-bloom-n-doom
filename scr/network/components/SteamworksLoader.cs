@@ -18,16 +18,9 @@ public partial class SteamworksLoader : Node
             AutoloadSteamLibrary();
 
             IsSteamRunning = SteamAPI.IsSteamRunning();
-            GD.Print($"[SteamworksLoader] Steam running: {IsSteamRunning}");
-
             IsSteamInitialized = SteamAPI.Init();
 
-            if (IsSteamInitialized)
-            {
-                GD.Print("[SteamworksLoader] Steam initialized");
-                GD.Print($"[SteamworksLoader] User: {SteamFriends.GetPersonaName()}");
-            }
-            else
+            if (!IsSteamInitialized)
                 GD.PrintErr("[SteamworksLoader] Steam initialization failed");
         }
         catch (Exception e)
@@ -78,13 +71,8 @@ public partial class SteamworksLoader : Node
             libraryName
         );
 
-        GD.Print($"[SteamworksLoader] Loading Steam library: {libraryPath}");
-
         if (!File.Exists(libraryPath))
-        {
-            GD.PrintErr($"[SteamworksLoader] Steam library not found: {libraryPath}");
             return;
-        }
 
         NativeLibrary.Load(libraryPath);
         GD.Print("[SteamworksLoader] Steam native library loaded");

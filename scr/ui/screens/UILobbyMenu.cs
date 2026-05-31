@@ -38,8 +38,6 @@ public partial class UILobbyMenu : Control
 
     public override void _Ready()
     {
-        GD.Print("[UILobbyMenu] _Ready called");
-
         _slotsContainer = GetNode<HBoxContainer>("Slots");
         _slots = _slotsContainer
             .GetChildren()
@@ -47,7 +45,6 @@ public partial class UILobbyMenu : Control
             .Select(wrapper => wrapper.GetChild<UICharacterSlot>(0))
             .ToArray();
 
-        GD.Print($"[UILobbyMenu] Found {_slots.Length} slots");
         foreach (var slot in _slots)
             slot.SetEmpty();
 
@@ -65,7 +62,6 @@ public partial class UILobbyMenu : Control
             if (kvp.Key == Lobby.LocalSteamId) continue;
             if (_remoteSlots.ContainsKey(kvp.Key)) continue;
 
-            GD.Print($"[UILobbyMenu] Late-discovered player: {kvp.Key}");
             OnRemotePlayerUpdated(kvp.Value);
         }
     }
@@ -80,8 +76,6 @@ public partial class UILobbyMenu : Control
         player.SteamId = UI.Network.IsOnline
             ? UI.Network.Lobby.LocalSteamId
             : 0;
-
-        GD.Print($"[UILobbyMenu] player's Steam ID is {player.SteamId}");
 
         int slotIndex = System.Array.IndexOf(_slots, slot);
         slot.SlotIndex = slotIndex;
@@ -109,7 +103,6 @@ public partial class UILobbyMenu : Control
 
         _countdown.OnCountdownComplete += ExecuteConfirm;
         _countdown.OnCountdownCancelled += () =>
-            GD.Print("[UILobbyMenu] Countdown cancelled");
 
         State.MinimumPlayers = MinimumPlayers;
         State.OnAllReady += ConfirmPlayers;
@@ -117,8 +110,6 @@ public partial class UILobbyMenu : Control
 
     private void OnRemotePlayerUpdated(LobbyPlayerStatePacket packet)
     {
-        GD.Print($"[UILobbyMenu] Remote update from {packet.SteamId}");
-
         if (_slots == null)
         {
             GD.PrintErr("[UILobbyMenu] Slots not ready, dropping packet");
@@ -126,8 +117,6 @@ public partial class UILobbyMenu : Control
         }
 
         if (packet.SteamId == Lobby.LocalSteamId) return;
-
-        GD.Print("[UILobbyMenu] Processing remote packet");
         State.UpdateRemoteState(packet);
 
         if (_remoteSlots.TryGetValue(packet.SteamId, out var existing))
@@ -145,13 +134,10 @@ public partial class UILobbyMenu : Control
 
         target.AssignRemotePlayer(packet, this);
         _remoteSlots[packet.SteamId] = target;
-        GD.Print($"[UILobbyMenu] Created remote slot for {packet.SteamId}");
     }
 
     private void OnRemotePlayerLeft(ulong steamId)
     {
-        GD.Print($"[UILobbyMenu] Remote player left: {steamId}");
-
         State.RemoveRemotePlayer(steamId);
 
         if (!_remoteSlots.TryGetValue(steamId, out var slot)) return;
@@ -162,8 +148,6 @@ public partial class UILobbyMenu : Control
 
     private void ConfirmPlayers()
     {
-        GD.Print("[UILobbyMenu] All ready, storing players and starting countdown");
-
         var players = _slots
             .Where(s => s.Occupied && !s.IsRemote)
             .Select(s => s.Player)
@@ -175,20 +159,14 @@ public partial class UILobbyMenu : Control
 
     private void ExecuteConfirm()
     {
-        GD.Print("[UILobbyMenu] Transitioning to level select");
         UI.SFX.PlayOnConfirm();
         UI.Scene.ChangeScene(UI.Paths.LevelSelectScene);
     }
 
     private void SyncOnlineLobby()
     {
-        GD.Print("[UILobbyMenu] SyncOnlineLobby");
-
         foreach (var kvp in Lobby.Players)
-        {
-            GD.Print($"[UILobbyMenu] Existing player: {kvp.Key}");
             OnRemotePlayerUpdated(kvp.Value);
-        }
 
         CallDeferred(nameof(SendInitialStates));
     }
@@ -200,8 +178,6 @@ public partial class UILobbyMenu : Control
             if (!slot.Occupied || slot.IsRemote) continue;
             Lobby.UpdatePlayerState(slot.Player, slot.Index, slot.SlotIndex);
         }
-
-        GD.Print("[UILobbyMenu] Sent initial states");
     }
 
     private UICharacterSlot FindFreeSlot()
@@ -213,12 +189,8 @@ public partial class UILobbyMenu : Control
     private UICharacterSlot ResolveTargetSlot(int slotIndex)
     {
         if (slotIndex >= 0 && slotIndex < _slots.Length && !_slots[slotIndex].Occupied)
-        {
-            GD.Print($"[UILobbyMenu] Assigning to requested slot {slotIndex}");
             return _slots[slotIndex];
-        }
 
-        GD.Print($"[UILobbyMenu] Slot {slotIndex} unavailable, finding free slot");
         return FindFreeSlot();
     }
 

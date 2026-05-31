@@ -67,10 +67,7 @@ public partial class UIMainMenu : Control
         
 
         if (_onlineAvailable)
-        {
-            GD.Print("[UIMainMenu] Game is online");
             UI.Network.Lobby.OnLobbyReady += HandleLobbyReady;
-        }
     }
 
     private void PlayBTN()
@@ -115,7 +112,6 @@ public partial class UIMainMenu : Control
 
     private void HandleLobbyReady()
     {
-        GD.Print("Changed Scene");
         UI.Scene.ChangeScene(
             UI.Paths.LobbyMenuScene
         );

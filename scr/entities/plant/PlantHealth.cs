@@ -119,7 +119,6 @@ public partial class PlantHealth : Node
         {
             _currentWaterStorage -= Data.WaterConsumptionRate * delta;
             _currentWaterStorage = Mathf.Max(_currentWaterStorage, 0);
-            GD.Print($"Remaining Water: {_currentWaterStorage}");
             return true;
         }
         return false;

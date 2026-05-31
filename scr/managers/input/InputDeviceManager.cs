@@ -80,12 +80,9 @@ public partial class InputDeviceManager : Node
 
     public void RemovePlayer(LobbyPlayerData player)
     {
-        if (!LobbyPlayers.Contains(player))
-            return;
+        if (!LobbyPlayers.Contains(player)) return;
 
         LobbyPlayers.Remove(player);
-
-        GD.Print($"Player Left: {player.PlayerId}");
 
         EmitSignal(
             SignalName.PlayerLeft,
