@@ -1,7 +1,6 @@
 public class MatchPickupCollectRequestPacket : NetworkPacket
 {
-    public override byte PacketId => 
-        (byte)NetworkPacketType.MatchPickupCollectRequest;
+    public override byte PacketId => (byte)NetworkPacketType.MatchPickupCollectRequest;
     public int NetworkPickupId;
     public ulong RequesterSteamId;
 

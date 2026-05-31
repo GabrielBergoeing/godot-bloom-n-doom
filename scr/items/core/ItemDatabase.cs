@@ -10,6 +10,8 @@ public partial class ItemDatabase : Resource
         foreach (var item in Items)
             if (item.ItemId == itemId)
                 return item;
+
+        GD.PrintErr($"[ItemDatabase] Item not found: '{itemId}' — available IDs: {string.Join(", ", System.Array.ConvertAll(Items, i => i.ItemId))}");
         return null;
     }
 }

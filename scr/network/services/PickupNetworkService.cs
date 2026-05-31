@@ -44,6 +44,9 @@ public partial class PickupNetworkService : Node
     public void Initialize(Node levelNode)
     {
         GD.Print($"[PickupNetworkService] Initialize — IsHost: {Network.IsOnline && Network.Lobby.IsHost}, Event: {Event != null}");
+
+        _levelNode = levelNode;
+
         Match.OnPickupSpawned += HandleRemotePickupSpawned;
         Match.OnPickupCollected += HandleRemotePickupCollected;
         Match.OnPickupSpawnRequested += HandlePickupSpawnRequest;
@@ -57,7 +60,6 @@ public partial class PickupNetworkService : Node
             return;
         }
 
-        _levelNode = levelNode;
         Event.OnPickupSpawned += OnHostPickupSpawned;
         Event.OnPickupDropped += OnHostPickupSpawned;
         GD.Print("[PickupNetworkService] Subscribed to EventManager");
@@ -136,7 +138,9 @@ public partial class PickupNetworkService : Node
 
     private Pickup CreatePickupNode(ItemData data, Vector2 position, int networkId)
     {
+
         if (data.PickupScene == null) return null;
+        if (_levelNode == null) return null;
 
         var pickup = data.PickupScene.Instantiate<Pickup>();
         pickup.SetItemData(data);
