@@ -26,6 +26,7 @@ public partial class PickupNetworkService : Node
         Match.OnPickupCollected += HandleRemotePickupCollected;
         Match.OnPickupSpawnRequested += HandlePickupSpawnRequest;
         Match.OnPickupCollectRequested += HandlePickupCollectRequest;
+        GD.Print($"[PickupNetworkService] _Ready — IsOnline: {Network.IsOnline}");
     }
 
     public override void _ExitTree()
@@ -45,13 +46,22 @@ public partial class PickupNetworkService : Node
         }
     }
 
+    // In PickupNetworkService.Initialize:
     public void Initialize()
     {
-        if (Network.Lobby.IsHost)
+        GD.Print($"[PickupNetworkService] Initialize — IsHost: {Network.IsOnline && Network.Lobby.IsHost}, Event: {Event != null}");
+        
+        if (!Network.IsOnline || !Network.Lobby.IsHost) return;
+
+        if (Event == null)
         {
-            Event.OnPickupSpawned += OnHostPickupSpawned;
-            Event.OnPickupDropped += OnHostPickupSpawned;
+            GD.PrintErr("[PickupNetworkService] EventManager is null during Initialize");
+            return;
         }
+
+        Event.OnPickupSpawned += OnHostPickupSpawned;
+        Event.OnPickupDropped += OnHostPickupSpawned;
+        GD.Print("[PickupNetworkService] Subscribed to EventManager");
     }
 
     private void OnHostPickupSpawned(Pickup pickup)

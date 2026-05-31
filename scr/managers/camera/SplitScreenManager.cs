@@ -198,13 +198,15 @@ public partial class SplitScreenManager : Node
 
     private void FinalizeMatchSetup()
     {
+        GD.Print("[SplitScreenManager] FinalizeMatchSetup");
         UpdateViewportLayout();
         GameManager.Instance.StartMatch(_levelNode);
 
         if (Network.IsOnline)
         {
             _matchManager.SubscribeToTimerSync();
-            Network.PickupService.Initialize();
+            GD.Print("[SplitScreenManager] Calling PickupNetworkService.Initialize");
+            PickupNetworkService.Instance.Initialize();
         }
 
         CreateMatchResultsPanel();
