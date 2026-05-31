@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemDatabase" format=3 uid="uid://ds5u51nwccji0"]
+
+[ext_resource type="Script" uid="uid://btyfw0fdec5bt" path="res://scr/items/core/ItemDatabase.cs" id="1_o5qm4"]
+[ext_resource type="Resource" uid="uid://gw6ihjkfrwqa" path="res://nodes/items/data/bush_data.tres" id="1_xxmyw"]
+[ext_resource type="Resource" uid="uid://cs8pttieoh6qm" path="res://nodes/items/data/cactus_data.tres" id="2_6vwld"]
+[ext_resource type="Resource" uid="uid://dfef2n5fcp1mj" path="res://nodes/items/data/crown_data.tres" id="3_u5j0h"]
+[ext_resource type="Resource" uid="uid://chg8u0sbslbsw" path="res://nodes/items/data/fertilizer_data.tres" id="4_1rik0"]
+[ext_resource type="Resource" uid="uid://5vli7hpg6g6p" path="res://nodes/items/data/flamethrower_data.tres" id="5_4hlt7"]
+[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/redconeflower_data.tres" id="6_cm0u8"]
+[ext_resource type="Resource" uid="uid://777dhwh3do01" path="res://nodes/items/data/reddahlia_data.tres" id="7_tog1c"]
+[ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="8_ra6jy"]
+[ext_resource type="Resource" uid="uid://dxbb5ktteyq1p" path="res://nodes/items/data/sunflower_data.tres" id="9_63u2b"]
+[ext_resource type="Resource" uid="uid://ctvjba2f6s5nw" path="res://nodes/items/data/watergun_data.tres" id="10_7b5m2"]
+
+[resource]
+script = ExtResource("1_o5qm4")
+Items = Array[Object]([ExtResource("1_xxmyw"), ExtResource("2_6vwld"), ExtResource("3_u5j0h"), ExtResource("4_1rik0"), ExtResource("5_4hlt7"), ExtResource("6_cm0u8"), ExtResource("7_tog1c"), ExtResource("8_ra6jy"), ExtResource("9_63u2b"), ExtResource("10_7b5m2")])
+metadata/_custom_type_script = "uid://btyfw0fdec5bt"
