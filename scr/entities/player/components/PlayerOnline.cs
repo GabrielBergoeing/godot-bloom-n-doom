@@ -155,7 +155,7 @@ public partial class PlayerOnline : Node
 
         if (!string.IsNullOrEmpty(packet.ItemId))
         {
-            ItemData item = ItemDatabase.Instance?.GetItem(packet.ItemId);
+            ItemData item = PickupNetworkService.Instance.ItemDB.GetItem(packet.ItemId);
             if (item != null)
                 _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
             else

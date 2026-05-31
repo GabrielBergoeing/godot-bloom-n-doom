@@ -10,7 +10,7 @@ public partial class PickupNetworkService : Node
     private EventManager Event => EventManager.Instance;
     private NetworkRoot Network => NetworkRoot.Instance;
 
-    [Export] private ItemDatabase ItemDB;
+    [Export] public ItemDatabase ItemDB { get; private set; }
 
     private readonly Dictionary<int, Pickup> _activePickups = new();
     private int _nextPickupId = 0;
