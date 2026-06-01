@@ -292,7 +292,6 @@ public partial class SteamMatchManager : Node
         reader.ReadByte();
         var packet = new MatchPickupSpawnRequestPacket();
         packet.Deserialize(reader);
-        GD.Print($"Received spawn request: '{packet.ItemId}'");
         Callable.From(() => OnPickupSpawnRequested?.Invoke(packet)).CallDeferred();
     }
 

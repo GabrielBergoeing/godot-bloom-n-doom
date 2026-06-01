@@ -7,30 +7,15 @@ public partial class ItemDatabase : Resource
 
     [Export] public ItemData[] Items;
 
-    public static void Register(ItemDatabase db)
-    {
-        Instance = db;
-
-        foreach (var item in Instance.Items)
-            GD.Print($"[ItemDatabase] Item: {item.ItemId}");
-    }
+    public static void Register(ItemDatabase db) => Instance = db;
 
     public ItemData GetItem(string itemId)
     {
-        GD.Print($"[ItemDB] Lookup '{itemId}'");
-
         foreach (var item in Items)
-        {
-            GD.Print($"[ItemDB] Candidate '{item.ItemId}'");
-
             if (item.ItemId == itemId)
-            {
-                GD.Print($"[ItemDB] FOUND '{itemId}'");
                 return item;
-            }
-        }
 
-        GD.PrintErr($"[ItemDB] NOT FOUND '{itemId}'");
+        GD.PrintErr($"[ItemDatabase] Item not found: '{itemId}'");
         return null;
     }
 }
