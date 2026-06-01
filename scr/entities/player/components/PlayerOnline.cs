@@ -137,6 +137,15 @@ public partial class PlayerOnline : Node
     private void BroadcastHotbarState()
     {
         var stack = _player.Hotbar.GetCurrentStack();
+
+        GD.Print(
+            $"[PlayerOnline] BroadcastHotbarState " +
+            $"Owner:{OwnerSteamId} " +
+            $"Slot:{_player.Hotbar.CurrentSlot} " +
+            $"Item:{stack?.Data?.ItemId} " +
+            $"Amount:{stack?.Amount}"
+        );
+
         Match.BroadcastHotbarSlot(
             OwnerSteamId,
             _player.Hotbar.CurrentSlot,

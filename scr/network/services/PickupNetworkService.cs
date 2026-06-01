@@ -108,97 +108,51 @@ public partial class PickupNetworkService : Node
 
     public bool CollectPickup(int networkPickupId, Player collector)
     {
-        GD.Print(
-            $"[PickupNetworkService] CollectPickup start. " +
-            $"Pickup:{networkPickupId} " +
-            $"Player:{collector.PlayerId}"
-        );
+        if (!Network.Lobby.IsHost) return false;
 
-        if (!Network.Lobby.IsHost)
+        if (!_activePickups.TryGetValue(networkPickupId, out Pickup pickup))
         {
-            GD.PrintErr(
-                "[PickupNetworkService] CollectPickup " +
-                "called on peer"
-            );
+            GD.PrintErr($"[PickupNetworkService] Pickup {networkPickupId} not in active pickups");
             return false;
         }
-
-        if (!_activePickups.TryGetValue(
-            networkPickupId,
-            out Pickup pickup
-        ))
-        {
-            GD.PrintErr(
-                $"[PickupNetworkService] Pickup " +
-                $"{networkPickupId} not found"
-            );
-            return false;
-        }
-
-        GD.Print(
-            $"[PickupNetworkService] Pickup found. Item:" +
-            $"{pickup.ItemData?.ItemId}"
-        );
 
         ItemData data = pickup.ItemData;
-
         if (!collector.Hotbar.CanAddItem(data))
         {
-            GD.Print(
-                $"[PickupNetworkService] Cannot add item " +
-                $"to player {collector.PlayerId}"
-            );
+            GD.Print($"[PickupNetworkService] Hotbar full for player {collector.PlayerId}");
             return false;
         }
 
-        GD.Print(
-            $"[PickupNetworkService] Adding item " +
-            $"{data?.ItemId} to player " +
-            $"{collector.PlayerId}"
-        );
-
         collector.Hotbar.AddItem(data);
+        for (int i = 0; i < collector.Hotbar.SlotCount; i++)
+        {
+            var s = collector.Hotbar.GetStackAt(i);
+
+            GD.Print(
+                $"[PickupNetworkService] Slot {i}: " +
+                $"{s?.Data?.ItemId} x{s?.Amount}"
+            );
+        }
 
         foreach (var p in _playersBySteamId.Values)
             p.PickupsInRange.Remove(pickup);
 
-        GD.Print(
-            $"[PickupNetworkService] Removing pickup " +
-            $"{networkPickupId}"
-        );
-
         RemovePickupNode(networkPickupId);
-
-        GD.Print(
-            $"[PickupNetworkService] Broadcasting pickup " +
-            $"collected {networkPickupId}"
-        );
-
         Match.BroadcastPickupCollected(networkPickupId);
 
         if (!collector.IsLocallyControlled)
         {
             var stack = collector.Hotbar.GetCurrentStack();
-
-            GD.Print(
-                $"[PickupNetworkService] Broadcasting " +
-                $"hotbar sync. Item:" +
-                $"{stack?.Data?.ItemId} " +
-                $"Amount:{stack?.Amount}"
-            );
-
             Match.BroadcastHotbarSlot(
                 collector.OwnerSteamId,
                 collector.Hotbar.CurrentSlot,
                 stack?.Data?.ItemId ?? "",
                 stack?.Amount ?? 0
             );
+            GD.Print($"[PickupNetworkService] Broadcast hotbar for remote collector {collector.OwnerSteamId}");
         }
 
-        GD.Print(
-            $"[PickupNetworkService] CollectPickup complete"
-        );
-
+        GD.Print($"[PickupNetworkService] Pickup {networkPickupId} collected by Player {collector.PlayerId}");
         return true;
     }
 
@@ -219,27 +173,9 @@ public partial class PickupNetworkService : Node
 
     private void HandleRemotePickupCollected(MatchPickupCollectedPacket packet)
     {
-        GD.Print(
-            $"[PickupNetworkService] Received " +
-            $"PickupCollected packet for " +
-            $"{packet.NetworkPickupId}"
-        );
-
-        if (Network.Lobby.IsHost)
-        {
-            GD.Print(
-                "[PickupNetworkService] Ignoring collected " +
-                "packet on host"
-            );
-            return;
-        }
-
+        if (Network.Lobby.IsHost) return;
         RemovePickupNode(packet.NetworkPickupId);
-
-        GD.Print(
-            $"[PickupNetworkService] Peer removed pickup " +
-            $"{packet.NetworkPickupId}"
-        );
+        GD.Print($"[PickupNetworkService] Peer removed pickup {packet.NetworkPickupId}");
     }
 
     private Pickup CreatePickupNode(ItemData data, Vector2 position, int networkId)
