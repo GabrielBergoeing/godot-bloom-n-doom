@@ -8,7 +8,7 @@ public partial class UILobbyMenu : Control
     private SteamLobbyManager Lobby => UI.Network.Lobby;
     private LobbyStateService State => LobbyStateService.Instance;
 
-    [Export(PropertyHint.Range, "1,4")] public int MinimumPlayers = 1;
+    [Export(PropertyHint.Range, "1,4")] public int MinimumPlayers = 2;
     [Export] public CharacterDatabase CharacterDatabase;
     [Export] private UILobbyCountdown _countdown;
 
