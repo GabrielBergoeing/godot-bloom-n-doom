@@ -40,12 +40,10 @@ public partial class PlayerOnline : Node
     {
         if (Match == null) return;
 
-        if (!IsLocallyControlled)
-        {
-            Match.OnPlayerTransformReceived -= OnTransformReceived;
-            Match.OnHotbarSyncReceived -= HandleHotbarSync;
-        }
-        else
+        Match.OnPlayerTransformReceived -= OnTransformReceived;
+        Match.OnHotbarSyncReceived -= HandleHotbarSync;
+
+        if (IsLocallyControlled)
         {
             if (_player?.Hotbar != null)
                 _player.Hotbar.OnSlotChanged -= BroadcastHotbarState;
@@ -69,15 +67,11 @@ public partial class PlayerOnline : Node
 
         GD.Print($"[PlayerOnline] Initialized — SteamId: {ownerSteamId}, Local: {IsLocallyControlled}");
 
-        if (!IsLocallyControlled)
-        {
-            Match.OnPlayerTransformReceived += OnTransformReceived;
-            Match.OnHotbarSyncReceived += HandleHotbarSync;
-        }
-        else
-        {
+        Match.OnPlayerTransformReceived += OnTransformReceived;
+        Match.OnHotbarSyncReceived += HandleHotbarSync;
+
+        if (IsLocallyControlled)
             _player.Hotbar.OnSlotChanged += BroadcastHotbarState;
-        }
         
         _player.Input.SetRemoteControlled(!IsLocallyControlled);
     }
@@ -160,28 +154,26 @@ public partial class PlayerOnline : Node
 
         GD.Print($"[PlayerOnline] Hotbar sync — slot {packet.SlotIndex}, item '{packet.ItemId}', amount {packet.Amount}");
 
-        if (IsLocallyControlled)
-        {
-            ItemData item = string.IsNullOrEmpty(packet.ItemId)
-                ? null
-                : ItemDatabase.Instance?.GetItem(packet.ItemId);
-
-            _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
-
-            if (item != null)
-                _player.Hotbar.SelectSlot(packet.SlotIndex, false);
-            return;
-        }
-
-        _player.Hotbar.SelectSlot(packet.SlotIndex, false);
-
-        ItemData remoteItem = string.IsNullOrEmpty(packet.ItemId)
+        ItemData item = string.IsNullOrEmpty(packet.ItemId)
             ? null
             : ItemDatabase.Instance?.GetItem(packet.ItemId);
 
-        if (remoteItem == null && !string.IsNullOrEmpty(packet.ItemId))
+        if (item == null && !string.IsNullOrEmpty(packet.ItemId))
             GD.PrintErr($"[PlayerOnline] Hotbar sync item not found: {packet.ItemId}");
 
-        _player.Hotbar.SetSlotForRemote(packet.SlotIndex, remoteItem, packet.Amount);
+        if (IsLocallyControlled)
+        {
+            // Temporarily unsubscribe to prevent broadcast loop
+            _player.Hotbar.OnSlotChanged -= BroadcastHotbarState;
+            _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
+            if (item != null)
+                _player.Hotbar.SelectSlot(packet.SlotIndex, false);
+            _player.Hotbar.OnSlotChanged += BroadcastHotbarState;
+        }
+        else
+        {
+            _player.Hotbar.SelectSlot(packet.SlotIndex, false);
+            _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
+        }
     }
 }
