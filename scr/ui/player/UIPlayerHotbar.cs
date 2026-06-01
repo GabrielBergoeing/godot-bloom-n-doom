@@ -12,6 +12,7 @@ public partial class UIPlayerHotbar : Control
 
         SetSlots();
         _hotbar.OnSlotChanged += UpdateUI;
+        _hotbar.OnVisualUpdate += UpdateUI;
         UpdateUI();
         AnchorToViewport();
     }

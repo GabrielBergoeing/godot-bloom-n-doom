@@ -4,6 +4,7 @@ using System;
 public partial class PlayerHotbar : Node
 {
     public Action OnSlotChanged;
+    public Action OnVisualUpdate;
 
     [Export] public int SlotCount = 4;
 
@@ -144,13 +145,9 @@ public partial class PlayerHotbar : Node
 
     public void SetSlotForRemote(int index, ItemData data, int amount)
     {
-        GD.Print(
-            $"[Hotbar] SetSlotForRemote " +
-            $"Slot:{index} " +
-            $"Item:{data?.ItemId} " +
-            $"Amount:{amount}"
-        );
+        GD.Print($"[Hotbar] SetSlotForRemote Slot:{index} Item:{data?.ItemId} Amount:{amount}");
         if (index < 0 || index >= slots.Length) return;
         slots[index] = (data == null || amount <= 0) ? null : new ItemStack(data, amount);
+        OnVisualUpdate?.Invoke(); // update visuals without network broadcast
     }
 }

@@ -24,6 +24,7 @@ public partial class PlayerOnHand : Node2D
         Hotbar = hotbar;
 
         Hotbar.OnSlotChanged += UpdateVisual;
+        Hotbar.OnVisualUpdate += UpdateVisual;
         UpdateVisual();
     }
 
