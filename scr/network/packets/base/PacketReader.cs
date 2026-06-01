@@ -46,7 +46,7 @@ public class PacketReader : IDisposable
         byte[] bytes =
             _reader.ReadBytes(length);
 
-        return Encoding.UTF8.GetString(bytes);
+        return Encoding.UTF8.GetString(bytes).Trim();
     }
 
     public Vector2 ReadVector2()
