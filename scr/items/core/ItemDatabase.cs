@@ -11,9 +11,7 @@ public partial class ItemDatabase : Resource
     {
         Instance = db;
 
-        GD.Print($"[ItemDatabase] Registered {db.Items.Count} items");
-
-        foreach (var item in db.Items)
+        foreach (var item in Instance.Items)
             GD.Print($"[ItemDatabase] Item: {item.ItemId}");
     }
 

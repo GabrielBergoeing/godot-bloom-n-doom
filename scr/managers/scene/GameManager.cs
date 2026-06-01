@@ -28,7 +28,7 @@ public partial class GameManager : Node
 
         if (_itemDatabase != null)
         {
-            GD.Print($"[GameManager] Registering ItemDB with " + $"{_itemDatabase.Items.Count} items");
+            GD.Print($"[GameManager] Registering ItemDB with " + $"{_itemDatabase.Items.Length} items");
             ItemDatabase.Register(_itemDatabase);
         }
         ProcessMode = ProcessModeEnum.Always;
