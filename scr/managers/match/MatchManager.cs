@@ -79,7 +79,6 @@ public partial class MatchManager : Node
         isPlayingMatch = true;
         hasPrintedResults = false;
 
-        GD.Print("[MatchManager] Match Started");
         Callable.From(SpawnRegisteredPlayers).CallDeferred();
     }
 
@@ -110,16 +109,12 @@ public partial class MatchManager : Node
             if (point != null)
                 _spawnPositions.Add(point.Position);
         }
-        GD.Print($"[MatchManager] Cached {_spawnPositions.Count} spawn positions");
     }
 
     public Vector2 GetSpawnPosition(int index)
     {
         if (index < _spawnPositions.Count)
-        {
-            GD.Print($"[MatchManager] GetSpawnPosition({index}) -> {_spawnPositions[index]}");
             return _spawnPositions[index];
-        }
 
         Vector2 fallback = new Vector2(index * 32, 0);
         GD.PrintErr($"[MatchManager] GetSpawnPosition({index}) fallback -> {fallback}");
@@ -132,7 +127,6 @@ public partial class MatchManager : Node
         {
             Vector2 pos = GetSpawnPosition(player.SpawnIndex);
             player.Position = pos;
-            GD.Print($"[MatchManager] Spawned Player {player.PlayerId} at {pos}");
         }
     }
 
@@ -141,7 +135,6 @@ public partial class MatchManager : Node
         if (players.Contains(player)) return;
         player.SpawnIndex = spawnIndex;
         players.Add(player);
-        GD.Print($"[MatchManager] Registered Player {player.PlayerId} at spawn {spawnIndex}");
     }
 
     private void GiveStartingItems()
@@ -178,10 +171,7 @@ public partial class MatchManager : Node
     private void OnTimerSyncReceived(float timeRemaining)
     {
         if (Mathf.Abs(Timer - timeRemaining) > 1f)
-        {
-            GD.Print($"[MatchManager] Timer corrected: {Timer:F1} -> {timeRemaining:F1}");
             Timer = timeRemaining;
-        }
     }
 
     public Array<Player> GetPlayers() => players;

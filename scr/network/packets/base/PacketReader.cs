@@ -55,6 +55,14 @@ public class PacketReader : IDisposable
         );
     }
 
+    public Vector2I ReadVector2I()
+    {
+        return new Vector2I(
+            _reader.ReadInt32(),
+            _reader.ReadInt32()
+        );
+    }
+
     public void Dispose()
     {
         _reader?.Dispose();

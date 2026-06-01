@@ -53,23 +53,15 @@ public partial class SplitScreenManager : Node
 
     private void PrepareOnlineMatch()
     {
-        GD.Print("[SplitScreenManager] PrepareOnlineMatch");
         SteamMatchManager.Instance.OnMatchStarted += OnMatchStarted;
-
-        // Tell SteamMatchManager the scene is ready to receive the packet
         SteamMatchManager.Instance.NotifyMatchSceneReady();
 
         if (Network.Match.IsHost)
-        {
-            GD.Print("[SplitScreenManager] Host broadcasting match start");
             SteamMatchManager.Instance.BroadcastMatchStart();
-        }
     }
 
     private void OnMatchStarted(MatchStartPacket packet)
     {
-        GD.Print("[SplitScreenManager] MatchStart received");
-
         CreateLevel();
         SpawnOnlinePlayers(packet);
         FinalizeMatchSetup();
@@ -77,7 +69,6 @@ public partial class SplitScreenManager : Node
 
     private void CreateLevel()
     {
-        GD.Print("[SplitScreenManager] Creating level");
         UIPlayerViewport viewport = CreateViewport();
 
         LevelData levelData = GameManager.Instance.CurrentLevel;
@@ -90,8 +81,6 @@ public partial class SplitScreenManager : Node
 
         if (Network.IsOnline)
             CreateNetworkPickupService();
-        
-        GD.Print("[SplitScreenManager] Level created successfully");
     }
 
     private void SpawnOfflinePlayers()
@@ -103,7 +92,6 @@ public partial class SplitScreenManager : Node
 
     private void SpawnOnlinePlayers(MatchStartPacket packet)
     {
-        GD.Print($"[SplitScreenManager] Spawning {packet.Players.Count} online players");
         foreach (var spawnData in packet.Players)
             SpawnNetworkPlayer(spawnData);
     }
@@ -123,8 +111,6 @@ public partial class SplitScreenManager : Node
 
     private void SpawnNetworkPlayer(PlayerSpawnData data)
     {
-        GD.Print($"[SplitScreenManager] SpawnNetworkPlayer -> PlayerId: {data.PlayerId}, SteamId: {data.SteamId}, Local: {data.IsLocalOwner}, Char: {data.CharacterIndex}, Spawn: {data.SpawnIndex}");
-
         CharacterData character = data.CharacterIndex < CharacterDatabase.Characters.Length
             ? CharacterDatabase.Characters[data.CharacterIndex]
             : CharacterDatabase.Characters[0];
@@ -140,8 +126,6 @@ public partial class SplitScreenManager : Node
 
         if (data.IsLocalOwner)
         {
-            GD.Print($"[SplitScreenManager] Configuring LOCAL player {data.PlayerId}");
-
             LobbyPlayerData lobbyData = GameManager.Instance.LobbyPlayers
                 .Find(p => p.PlayerId == data.PlayerId);
 
@@ -152,10 +136,7 @@ public partial class SplitScreenManager : Node
             CreateLocalViewport(player);
         }
         else
-        {
-            GD.Print($"[SplitScreenManager] Configuring REMOTE player {data.PlayerId}");
             InitiateOnlinePlayer(player, data, character.Sprites);
-        }
     }
 
     private void CreateLocalViewport(Player player)
@@ -174,7 +155,6 @@ public partial class SplitScreenManager : Node
         viewport.LinkPlayerUI(player);
 
         ApplyCameraBounds(viewport);
-        GD.Print($"[SplitScreenManager] Viewport linked to Player {player.PlayerId}");
     }
 
     private UIPlayerViewport CreateViewport()
@@ -207,7 +187,6 @@ public partial class SplitScreenManager : Node
 
     private void FinalizeMatchSetup()
     {
-        GD.Print("[SplitScreenManager] FinalizeMatchSetup");
         UpdateViewportLayout();
         GameManager.Instance.StartMatch(_levelNode);
 

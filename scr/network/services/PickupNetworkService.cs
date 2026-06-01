@@ -47,8 +47,6 @@ public partial class PickupNetworkService : Node
     public void Initialize(Node levelNode)
     {
         _initialized = true;
-        GD.Print($"[PickupNetworkService] Initialize — IsHost: {Network.IsOnline && Network.Lobby.IsHost}, Event: {Event != null}");
-
         _levelNode = levelNode;
 
         Match.OnPickupSpawned += HandleRemotePickupSpawned;
@@ -66,34 +64,27 @@ public partial class PickupNetworkService : Node
 
         Event.OnPickupSpawned += OnHostPickupSpawned;
         Event.OnPickupDropped += OnHostPickupSpawned;
-        GD.Print("[PickupNetworkService] Subscribed to EventManager");
     }
 
     public void RegisterPlayer(Player player)
     {
         if (player.OwnerSteamId == 0) return;
         _playersBySteamId[player.OwnerSteamId] = player;
-        GD.Print($"[PickupNetworkService] Registered player {player.PlayerId} with SteamId {player.OwnerSteamId}");
     }
 
     private void OnHostPickupSpawned(Pickup pickup)
     {
-        GD.Print($"[PickupNetworkService] Host registering pickup {pickup.ItemData?.ItemId}");
         int id = _nextPickupId++;
         pickup.NetworkPickupId = id;
         _activePickups[id] = pickup;
 
         Match.BroadcastPickupSpawned(pickup.ItemData.ItemId, pickup.Position, id);
-        GD.Print($"[PickupNetworkService] Registered and broadcast pickup {id} ({pickup.ItemData.ItemId})");
     }
 
     private void HandlePickupSpawnRequest(MatchPickupSpawnRequestPacket packet)
     {
         if (!Network.Lobby.IsHost)
-        {
-            GD.Print("[PickupNetworkService] Ignoring spawn request on peer");
             return;
-        }
 
         ItemData item = ItemDatabase.Instance?.GetItem(packet.ItemId);
         if (item == null)
@@ -101,8 +92,6 @@ public partial class PickupNetworkService : Node
             GD.PrintErr($"[PickupNetworkService] Spawn request for unknown item: {packet.ItemId}");
             return;
         }
-
-        GD.Print($"[PickupNetworkService] Host handling spawn request for {packet.ItemId} at {packet.Position}");
         Event.SpawnItem(item, packet.Position);
     }
 
@@ -118,22 +107,9 @@ public partial class PickupNetworkService : Node
 
         ItemData data = pickup.ItemData;
         if (!collector.Hotbar.CanAddItem(data))
-        {
-            GD.Print($"[PickupNetworkService] Hotbar full for player {collector.PlayerId}");
             return false;
-        }
 
         collector.Hotbar.AddItem(data);
-        for (int i = 0; i < collector.Hotbar.SlotCount; i++)
-        {
-            var s = collector.Hotbar.GetStackAt(i);
-
-            GD.Print(
-                $"[PickupNetworkService] Slot {i}: " +
-                $"{s?.Data?.ItemId} x{s?.Amount}"
-            );
-        }
-
         foreach (var p in _playersBySteamId.Values)
             p.PickupsInRange.Remove(pickup);
 
@@ -149,10 +125,7 @@ public partial class PickupNetworkService : Node
                 stack?.Data?.ItemId ?? "",
                 stack?.Amount ?? 0
             );
-            GD.Print($"[PickupNetworkService] Broadcast hotbar for remote collector {collector.OwnerSteamId}");
         }
-
-        GD.Print($"[PickupNetworkService] Pickup {networkPickupId} collected by Player {collector.PlayerId}");
         return true;
     }
 
@@ -168,14 +141,12 @@ public partial class PickupNetworkService : Node
         }
 
         CreatePickupNode(data, packet.Position, packet.NetworkPickupId);
-        GD.Print($"[PickupNetworkService] Peer received pickup {packet.NetworkPickupId}");
     }
 
     private void HandleRemotePickupCollected(MatchPickupCollectedPacket packet)
     {
         if (Network.Lobby.IsHost) return;
         RemovePickupNode(packet.NetworkPickupId);
-        GD.Print($"[PickupNetworkService] Peer removed pickup {packet.NetworkPickupId}");
     }
 
     private Pickup CreatePickupNode(ItemData data, Vector2 position, int networkId)
@@ -205,15 +176,11 @@ public partial class PickupNetworkService : Node
     {
         if (!Network.Lobby.IsHost) return;
 
-        GD.Print($"[PickupNetworkService] Collect request from {packet.RequesterSteamId}, pickup {packet.NetworkPickupId}");
-        GD.Print($"[PickupNetworkService] Known players: {string.Join(", ", _playersBySteamId.Keys)}");
-
         if (!_playersBySteamId.TryGetValue(packet.RequesterSteamId, out Player player))
         {
             GD.PrintErr($"[PickupNetworkService] No player found for SteamId {packet.RequesterSteamId}");
             return;
         }
-
         CollectPickup(packet.NetworkPickupId, player);
     }
 }

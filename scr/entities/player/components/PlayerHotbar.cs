@@ -136,7 +136,6 @@ public partial class PlayerHotbar : Node
 
     public void SelectSlot(int index, bool notify = true)
     {
-        GD.Print($"[Hotbar] SelectSlot {index}");
         currentSlot = index;
 
         if (notify)
@@ -144,8 +143,7 @@ public partial class PlayerHotbar : Node
     }
 
     public void SetSlotForRemote(int index, ItemData data, int amount)
-    {
-        GD.Print($"[Hotbar] SetSlotForRemote Slot:{index} Item:{data?.ItemId} Amount:{amount}");
+    {;
         if (index < 0 || index >= slots.Length) return;
         slots[index] = (data == null || amount <= 0) ? null : new ItemStack(data, amount);
         OnVisualUpdate?.Invoke(); // update visuals without network broadcast

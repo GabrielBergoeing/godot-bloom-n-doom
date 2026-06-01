@@ -132,14 +132,6 @@ public partial class PlayerOnline : Node
     {
         var stack = _player.Hotbar.GetCurrentStack();
 
-        GD.Print(
-            $"[PlayerOnline] BroadcastHotbarState " +
-            $"Owner:{OwnerSteamId} " +
-            $"Slot:{_player.Hotbar.CurrentSlot} " +
-            $"Item:{stack?.Data?.ItemId} " +
-            $"Amount:{stack?.Amount}"
-        );
-
         Match.BroadcastHotbarSlot(
             OwnerSteamId,
             _player.Hotbar.CurrentSlot,
@@ -151,8 +143,6 @@ public partial class PlayerOnline : Node
     private void HandleHotbarSync(MatchPlayerHotbarPacket packet)
     {
         if (packet.OwnerSteamId != OwnerSteamId) return;
-
-        GD.Print($"[PlayerOnline] Hotbar sync — slot {packet.SlotIndex}, item '{packet.ItemId}', amount {packet.Amount}");
 
         ItemData item = string.IsNullOrEmpty(packet.ItemId)
             ? null

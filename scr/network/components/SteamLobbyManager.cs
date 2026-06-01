@@ -76,24 +76,15 @@ public partial class SteamLobbyManager : Node
         LobbyPlayerStatePacket packet = LobbyPlayerStatePacket.FromBytes(data);
         _players[sender.m_SteamID] = packet;
 
-        GD.Print($"Updated player state for {sender}");
-
         if (sender.m_SteamID == LocalSteamId)
             return;
 
         Callable.From(() =>
         {
-            GD.Print($"[SteamLobbyManager] About to fire, subscribers: {OnPlayerStateUpdated?.GetInvocationList().Length ?? 0}, sceneReady: {_sceneReady}");
             if (_sceneReady)
-            {
-                GD.Print("[SteamLobbyManager] Firing PlayerStateSignal");
                 OnPlayerStateUpdated?.Invoke(packet);
-            }
             else
-            {
-                GD.Print("[SteamLobbyManager] Scene not ready, queuing packet");
                 _pendingPackets.Add(packet);
-            }
         }).CallDeferred();
     }
 
@@ -131,8 +122,6 @@ public partial class SteamLobbyManager : Node
         _players.Clear();
         Network.Connection.Clear();
         Network.LobbyService.Clear();
-
-        GD.Print("[SteamLobbyManager] Left lobby");
     }
 
     public void InviteFriend(CSteamID friendId)
@@ -211,10 +200,6 @@ public partial class SteamLobbyManager : Node
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
-        GD.Print("[SteamLobbyManager] OnLobbyCreated fired");
-        GD.Print($"Result: {callback.m_eResult}");
-        GD.Print($"Lobby ID: {callback.m_ulSteamIDLobby}");
-
         if (callback.m_eResult != EResult.k_EResultOK)
         {
             GD.PrintErr($"Failed creating lobby: {callback.m_eResult}");
@@ -223,59 +208,44 @@ public partial class SteamLobbyManager : Node
 
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         HostSteamId = LocalSteamId;
-
-        GD.Print($"Lobby created: {CurrentLobbyId}");
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        GD.Print($"[SteamLobbyManager] OnLobbyEntered fired, resetting sceneReady (was {_sceneReady})");
         CurrentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         HostSteamId = SteamMatchmaking.GetLobbyOwner(CurrentLobbyId).m_SteamID;
         _sceneReady = false;
 
-        GD.Print($"Entered lobby: {CurrentLobbyId}");
         RegisterLobbyMembers();
         NotifyLobbyReady();
     }
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
     {
-        GD.Print("[SteamLobbyManager] Lobby member update");
         RegisterLobbyMembers();
     }
 
     private void OnPeerSessionEstablished(CSteamID peer)
     {
-        GD.Print($"[SteamLobbyManager] P2P session established with {peer}, sending state");
-        
         Callable.From(() =>
         {
             foreach (var kvp in _players)
-            {
-                GD.Print($"[SteamLobbyManager] Sending state for {kvp.Key} to {peer}");
                 Network.Steam.SendPacket(peer, kvp.Value);
-            }
         }).CallDeferred();
     }
 
     private void NotifyLobbyReady()
     {
-        GD.Print("[SteamLobbyManager] NotifyLobbyReady");
-
         if (OnLobbyReady == null)
         {
             GD.PrintErr("NO SUBSCRIBERS");
             return;
         }
-
-        GD.Print("Invoking lobby ready");
         OnLobbyReady.Invoke();
     }
 
     private void OnJoinRequested(GameLobbyJoinRequested_t callback)
     {
-        GD.Print("[SteamLobbyManager] Join requested, setting online mode");
         JoinLobby(callback.m_steamIDLobby);
     }
 
@@ -287,23 +257,16 @@ public partial class SteamLobbyManager : Node
         for (int i = 0; i < count; i++)
         {
             CSteamID member = SteamMatchmaking.GetLobbyMemberByIndex(CurrentLobbyId, i);
-
             if (member == SteamUser.GetSteamID())
                 continue;
 
             Network.Connection.AddPeer(member);
-            GD.Print($"Registered peer: {member}");
         }
     }
 
     private void EmitInitialPlayerState()
     {
-        GD.Print("[SteamLobbyManager] EmitInitialPlayerState");
-
         foreach (var kvp in _players)
-        {
-            GD.Print($"[SteamLobbyManager] Re-broadcasting state for {kvp.Key}");
             Broadcast(kvp.Value);
-        }
     }
 }

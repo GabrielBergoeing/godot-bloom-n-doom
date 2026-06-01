@@ -19,5 +19,11 @@ public enum NetworkPacketType : byte
     MatchPickupSpawned = 27,
     MatchPickupCollected = 28,
     MatchPickupSpawnRequest = 29,
-    MatchPickupCollectRequest = 30
+    MatchPickupCollectRequest = 30,
+
+    MatchFarmPrepare = 31,
+    MatchFarmPlant = 32,
+    MatchFarmRemove = 33,
+    MatchFarmIrrigate = 34,
+    MatchFarmFertilize = 35,
 }

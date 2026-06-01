@@ -16,11 +16,18 @@ public partial class SteamMatchManager : Node
     public event Action<MatchStartPacket> OnMatchStarted;
     public event Action<MatchPlayerTransformPacket> OnPlayerTransformReceived;
     public event Action<float> OnTimerSyncReceived;
+
     public event Action<MatchPlayerHotbarPacket> OnHotbarSyncReceived;
     public event Action<MatchPickupSpawnedPacket> OnPickupSpawned;
     public event Action<MatchPickupCollectedPacket> OnPickupCollected;
     public event Action<MatchPickupSpawnRequestPacket> OnPickupSpawnRequested;
     public event Action<MatchPickupCollectRequestPacket> OnPickupCollectRequested;
+
+    public event Action<MatchFarmPreparePacket> OnFarmPrepared;
+    public event Action<MatchFarmPlantPacket> OnFarmPlanted;
+    public event Action<MatchFarmRemovePacket> OnFarmRemoved;
+    public event Action<MatchFarmIrrigatePacket> OnFarmIrrigated;
+    public event Action<MatchFarmFertilizePacket> OnFarmFertilized;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -44,6 +51,12 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollected, HandlePickupCollected);
         router.RegisterHandler((byte)NetworkPacketType.MatchPickupSpawnRequest, HandlePickupSpawnRequest);
         router.RegisterHandler((byte)NetworkPacketType.MatchPickupCollectRequest, HandlePickupCollectRequest);
+
+        router.RegisterHandler((byte)NetworkPacketType.MatchFarmPrepare, HandleFarmPrepare);
+        router.RegisterHandler((byte)NetworkPacketType.MatchFarmPlant, HandleFarmPlant);
+        router.RegisterHandler((byte)NetworkPacketType.MatchFarmRemove, HandleFarmRemove);
+        router.RegisterHandler((byte)NetworkPacketType.MatchFarmIrrigate, HandleFarmIrrigate);
+        router.RegisterHandler((byte)NetworkPacketType.MatchFarmFertilize, HandleFarmFertilize);
     }
 
     public void BroadcastMatchStart()
@@ -129,6 +142,53 @@ public partial class SteamMatchManager : Node
         {
             NetworkPickupId = networkPickupId,
             RequesterSteamId = requesterSteamId
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastFarmPrepared(Vector2I cell)
+    {
+        MatchFarmPreparePacket packet = new()
+        {
+            Cell = cell
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastFarmPlanted(Vector2I cell, int playerIndex, string seedId)
+    {
+        MatchFarmPlantPacket packet = new()
+        {
+            Cell = cell,
+            PlayerIndex = playerIndex,
+            SeedId = seedId
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastFarmRemoved(Vector2I cell)
+    {
+        MatchFarmRemovePacket packet = new()
+        {
+            Cell = cell
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastFarmIrrigated(Vector2I cell)
+    {
+        MatchFarmIrrigatePacket packet = new()
+        {
+            Cell = cell
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastFarmFertilized(Vector2I cell)
+    {
+        MatchFarmFertilizePacket packet = new()
+        {
+            Cell = cell
         };
         Network.Lobby.Broadcast(packet);
     }
@@ -287,7 +347,6 @@ public partial class SteamMatchManager : Node
 
     private void HandlePickupSpawnRequest(CSteamID sender, byte[] data)
     {
-        GD.Print($"[SteamMatchManager] HandlePickupSpawnRequest from {sender.m_SteamID}");
         var reader = new PacketReader(data);
         reader.ReadByte();
         var packet = new MatchPickupSpawnRequestPacket();
@@ -297,11 +356,55 @@ public partial class SteamMatchManager : Node
 
     private void HandlePickupCollectRequest(CSteamID sender, byte[] data)
     {
-        GD.Print($"[SteamMatchManager] HandlePickupCollectRequest from {sender.m_SteamID}");
         var reader = new PacketReader(data);
         reader.ReadByte();
         var packet = new MatchPickupCollectRequestPacket();
         packet.Deserialize(reader);
         Callable.From(() => OnPickupCollectRequested?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleFarmPrepare(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchFarmPreparePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnFarmPrepared?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleFarmPlant(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchFarmPlantPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnFarmPlanted?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleFarmRemove(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchFarmRemovePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnFarmRemoved?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleFarmIrrigate(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchFarmIrrigatePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnFarmIrrigated?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleFarmFertilize(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchFarmFertilizePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnFarmFertilized?.Invoke(packet)).CallDeferred();
     }
 }

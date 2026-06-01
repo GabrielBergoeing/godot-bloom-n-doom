@@ -58,6 +58,12 @@ public class PacketWriter : IDisposable
         _writer.Write(value.Y);
     }
 
+    public void WriteVector2I(Vector2I value)
+    {
+        _writer.Write(value.X);
+        _writer.Write(value.Y);
+    }
+
     public byte[] ToArray()
     {
         return _stream.ToArray();

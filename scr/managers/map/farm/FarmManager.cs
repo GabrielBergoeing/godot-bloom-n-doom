@@ -29,7 +29,7 @@ public partial class FarmManager : TileMapLayer
 
     public Vector2I WorldToCell(Vector2 worldPos) =>
         LocalToMap(worldPos);
-    
+
     public bool IsGrass(Vector2I cell) =>
         helper.IsCellTerrain(cell, FarmHelper.GRASS);
 
@@ -38,7 +38,7 @@ public partial class FarmManager : TileMapLayer
 
     public bool IsOccupied(Vector2I cell) =>
         occupiedCells.Contains(cell);
-    
+
     public bool IsWaterTile(Vector2I cell) =>
         helper.IsCellTerrain(cell, FarmHelper.WATER);
 
@@ -61,108 +61,43 @@ public partial class FarmManager : TileMapLayer
         return null;
     }
 
-    public void TryPrepareTile(Vector2I cell)
+    public bool CanPrepareTile(Vector2I cell)
     {
-        if (IsPrepared(cell) || IsOccupied(cell))
-            return;
+        return !IsPrepared(cell) &&
+               !IsOccupied(cell);
+    }
 
+    public bool CanPlantSeed(Vector2I cell)
+    {
+        return IsPrepared(cell) &&
+               !IsOccupied(cell);
+    }
+
+    public bool CanRemovePlant(Vector2I cell, int requesterPlayerIndex)
+    {
+        if (!plantsByCell.TryGetValue(cell, out var plant) ||
+            plant is not Plant p)
+            return false;
+
+        return p.OwnerPlayerIndex == requesterPlayerIndex;
+    }
+
+    public bool CanIrrigatePlant(Vector2I cell)
+    {
+        return TryGetPlant(cell) != null;
+    }
+
+    public bool CanFertilizePlant(Vector2I cell)
+    {
+        return TryGetPlant(cell) != null;
+    }
+
+    public void PrepareTile(Vector2I cell)
+    {
         helper.UpdateTerrain(cell, FarmHelper.DIRT);
     }
 
-    public bool TryPlantSeed(Vector2I cell, int playerIndex, SeedData data)
-    {
-        if (!IsPrepared(cell) || IsOccupied(cell))
-            return false;
-
-        PlantSeed(cell, playerIndex, data);
-        return true;
-    }
-
-    public void RemovePlant(Vector2I cell)
-    {
-        if (!plantsByCell.TryGetValue(cell, out var plant))
-            return;
-
-        plant.QueueFree();
-
-        plantsByCell.Remove(cell);
-        occupiedCells.Remove(cell);
-
-        helper.UpdateTerrain(cell, FarmHelper.DIRT);
-    }
-
-    public bool TryRemovePlant(Vector2I cell, int requesterPlayerIndex)
-    {
-        if (!plantsByCell.TryGetValue(cell, out var plant) || plant is not Plant p)
-            return false;
-
-        if (p.OwnerPlayerIndex != requesterPlayerIndex)
-        {
-            GD.Print("Can't remove someone else's plant.");
-            return false;
-        }
-
-        RemovePlant(cell);
-        return true;
-    }
-
-    public bool TryIrrigatePlant(Vector2I cell)
-    {
-        if (plantsByCell.TryGetValue(cell, out var plant) && plant is Plant p)
-        {
-            p.WaterPlant();
-            return true;
-        }
-        return false;
-    }
-
-    public bool TryFertilizePlant(Vector2I cell)
-    {
-        if (plantsByCell.TryGetValue(cell, out var plant) && plant is Plant p)
-        {
-            p.FertilizePlant();
-            return true;
-        }
-        return false;
-    }
-
-    public List<Plant> GetAdjacentPlants(Vector2I cell)
-    {
-        List<Plant> plants = new();
-        Vector2I[] offsets = {Vector2I.Up, Vector2I.Down, Vector2I.Left, Vector2I.Right};
-
-        foreach (var offset in offsets)
-        {
-            Plant neighbor = TryGetPlant(cell + offset);
-            if (neighbor == null)
-                continue;
-            plants.Add(neighbor);
-        }
-        return plants;
-    }
-
-    public Dictionary<int, int> GetAllPlantScores()
-    {
-        Dictionary<int, int> scores = new();
-        foreach (Node2D playerRoot in playerPlantRoots.Values)
-        {
-            foreach (Node child in playerRoot.GetChildren())
-            {
-                if (child is not Plant plant)
-                    continue;
-
-                int score = plant.GetScore();
-                int playerId = plant.OwnerPlayerIndex;
-                
-                if (!scores.ContainsKey(playerId))
-                    scores[playerId] = 0;
-                scores[playerId] += score;
-            }
-        }
-        return scores;
-    }
-
-    private void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
+    public void PlantSeed(Vector2I cell, int playerIndex, SeedData data)
     {
         Vector2 worldPos = MapToLocal(cell);
 
@@ -179,12 +114,135 @@ public partial class FarmManager : TileMapLayer
         occupiedCells.Add(cell);
     }
 
+    public void RemovePlant(Vector2I cell)
+    {
+        if (!plantsByCell.TryGetValue(cell, out var plant))
+            return;
+
+        plant.QueueFree();
+
+        plantsByCell.Remove(cell);
+        occupiedCells.Remove(cell);
+
+        helper.UpdateTerrain(cell, FarmHelper.DIRT);
+    }
+
+    public void IrrigatePlant(Vector2I cell)
+    {
+        if (TryGetPlant(cell) is Plant plant)
+            plant.WaterPlant();
+    }
+
+    public void FertilizePlant(Vector2I cell)
+    {
+        if (TryGetPlant(cell) is Plant plant)
+            plant.FertilizePlant();
+    }
+
+    public bool TryPrepareTile(Vector2I cell)
+    {
+        if (!CanPrepareTile(cell))
+            return false;
+
+        PrepareTile(cell);
+        return true;
+    }
+
+    public bool TryPlantSeed(Vector2I cell, int playerIndex, SeedData data)
+    {
+        if (!CanPlantSeed(cell))
+            return false;
+
+        PlantSeed(cell, playerIndex, data);
+        return true;
+    }
+
+    public bool TryRemovePlant(Vector2I cell, int requesterPlayerIndex)
+    {
+        if (!CanRemovePlant(cell, requesterPlayerIndex))
+        {
+            GD.Print("Can't remove someone else's plant.");
+            return false;
+        }
+
+        RemovePlant(cell);
+        return true;
+    }
+
+    public bool TryIrrigatePlant(Vector2I cell)
+    {
+        if (!CanIrrigatePlant(cell))
+            return false;
+
+        IrrigatePlant(cell);
+        return true;
+    }
+
+    public bool TryFertilizePlant(Vector2I cell)
+    {
+        if (!CanFertilizePlant(cell))
+            return false;
+
+        FertilizePlant(cell);
+        return true;
+    }
+
+    public List<Plant> GetAdjacentPlants(Vector2I cell)
+    {
+        List<Plant> plants = new();
+
+        Vector2I[] offsets =
+        {
+            Vector2I.Up,
+            Vector2I.Down,
+            Vector2I.Left,
+            Vector2I.Right
+        };
+
+        foreach (var offset in offsets)
+        {
+            Plant neighbor = TryGetPlant(cell + offset);
+
+            if (neighbor == null)
+                continue;
+
+            plants.Add(neighbor);
+        }
+
+        return plants;
+    }
+
+    public Dictionary<int, int> GetAllPlantScores()
+    {
+        Dictionary<int, int> scores = new();
+
+        foreach (Node2D playerRoot in playerPlantRoots.Values)
+        {
+            foreach (Node child in playerRoot.GetChildren())
+            {
+                if (child is not Plant plant)
+                    continue;
+
+                int score = plant.GetScore();
+                int playerId = plant.OwnerPlayerIndex;
+
+                if (!scores.ContainsKey(playerId))
+                    scores[playerId] = 0;
+
+                scores[playerId] += score;
+            }
+        }
+
+        return scores;
+    }
+
     private Node2D GetPlayerPlantRoot(int playerIndex)
     {
         if (!playerPlantRoots.TryGetValue(playerIndex, out var root) || root == null)
         {
             root = new Node2D();
             root.Name = $"Player{playerIndex}_Plants";
+
             PlantsRoot.AddChild(root);
             playerPlantRoots[playerIndex] = root;
         }
