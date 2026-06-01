@@ -206,7 +206,10 @@ public partial class SplitScreenManager : Node
         {
             _matchManager.SubscribeToTimerSync();
             GD.Print("[SplitScreenManager] Calling PickupNetworkService.Initialize");
-            PickupNetworkService.Instance.Initialize(_levelNode);
+            
+            var pickupService = new PickupNetworkService();
+            AddChild(pickupService);
+            pickupService.Initialize(_levelNode);
         }
 
         CreateMatchResultsPanel();

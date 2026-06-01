@@ -11,6 +11,7 @@ public partial class PickupNetworkService : Node
     private NetworkRoot Network => NetworkRoot.Instance;
 
     private readonly Dictionary<int, Pickup> _activePickups = new();
+    private bool _initialized = false;
     private int _nextPickupId = 0;
 
     private Node _levelNode;
@@ -18,11 +19,13 @@ public partial class PickupNetworkService : Node
     public override void _Ready()
     {
         Instance = this;
-        GD.Print($"[PickupNetworkService] Ready ");
+        GD.Print($"[PickupNetworkService] Ready — IsOnline: {NetworkRoot.Instance?.IsOnline}");
     }
 
     public override void _ExitTree()
     {
+        if (!_initialized) return; // scene-placed node never initialized, skip
+
         if (Event != null && Network.IsOnline && Network.Lobby.IsHost)
         {
             Event.OnPickupSpawned -= OnHostPickupSpawned;
@@ -38,9 +41,9 @@ public partial class PickupNetworkService : Node
         }
     }
 
-    // In PickupNetworkService.Initialize:
     public void Initialize(Node levelNode)
     {
+        _initialized = true;
         GD.Print($"[PickupNetworkService] Initialize — IsHost: {Network.IsOnline && Network.Lobby.IsHost}, Event: {Event != null}");
 
         _levelNode = levelNode;
