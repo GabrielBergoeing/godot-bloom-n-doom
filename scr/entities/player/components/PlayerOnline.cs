@@ -78,7 +78,7 @@ public partial class PlayerOnline : Node
         {
             _player.Hotbar.OnSlotChanged += BroadcastHotbarState;
         }
-
+        
         _player.Input.SetRemoteControlled(!IsLocallyControlled);
     }
 
@@ -162,30 +162,26 @@ public partial class PlayerOnline : Node
 
         if (IsLocallyControlled)
         {
-            if (!string.IsNullOrEmpty(packet.ItemId))
-            {
-                ItemData item = ItemDatabase.Instance?.GetItem(packet.ItemId);
-                if (item != null)
-                    _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
-            }
-            else
-                _player.Hotbar.SetSlotForRemote(packet.SlotIndex, null, 0);
+            ItemData item = string.IsNullOrEmpty(packet.ItemId)
+                ? null
+                : ItemDatabase.Instance?.GetItem(packet.ItemId);
 
-            _player.Hotbar.SelectSlot(packet.SlotIndex, false);
+            _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
+
+            if (item != null)
+                _player.Hotbar.SelectSlot(packet.SlotIndex, false);
             return;
         }
 
         _player.Hotbar.SelectSlot(packet.SlotIndex, false);
 
-        if (!string.IsNullOrEmpty(packet.ItemId))
-        {
-            ItemData item = ItemDatabase.Instance?.GetItem(packet.ItemId);
-            if (item != null)
-                _player.Hotbar.SetSlotForRemote(packet.SlotIndex, item, packet.Amount);
-            else
-                GD.PrintErr($"[PlayerOnline] Hotbar sync item not found: {packet.ItemId}");
-        }
-        else
-            _player.Hotbar.SetSlotForRemote(packet.SlotIndex, null, 0);
+        ItemData remoteItem = string.IsNullOrEmpty(packet.ItemId)
+            ? null
+            : ItemDatabase.Instance?.GetItem(packet.ItemId);
+
+        if (remoteItem == null && !string.IsNullOrEmpty(packet.ItemId))
+            GD.PrintErr($"[PlayerOnline] Hotbar sync item not found: {packet.ItemId}");
+
+        _player.Hotbar.SetSlotForRemote(packet.SlotIndex, remoteItem, packet.Amount);
     }
 }
