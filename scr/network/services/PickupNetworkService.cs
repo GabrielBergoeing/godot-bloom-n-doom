@@ -202,6 +202,21 @@ public partial class PickupNetworkService : Node
         return true;
     }
 
+    private void HandleRemotePickupSpawned(MatchPickupSpawnedPacket packet)
+    {
+        if (Network.Lobby.IsHost) return;
+
+        ItemData data = ItemDatabase.Instance?.GetItem(packet.ItemId);
+        if (data == null)
+        {
+            GD.PrintErr($"[PickupNetworkService] Unknown item: {packet.ItemId}");
+            return;
+        }
+
+        CreatePickupNode(data, packet.Position, packet.NetworkPickupId);
+        GD.Print($"[PickupNetworkService] Peer received pickup {packet.NetworkPickupId}");
+    }
+
     private void HandleRemotePickupCollected(MatchPickupCollectedPacket packet)
     {
         GD.Print(
@@ -225,13 +240,6 @@ public partial class PickupNetworkService : Node
             $"[PickupNetworkService] Peer removed pickup " +
             $"{packet.NetworkPickupId}"
         );
-    }
-
-    private void HandleRemotePickupCollected(MatchPickupCollectedPacket packet)
-    {
-        if (Network.Lobby.IsHost) return;
-        RemovePickupNode(packet.NetworkPickupId);
-        GD.Print($"[PickupNetworkService] Peer removed pickup {packet.NetworkPickupId}");
     }
 
     private Pickup CreatePickupNode(ItemData data, Vector2 position, int networkId)
