@@ -160,7 +160,7 @@ public partial class PlayerOnline : Node
 
         GD.Print($"[PlayerOnline] Hotbar sync — slot {packet.SlotIndex}, item '{packet.ItemId}', amount {packet.Amount}");
 
-        _player.Hotbar.SelectSlot(packet.SlotIndex);
+        _player.Hotbar.SelectSlot(packet.SlotIndex, false);
 
         if (!string.IsNullOrEmpty(packet.ItemId))
         {
@@ -172,5 +172,6 @@ public partial class PlayerOnline : Node
         }
         else
             _player.Hotbar.SetSlotForRemote(packet.SlotIndex, null, 0);
+        _player.Hotbar.OnSlotChanged?.Invoke();
     }
 }

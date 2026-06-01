@@ -133,16 +133,24 @@ public partial class PlayerHotbar : Node
         RemoveItem(currentSlot, 1, consume: true);
     }
 
-    public void SelectSlot(int index)
+    public void SelectSlot(int index, bool notify = true)
     {
+        GD.Print($"[Hotbar] SelectSlot {index}");
         currentSlot = index;
-        OnSlotChanged?.Invoke();
+
+        if (notify)
+            OnSlotChanged?.Invoke();
     }
 
     public void SetSlotForRemote(int index, ItemData data, int amount)
     {
+        GD.Print(
+            $"[Hotbar] SetSlotForRemote " +
+            $"Slot:{index} " +
+            $"Item:{data?.ItemId} " +
+            $"Amount:{amount}"
+        );
         if (index < 0 || index >= slots.Length) return;
         slots[index] = (data == null || amount <= 0) ? null : new ItemStack(data, amount);
-        OnSlotChanged?.Invoke();
     }
 }
