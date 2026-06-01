@@ -42,9 +42,7 @@ public class PacketReader : IDisposable
     public string ReadString()
     {
         int length = _reader.ReadInt32();
-
-        byte[] bytes =
-            _reader.ReadBytes(length);
+        byte[] bytes =_reader.ReadBytes(length);
 
         return Encoding.UTF8.GetString(bytes).Trim();
     }
