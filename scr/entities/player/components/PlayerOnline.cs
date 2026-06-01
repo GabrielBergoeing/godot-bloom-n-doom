@@ -156,6 +156,7 @@ public partial class PlayerOnline : Node
 
     private void HandleHotbarSync(MatchPlayerHotbarPacket packet)
     {
+        if (IsLocallyControlled) return;
         if (packet.OwnerSteamId != OwnerSteamId) return;
 
         GD.Print($"[PlayerOnline] Hotbar sync — slot {packet.SlotIndex}, item '{packet.ItemId}', amount {packet.Amount}");
@@ -172,6 +173,5 @@ public partial class PlayerOnline : Node
         }
         else
             _player.Hotbar.SetSlotForRemote(packet.SlotIndex, null, 0);
-        _player.Hotbar.OnSlotChanged?.Invoke();
     }
 }
