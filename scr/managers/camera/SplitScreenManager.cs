@@ -16,6 +16,7 @@ public partial class SplitScreenManager : Node
     public Node LevelNode => _levelNode;
 
     private MatchManager _matchManager;
+    private PickupNetworkService _pickupService;
     private UIMatchResults _matchResults;
     private World2D _sharedWorld;
 
@@ -86,6 +87,10 @@ public partial class SplitScreenManager : Node
 
         _sharedWorld = viewport.GetSubViewport().World2D;
         _matchManager =_levelNode.GetNode<MatchManager>("MatchManager");
+
+        if (Network.IsOnline)
+            CreateNetworkPickupService();
+        
         GD.Print("[SplitScreenManager] Level created successfully");
     }
 
@@ -131,6 +136,7 @@ public partial class SplitScreenManager : Node
 
         Player player = PlayerScene.Instantiate<Player>();
         LevelNode.AddChild(player);
+        
 
         if (data.IsLocalOwner)
         {
@@ -142,17 +148,13 @@ public partial class SplitScreenManager : Node
             int deviceId = lobbyData?.DeviceId ?? -1;
             string deviceType = lobbyData?.DeviceType ?? "Keyboard";
 
-            player.Setup(data.PlayerId, deviceId, deviceType, character.Sprites);
-            player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
-            _matchManager.RegisterPlayer(player, data.SpawnIndex);
+            InitiateOnlinePlayer(player, data, character.Sprites, deviceId, deviceType);
             CreateLocalViewport(player);
         }
         else
         {
             GD.Print($"[SplitScreenManager] Configuring REMOTE player {data.PlayerId}");
-            player.Setup(data.PlayerId, -1, "Remote", character.Sprites);
-            player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
-            _matchManager.RegisterPlayer(player, data.SpawnIndex);
+            InitiateOnlinePlayer(player, data, character.Sprites);
         }
     }
 
@@ -196,6 +198,13 @@ public partial class SplitScreenManager : Node
         );
     }
 
+    private void CreateNetworkPickupService()
+    {
+        _pickupService = new PickupNetworkService();
+        AddChild(_pickupService);
+        _pickupService.Initialize(_levelNode);
+    }
+
     private void FinalizeMatchSetup()
     {
         GD.Print("[SplitScreenManager] FinalizeMatchSetup");
@@ -203,16 +212,18 @@ public partial class SplitScreenManager : Node
         GameManager.Instance.StartMatch(_levelNode);
 
         if (Network.IsOnline)
-        {
             _matchManager.SubscribeToTimerSync();
-            GD.Print("[SplitScreenManager] Calling PickupNetworkService.Initialize");
-            
-            var pickupService = new PickupNetworkService();
-            AddChild(pickupService);
-            pickupService.Initialize(_levelNode);
-        }
 
         CreateMatchResultsPanel();
+    }
+
+
+    private void InitiateOnlinePlayer(Player player, PlayerSpawnData data, SpriteFrames sprites, int deviceId=-1, string deviceType="Remote")
+    {
+        player.Setup(data.PlayerId, deviceId, deviceType, sprites);
+        player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
+        _matchManager.RegisterPlayer(player, data.SpawnIndex);
+        _pickupService.RegisterPlayer(player);
     }
 
     private void UpdateViewportLayout()
