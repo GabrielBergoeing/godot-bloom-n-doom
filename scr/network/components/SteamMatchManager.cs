@@ -287,6 +287,7 @@ public partial class SteamMatchManager : Node
 
     private void HandlePickupSpawnRequest(CSteamID sender, byte[] data)
     {
+        GD.Print($"[SteamMatchManager] HandlePickupSpawnRequest from {sender.m_SteamID}");
         var reader = new PacketReader(data);
         reader.ReadByte();
         var packet = new MatchPickupSpawnRequestPacket();
@@ -296,6 +297,7 @@ public partial class SteamMatchManager : Node
 
     private void HandlePickupCollectRequest(CSteamID sender, byte[] data)
     {
+        GD.Print($"[SteamMatchManager] HandlePickupCollectRequest from {sender.m_SteamID}");
         var reader = new PacketReader(data);
         reader.ReadByte();
         var packet = new MatchPickupCollectRequestPacket();

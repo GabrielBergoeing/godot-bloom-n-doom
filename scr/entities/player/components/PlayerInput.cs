@@ -54,8 +54,6 @@ public partial class PlayerInput : Node
         {
             if (@event is not InputEventKey key)
                 return;
-            
-            GD.Print($"[PlayerInput] Pressed {key.Keycode}");
 
             if (!key.Pressed || key.Echo)
                 return;
