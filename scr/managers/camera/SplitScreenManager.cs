@@ -15,9 +15,11 @@ public partial class SplitScreenManager : Node
     private Node _levelNode;
     public Node LevelNode => _levelNode;
 
-    private MatchManager _matchManager;
     private PickupNetworkService _pickupService;
     private FarmNetworkService _farmService;
+    private ToolNetworkService _toolService;
+
+    private MatchManager _matchManager;
     private UIMatchResults _matchResults;
     private World2D _sharedWorld;
 
@@ -28,7 +30,7 @@ public partial class SplitScreenManager : Node
     {
         Instance = this;
 
-        _screenContainer =GetNode<GridContainer>("CenterContainer/GridContainer");
+        _screenContainer = GetNode<GridContainer>("CenterContainer/GridContainer");
         if (Network.IsOnline)
             PrepareOnlineMatch();
         else
@@ -188,6 +190,10 @@ public partial class SplitScreenManager : Node
         _farmService = new FarmNetworkService();
         AddChild(_farmService);
         _farmService.Initialize();
+
+        _toolService = new ToolNetworkService();
+        AddChild(_toolService);
+        _toolService.Initialize();
     }
 
     private void FinalizeMatchSetup()

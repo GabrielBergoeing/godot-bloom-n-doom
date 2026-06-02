@@ -29,6 +29,8 @@ public partial class SteamMatchManager : Node
     public event Action<MatchFarmIrrigatePacket> OnFarmIrrigated;
     public event Action<MatchFarmFertilizePacket> OnFarmFertilized;
     public event Action<MatchFarmSabotagePacket> OnFarmSabotaged;
+    public event Action<MatchToolBeginUsePacket> OnToolBeginUse;
+    public event Action<MatchToolEndUsePacket> OnToolEndUse;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -59,6 +61,8 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmIrrigate, HandleFarmIrrigate);
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmFertilize, HandleFarmFertilize);
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmSabotage, HandleFarmSabotage);
+        router.RegisterHandler((byte)NetworkPacketType.MatchToolBeginUse, HandleToolBeginUse);
+        router.RegisterHandler((byte)NetworkPacketType.MatchToolEndUse, HandleToolEndUse);
     }
 
     public void BroadcastMatchStart()
@@ -204,6 +208,28 @@ public partial class SteamMatchManager : Node
             PlayerIndex = playerIndex
         };
 
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastToolBeginUse(int playerId, int itemSlot, ulong ownerSteamId)
+    {
+        MatchToolBeginUsePacket packet = new()
+        {
+            PlayerId = playerId,
+            ItemSlot = itemSlot,
+            OwnerSteamId = ownerSteamId
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastToolEndUse(int playerId, int itemSlot, ulong ownerSteamId)
+    {
+        MatchToolEndUsePacket packet = new()
+        {
+            PlayerId = playerId,
+            ItemSlot = itemSlot,
+            OwnerSteamId = ownerSteamId
+        };
         Network.Lobby.Broadcast(packet);
     }
 
@@ -429,5 +455,23 @@ public partial class SteamMatchManager : Node
         var packet = new MatchFarmSabotagePacket();
         packet.Deserialize(reader);
         Callable.From(() => OnFarmSabotaged?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleToolBeginUse(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchToolBeginUsePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnToolBeginUse?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleToolEndUse(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchToolEndUsePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnToolEndUse?.Invoke(packet)).CallDeferred();
     }
 }

@@ -1,4 +1,4 @@
-public partial class MatchToolBeginUse : NetworkPacket
+public partial class MatchToolBeginUsePacket : NetworkPacket
 {
 	public override byte PacketId => (byte)NetworkPacketType.MatchToolBeginUse;
 	public int PlayerId;
