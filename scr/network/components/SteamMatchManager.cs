@@ -166,11 +166,12 @@ public partial class SteamMatchManager : Node
         Network.Lobby.Broadcast(packet);
     }
 
-    public void BroadcastFarmRemoved(Vector2I cell)
+    public void BroadcastFarmRemoved(Vector2I cell, int playerIndex)
     {
         MatchFarmRemovePacket packet = new()
         {
-            Cell = cell
+            Cell = cell,
+            PlayerIndex = playerIndex
         };
         Network.Lobby.Broadcast(packet);
     }

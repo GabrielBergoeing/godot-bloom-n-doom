@@ -3,9 +3,11 @@ using System;
 
 public partial class PlayerTileInteraction : Sprite2D
 {
+    private FarmManager Farm => FarmManager.Instance;
+    private FarmNetworkService FarmNetwork => FarmNetworkService.Instance;
+
     private Camera2D cam;
     private Player Player;
-    private FarmManager farmManager;
 
     private Node2D currentOutline;
     private Vector2I currentCell;
@@ -22,8 +24,6 @@ public partial class PlayerTileInteraction : Sprite2D
         Player = GetParent<Player>();
 
         var level = SplitScreenManager.Instance.LevelNode;
-        farmManager = level.GetNode<FarmManager>("World");
-
         ConnectFarmSignals();
         var remote = Player.GetNode<RemoteTransform2D>("RemoteTransform2D");
 
@@ -38,12 +38,12 @@ public partial class PlayerTileInteraction : Sprite2D
 
         Vector2 playerWorldPos = Player.GlobalPosition;
 
-        Vector2I playerCell = farmManager.LocalToMap(playerWorldPos);
+        Vector2I playerCell = Farm.LocalToMap(playerWorldPos);
         Vector2I frontCell = GetCellInFrontOfPlayer(playerCell);
 
         currentCell = frontCell;
 
-        Vector2 cellCenter = farmManager.ToGlobal(farmManager.MapToLocal(currentCell));
+        Vector2 cellCenter = Farm.ToGlobal(Farm.MapToLocal(currentCell));
         GlobalPosition = cellCenter;
     }
 
@@ -64,17 +64,17 @@ public partial class PlayerTileInteraction : Sprite2D
 
 
     public bool CellIsPrepared() => 
-        farmManager.IsPrepared(currentCell);
+        Farm.IsPrepared(currentCell);
 
     public bool CellIsOccupied() => 
-        farmManager.IsOccupied(currentCell);
+        Farm.IsOccupied(currentCell);
 
     public bool IsCellOwner(int playerIndex) => 
-        playerIndex == farmManager.GetPlantOwner(currentCell);
+        playerIndex == Farm.GetPlantOwner(currentCell);
 
 
     public bool CanPrepare() => 
-        !CellIsPrepared() && farmManager.IsGrass(currentCell);
+        !CellIsPrepared() && Farm.IsGrass(currentCell);
 
     public bool CanPlant() => 
         CellIsPrepared() && !CellIsOccupied();
@@ -86,15 +86,36 @@ public partial class PlayerTileInteraction : Sprite2D
         CellIsOccupied() && !IsCellOwner(playerIndex);
 
     public bool CanRefillWater() => 
-        farmManager.IsWaterTile(currentCell);
+        Farm.IsWaterTile(currentCell);
 
     private void ConnectFarmSignals()
     {
-        Connect(SignalName.RequestIrrigate, new Callable(farmManager, nameof(FarmManager.TryIrrigatePlant)));
-        Connect(SignalName.RequestPrepare, new Callable(farmManager, nameof(FarmManager.TryPrepareTile)));
-        Connect(SignalName.RequestPlant, new Callable(farmManager, nameof(FarmManager.TryPlantSeed)));
-        Connect(SignalName.RequestFertilize, new Callable(farmManager, nameof(FarmManager.TryFertilizePlant)));
-        Connect(SignalName.RequestRemove, new Callable(farmManager, nameof(FarmManager.TryRemovePlant)));
+        if (NetworkRoot.Instance.IsOnline)
+        {
+            Connect(SignalName.RequestPrepare,
+                new Callable(FarmNetwork, nameof(FarmNetworkService.RequestPrepareTile)));
+            Connect(SignalName.RequestPlant,
+                new Callable(FarmNetwork, nameof(FarmNetworkService.RequestPlantSeed)));
+            Connect(SignalName.RequestRemove,
+                new Callable(FarmNetwork, nameof(FarmNetworkService.RequestRemovePlant)));
+            Connect(SignalName.RequestIrrigate,
+                new Callable(FarmNetwork, nameof(FarmNetworkService.RequestIrrigatePlant)));
+            Connect(SignalName.RequestFertilize,
+                new Callable(FarmNetwork, nameof(FarmNetworkService.RequestFertilizePlant)));
+        }
+        else
+        {
+            Connect(SignalName.RequestIrrigate,
+                new Callable(Farm, nameof(FarmManager.TryIrrigatePlant)));
+            Connect(SignalName.RequestPrepare,
+                new Callable(Farm, nameof(FarmManager.TryPrepareTile)));
+            Connect(SignalName.RequestPlant,
+                new Callable(Farm, nameof(FarmManager.TryPlantSeed)));
+            Connect(SignalName.RequestFertilize,
+                new Callable(Farm, nameof(FarmManager.TryFertilizePlant)));
+            Connect(SignalName.RequestRemove,
+                new Callable(Farm, nameof(FarmManager.TryRemovePlant)));
+        }
     }
 
     private Vector2I GetCellInFrontOfPlayer(Vector2I playerCell)

@@ -14,6 +14,7 @@ public partial class NetworkRoot : Node
 
     public LobbyStateService LobbyService => LobbyStateService.Instance;
     public PickupNetworkService PickupService => PickupNetworkService.Instance;
+    public FarmNetworkService FarmService => FarmNetworkService.Instance;
 
     public bool IsOnline { get; private set; } = false;
 

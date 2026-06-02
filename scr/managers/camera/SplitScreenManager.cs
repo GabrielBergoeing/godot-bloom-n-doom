@@ -17,6 +17,7 @@ public partial class SplitScreenManager : Node
 
     private MatchManager _matchManager;
     private PickupNetworkService _pickupService;
+    private FarmNetworkService _farmService;
     private UIMatchResults _matchResults;
     private World2D _sharedWorld;
 
@@ -80,7 +81,7 @@ public partial class SplitScreenManager : Node
         _matchManager =_levelNode.GetNode<MatchManager>("MatchManager");
 
         if (Network.IsOnline)
-            CreateNetworkPickupService();
+            CreateNetworkServices();
     }
 
     private void SpawnOfflinePlayers()
@@ -178,11 +179,15 @@ public partial class SplitScreenManager : Node
         );
     }
 
-    private void CreateNetworkPickupService()
+    private void CreateNetworkServices()
     {
         _pickupService = new PickupNetworkService();
         AddChild(_pickupService);
         _pickupService.Initialize(_levelNode);
+
+        _farmService = new FarmNetworkService();
+        AddChild(_farmService);
+        _farmService.Initialize();
     }
 
     private void FinalizeMatchSetup()
