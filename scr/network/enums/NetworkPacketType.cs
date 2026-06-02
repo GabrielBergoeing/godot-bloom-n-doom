@@ -27,4 +27,7 @@ public enum NetworkPacketType : byte
     MatchFarmIrrigate = 34,
     MatchFarmFertilize = 35,
     MatchFarmSabotage = 36,
+    
+    MatchToolBeginUse = 37,
+    MatchToolEndUse = 38,
 }

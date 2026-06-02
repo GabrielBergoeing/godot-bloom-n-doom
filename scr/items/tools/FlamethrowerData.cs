@@ -18,34 +18,26 @@ public partial class FlamethrowerData : ToolData
 
     public override void BeginUse(ItemUseContext ctx)
     {
-        if (currentFire != null)
-            return;
+        if (currentFire != null) return;
 
         var level = SplitScreenManager.Instance?.LevelNode;
-        if (level == null)
-            return;
+        if (level == null) return;
 
         currentFire = FirePrefab.Instantiate<Fire>();
-
         level.AddChild(currentFire);
         currentFire.Initialize(ctx.Player);
 
+        base.BeginUse(ctx);
         tickTimer = 0;
     }
 
-    public override void TickUse(
-        ItemUseContext ctx,
-        double delta)
+    public override void TickUse(ItemUseContext ctx, double delta)
     {
-        if (currentFire == null)
-            return;
-
+        if (currentFire == null) return;
         currentFire.UpdateTransform();
 
         tickTimer -= delta;
-
-        if (tickTimer > 0)
-            return;
+        if (tickTimer > 0) return;
 
         currentFire.Burn();
         tickTimer = TickRate;
@@ -53,9 +45,9 @@ public partial class FlamethrowerData : ToolData
 
     public override void EndUse(ItemUseContext ctx)
     {
-        if (currentFire == null)
-            return;
+        if (currentFire == null) return;
 
+        base.EndUse(ctx);
         currentFire.QueueFree();
         currentFire = null;
     }

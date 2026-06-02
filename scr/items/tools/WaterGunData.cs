@@ -5,8 +5,7 @@ public partial class WaterGunData : ToolData
 {
     [Export] public PackedScene ProjectileScene;
 
-    [Export(PropertyHint.Range, "0.01,1.0")]
-    public float FireRate = 0.08f;
+    [Export(PropertyHint.Range, "0.01,1.0")] public float FireRate = 0.08f;
 
     private double fireTimer;
 
@@ -19,31 +18,24 @@ public partial class WaterGunData : ToolData
     public override void BeginUse(ItemUseContext ctx)
     {
         fireTimer = 0;
+        //base.BeginUse(ctx);
     }
 
-    public override void TickUse(
-        ItemUseContext ctx,
-        double delta)
+    public override void TickUse(ItemUseContext ctx, double delta)
     {
         fireTimer -= delta;
 
-        if (fireTimer > 0)
-            return;
-
-        if (!ctx.Player.Water.TryConsumeWater())
-            return;
+        if (fireTimer > 0) return;
+        if (!ctx.Player.Water.TryConsumeWater()) return;
 
         SpawnProjectile(ctx);
-
         fireTimer = FireRate;
     }
 
     private void SpawnProjectile(ItemUseContext ctx)
     {
         var level = SplitScreenManager.Instance?.LevelNode;
-
-        if (level == null)
-            return;
+        if (level == null) return;
 
         var projectile = ProjectileScene.Instantiate<WaterProjectile>();
         level.AddChild(projectile);
