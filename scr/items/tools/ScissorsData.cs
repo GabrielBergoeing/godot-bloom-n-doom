@@ -10,10 +10,9 @@ public partial class ScissorsData : ItemData
 
     public override void Use(ItemUseContext ctx)
     {
-        var farm = FarmManager.Instance;
-        if (farm == null) return;
-
-        if (farm.IsOccupied(ctx.Tile.CurrentCell))
-            farm.RemovePlant(ctx.Tile.CurrentCell);
+        if (NetworkRoot.Instance.IsOnline)
+            FarmNetworkService.Instance.RequestSabotagePlant(ctx.Tile.CurrentCell, ctx.PlayerId);
+        else
+            FarmManager.Instance.RemovePlant(ctx.Tile.CurrentCell);
     }
 }

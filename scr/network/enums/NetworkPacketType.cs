@@ -26,4 +26,5 @@ public enum NetworkPacketType : byte
     MatchFarmRemove = 33,
     MatchFarmIrrigate = 34,
     MatchFarmFertilize = 35,
+    MatchFarmSabotage = 36,
 }

@@ -28,6 +28,7 @@ public partial class SteamMatchManager : Node
     public event Action<MatchFarmRemovePacket> OnFarmRemoved;
     public event Action<MatchFarmIrrigatePacket> OnFarmIrrigated;
     public event Action<MatchFarmFertilizePacket> OnFarmFertilized;
+    public event Action<MatchFarmSabotagePacket> OnFarmSabotaged;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -57,6 +58,7 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmRemove, HandleFarmRemove);
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmIrrigate, HandleFarmIrrigate);
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmFertilize, HandleFarmFertilize);
+        router.RegisterHandler((byte)NetworkPacketType.MatchFarmSabotage, HandleFarmSabotage);
     }
 
     public void BroadcastMatchStart()
@@ -191,6 +193,17 @@ public partial class SteamMatchManager : Node
         {
             Cell = cell
         };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastFarmSabotaged(Vector2I cell, int playerIndex)
+    {
+        MatchFarmSabotagePacket packet = new()
+        {
+            Cell = cell,
+            PlayerIndex = playerIndex
+        };
+
         Network.Lobby.Broadcast(packet);
     }
 
@@ -407,5 +420,14 @@ public partial class SteamMatchManager : Node
         var packet = new MatchFarmFertilizePacket();
         packet.Deserialize(reader);
         Callable.From(() => OnFarmFertilized?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleFarmSabotage(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchFarmSabotagePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnFarmSabotaged?.Invoke(packet)).CallDeferred();
     }
 }

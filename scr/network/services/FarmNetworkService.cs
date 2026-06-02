@@ -26,6 +26,7 @@ public partial class FarmNetworkService : Node
         Match.OnFarmRemoved -= HandleFarmRemoved;
         Match.OnFarmIrrigated -= HandleFarmIrrigated;
         Match.OnFarmFertilized -= HandleFarmFertilized;
+        Match.OnFarmSabotaged -= HandleFarmSabotaged;
     }
 
     public void Initialize()
@@ -37,6 +38,7 @@ public partial class FarmNetworkService : Node
         Match.OnFarmRemoved += HandleFarmRemoved;
         Match.OnFarmIrrigated += HandleFarmIrrigated;
         Match.OnFarmFertilized += HandleFarmFertilized;
+        Match.OnFarmSabotaged += HandleFarmSabotaged;
 
         GD.Print($"[FarmNetworkService] Initialized — IsHost: {Network.Lobby.IsHost}");
     }
@@ -81,6 +83,14 @@ public partial class FarmNetworkService : Node
             Match.BroadcastFarmFertilized(cell);
     }
 
+    public void RequestSabotagePlant(Vector2I cell, int playerIndex)
+    {
+        if (Network.Lobby.IsHost)
+            AuthoritativeSabotagePlant(cell, playerIndex);
+        else
+            Match.BroadcastFarmSabotaged(cell, playerIndex);
+    }
+
     private void AuthoritativePrepareTile(Vector2I cell)
     {
         if (!Farm.CanPrepareTile(cell)) return;
@@ -119,6 +129,17 @@ public partial class FarmNetworkService : Node
         Farm.FertilizePlant(cell);
         Match.BroadcastFarmFertilized(cell);
         GD.Print($"[FarmNetworkService] Fertilized plant at {cell}");
+    }
+
+    private void AuthoritativeSabotagePlant(Vector2I cell, int playerIndex)
+    {
+        Plant plant = Farm.TryGetPlant(cell);
+
+        if (plant == null) return;
+        if (plant.OwnerPlayerIndex == playerIndex) return;
+        Farm.RemovePlant(cell);
+        Match.BroadcastFarmSabotaged(cell, playerIndex);
+        GD.Print($"[FarmNetworkService] Player {playerIndex} sabotaged plant at {cell}");
     }
 
     private void HandleFarmPrepared(MatchFarmPreparePacket packet)
@@ -191,5 +212,16 @@ public partial class FarmNetworkService : Node
         }
         Farm.FertilizePlant(packet.Cell);
         GD.Print($"[FarmNetworkService] Peer applied fertilize at {packet.Cell}");
+    }
+
+    private void HandleFarmSabotaged(MatchFarmSabotagePacket packet)
+    {
+        if (Network.Lobby.IsHost)
+        {
+            AuthoritativeSabotagePlant(packet.Cell, packet.PlayerIndex);
+            return;
+        }
+        Farm.RemovePlant(packet.Cell);
+        GD.Print($"[FarmNetworkService] Peer applied sabotage at {packet.Cell}");
     }
 }
