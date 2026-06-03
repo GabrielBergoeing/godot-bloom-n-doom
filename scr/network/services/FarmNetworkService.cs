@@ -27,6 +27,7 @@ public partial class FarmNetworkService : Node
         Match.OnFarmIrrigated -= HandleFarmIrrigated;
         Match.OnFarmFertilized -= HandleFarmFertilized;
         Match.OnFarmSabotaged -= HandleFarmSabotaged;
+        Match.OnPlantIgnited -= HandlePlantIgnited;
     }
 
     public void Initialize()
@@ -39,6 +40,7 @@ public partial class FarmNetworkService : Node
         Match.OnFarmIrrigated += HandleFarmIrrigated;
         Match.OnFarmFertilized += HandleFarmFertilized;
         Match.OnFarmSabotaged += HandleFarmSabotaged;
+        Match.OnPlantIgnited += HandlePlantIgnited;
 
         GD.Print($"[FarmNetworkService] Initialized — IsHost: {Network.Lobby.IsHost}");
     }
@@ -91,6 +93,14 @@ public partial class FarmNetworkService : Node
             Match.BroadcastFarmSabotaged(cell, playerIndex);
     }
 
+    public void RequestIgnitePlant(Vector2I cell)
+    {
+        if (Network.Lobby.IsHost)
+            AuthoritativeIgnitePlant(cell);
+        else
+            Match.BroadcastPlantIgnite(cell);
+    }
+
     private void AuthoritativePrepareTile(Vector2I cell)
     {
         if (!Farm.CanPrepareTile(cell)) return;
@@ -141,6 +151,16 @@ public partial class FarmNetworkService : Node
         Match.BroadcastFarmSabotaged(cell, playerIndex);
         GD.Print($"[FarmNetworkService] Player {playerIndex} sabotaged plant at {cell}");
     }
+
+    private void AuthoritativeIgnitePlant(Vector2I cell)
+    {
+        Plant plant = Farm.TryGetPlant(cell);
+        if (plant == null) return;
+        plant.Ignite();
+        Match.BroadcastPlantIgnite(cell);
+        GD.Print($"[FarmNetworkService] Ignited plant at {cell}");
+    }
+
 
     private void HandleFarmPrepared(MatchFarmPreparePacket packet)
     {
@@ -223,5 +243,17 @@ public partial class FarmNetworkService : Node
         }
         Farm.RemovePlant(packet.Cell);
         GD.Print($"[FarmNetworkService] Peer applied sabotage at {packet.Cell}");
+    }
+
+    private void HandlePlantIgnited(MatchPlantIgnitePacket packet)
+    {
+        if (Network.Lobby.IsHost)
+        {
+            AuthoritativeIgnitePlant(packet.Cell);
+            return;
+        }
+        Plant plant = Farm.TryGetPlant(packet.Cell);
+        plant?.Ignite();
+        GD.Print($"[FarmNetworkService] Peer applied ignite at {packet.Cell}");
     }
 }

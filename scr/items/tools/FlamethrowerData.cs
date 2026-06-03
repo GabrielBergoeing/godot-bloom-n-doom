@@ -36,6 +36,8 @@ public partial class FlamethrowerData : ToolData
         if (currentFire == null) return;
         currentFire.UpdateTransform();
 
+        if (delta <= 0) return;
+
         tickTimer -= delta;
         if (tickTimer > 0) return;
 

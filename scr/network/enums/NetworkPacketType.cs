@@ -30,4 +30,6 @@ public enum NetworkPacketType : byte
     
     MatchToolBeginUse = 37,
     MatchToolEndUse = 38,
+    
+    MatchPlantIgnite = 39,
 }

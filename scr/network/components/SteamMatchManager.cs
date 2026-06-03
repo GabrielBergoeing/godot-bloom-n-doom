@@ -29,8 +29,10 @@ public partial class SteamMatchManager : Node
     public event Action<MatchFarmIrrigatePacket> OnFarmIrrigated;
     public event Action<MatchFarmFertilizePacket> OnFarmFertilized;
     public event Action<MatchFarmSabotagePacket> OnFarmSabotaged;
+
     public event Action<MatchToolBeginUsePacket> OnToolBeginUse;
     public event Action<MatchToolEndUsePacket> OnToolEndUse;
+    public event Action<MatchPlantIgnitePacket> OnPlantIgnited;
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -61,8 +63,10 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmIrrigate, HandleFarmIrrigate);
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmFertilize, HandleFarmFertilize);
         router.RegisterHandler((byte)NetworkPacketType.MatchFarmSabotage, HandleFarmSabotage);
+
         router.RegisterHandler((byte)NetworkPacketType.MatchToolBeginUse, HandleToolBeginUse);
         router.RegisterHandler((byte)NetworkPacketType.MatchToolEndUse, HandleToolEndUse);
+        router.RegisterHandler((byte)NetworkPacketType.MatchPlantIgnite, HandlePlantIgnite);
     }
 
     public void BroadcastMatchStart()
@@ -230,6 +234,12 @@ public partial class SteamMatchManager : Node
             ItemSlot = itemSlot,
             OwnerSteamId = ownerSteamId
         };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastPlantIgnite(Vector2I cell)
+    {
+        MatchPlantIgnitePacket packet = new() { Cell = cell };
         Network.Lobby.Broadcast(packet);
     }
 
@@ -473,5 +483,14 @@ public partial class SteamMatchManager : Node
         var packet = new MatchToolEndUsePacket();
         packet.Deserialize(reader);
         Callable.From(() => OnToolEndUse?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandlePlantIgnite(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchPlantIgnitePacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnPlantIgnited?.Invoke(packet)).CallDeferred();
     }
 }

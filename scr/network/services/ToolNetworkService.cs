@@ -33,6 +33,14 @@ public partial class ToolNetworkService : Node
         GD.Print($"[ToolNetworkService] Initialized — IsHost: {Network.Lobby.IsHost}");
     }
 
+    public void UpdateRemoteToolTransform(Player player)
+    {
+        if (!_activeTools.TryGetValue(player.OwnerSteamId, out ToolData tool)) return;
+
+        var ctx = new ItemUseContext(player, player.Tile);
+        tool.TickUse(ctx, 0);
+    }
+
     private void HandleToolBeginUse(MatchToolBeginUsePacket packet)
     {
         if (packet.OwnerSteamId == Network.Lobby.LocalSteamId) return;

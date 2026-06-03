@@ -126,6 +126,8 @@ public partial class PlayerOnline : Node
 
         if (_targetAction != null)
             _player.Anim.SetAction(_targetAction);
+
+        ToolNetworkService.Instance?.UpdateRemoteToolTransform(_player);
     }
 
     private void BroadcastHotbarState()

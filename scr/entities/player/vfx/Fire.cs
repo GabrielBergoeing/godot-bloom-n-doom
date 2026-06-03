@@ -58,24 +58,22 @@ public partial class Fire : Node2D
         };
 
         var results = space.IntersectShape(query);
-
         foreach (var result in results)
         {
             Node collider = result["collider"].As<Node>();
-
-            if (collider is not Area2D area)
-                continue;
-
-            // Only react to burnable plant hitboxes
-            if (area.Name != "Hurtbox")
-                continue;
+            if (collider is not Area2D area) continue;
+            if (area.Name != "Hurtbox") continue;
 
             Plant plant = area.GetParentOrNull<Plant>();
+            if (plant == null) continue;
 
-            if (plant == null)
-                continue;
-
-            plant.Ignite();
+            if (NetworkRoot.Instance.IsOnline)
+            {
+                Vector2I cell = FarmManager.Instance.WorldToCell(plant.GlobalPosition);
+                FarmNetworkService.Instance.RequestIgnitePlant(cell);
+            }
+            else
+                plant.Ignite();
         }
     }
 }
