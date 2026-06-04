@@ -23,19 +23,43 @@ public partial class WaterGunData : ToolData
 
     public override void TickUse(ItemUseContext ctx, double delta)
     {
+        if (delta <= 0) return;
         fireTimer -= delta;
 
         if (fireTimer > 0) return;
         if (!ctx.Player.Water.TryConsumeWater()) return;
 
-        SpawnProjectile(ctx);
+        if(NetworkRoot.Instance.IsOnline)
+            DetermineProjectileSpawn(ctx);
+        else
+            SpawnProjectile(ctx);
         fireTimer = FireRate;
     }
 
-    private void SpawnProjectile(ItemUseContext ctx)
+    private void DetermineProjectileSpawn(ItemUseContext ctx)
+    {
+        if (NetworkRoot.Instance.Lobby.IsHost)
+            SpawnProjectileAndBroadcast(ctx);
+        else
+        {
+            // Peer: request host to spawn — water is consumed locally
+            // but projectile authority belongs to host
+            Vector2 dir = ctx.Player.GetFacingDirection();
+            Vector2 pos = ctx.Player.GlobalPosition + (dir * 18f);
+            SteamMatchManager.Instance.BroadcastProjectileSpawn(
+                ctx.PlayerId,
+                ctx.Player.OwnerSteamId,
+                pos,
+                dir,
+                ctx.Player.Velocity
+            );
+        }
+    }
+
+    private WaterProjectile SpawnProjectile(ItemUseContext ctx)
     {
         var level = SplitScreenManager.Instance?.LevelNode;
-        if (level == null) return;
+        if (level == null) return null;
 
         var projectile = ProjectileScene.Instantiate<WaterProjectile>();
         level.AddChild(projectile);
@@ -44,5 +68,21 @@ public partial class WaterGunData : ToolData
 
         projectile.GlobalPosition = ctx.Player.GlobalPosition + (dir * 18f);
         projectile.Initialize(dir, ctx.Player.Velocity);
+        return projectile;
+    }
+
+    private void SpawnProjectileAndBroadcast(ItemUseContext ctx)
+    {
+        var projectile = SpawnProjectile(ctx);
+        if (projectile == null) return;
+
+        Vector2 dir = ctx.Player.GetFacingDirection();
+        SteamMatchManager.Instance.BroadcastProjectileSpawn(
+            ctx.PlayerId,
+            ctx.Player.OwnerSteamId,
+            projectile.GlobalPosition,
+            dir,
+            ctx.Player.Velocity
+        );
     }
 }

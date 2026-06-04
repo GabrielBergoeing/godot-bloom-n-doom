@@ -3,6 +3,8 @@ using System;
 
 public partial class PlayerWaterFX : Node2D
 {
+    public event Action<Player> OnPlayWaterFX;
+
     private GpuParticles2D Particles;
     private Player Player;
 
@@ -19,7 +21,7 @@ public partial class PlayerWaterFX : Node2D
         Particles.ProcessMaterial = material;
     }
 
-    public void Play()
+    public void Play(bool broadcast=true)
     {
         Vector2 dir = Player.GetFacingDirection();
         if (dir == Vector2.Zero)
@@ -27,5 +29,8 @@ public partial class PlayerWaterFX : Node2D
 
         Rotation = dir.Angle() - Mathf.Pi / 2f;
         Particles.Restart();
+
+        if(broadcast)
+            OnPlayWaterFX?.Invoke(Player);
     }
 }

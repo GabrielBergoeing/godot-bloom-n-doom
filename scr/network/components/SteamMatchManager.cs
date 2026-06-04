@@ -33,6 +33,9 @@ public partial class SteamMatchManager : Node
     public event Action<MatchToolBeginUsePacket> OnToolBeginUse;
     public event Action<MatchToolEndUsePacket> OnToolEndUse;
     public event Action<MatchPlantIgnitePacket> OnPlantIgnited;
+    public event Action<MatchIrrigateVFXPacket> OnIrrigateVFX;
+    public event Action<MatchProjectileSpawnPacket> OnProjectileSpawned;
+
 
     // PlayerId -> remote transform target position
     private readonly Dictionary<int, Vector2> _remotePositions = new();
@@ -67,6 +70,8 @@ public partial class SteamMatchManager : Node
         router.RegisterHandler((byte)NetworkPacketType.MatchToolBeginUse, HandleToolBeginUse);
         router.RegisterHandler((byte)NetworkPacketType.MatchToolEndUse, HandleToolEndUse);
         router.RegisterHandler((byte)NetworkPacketType.MatchPlantIgnite, HandlePlantIgnite);
+        router.RegisterHandler((byte)NetworkPacketType.MatchIrrigateVFX, HandleIrrigateVFX);
+        router.RegisterHandler((byte)NetworkPacketType.MatchProjectileSpawn, HandleProjectileSpawn);
     }
 
     public void BroadcastMatchStart()
@@ -243,6 +248,29 @@ public partial class SteamMatchManager : Node
         Network.Lobby.Broadcast(packet);
     }
 
+    public void BroadcastIrrigateVFX(Player p)
+    {
+        MatchIrrigateVFXPacket packet = new()         
+        {
+            PlayerId = p.PlayerId,
+            OwnerSteamId = p.OwnerSteamId
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
+    public void BroadcastProjectileSpawn(int playerId, ulong ownerSteamId, Vector2 position, Vector2 direction, Vector2 inheritedVelocity)
+    {
+        MatchProjectileSpawnPacket packet = new()
+        {
+            PlayerId = playerId,
+            OwnerSteamId = ownerSteamId,
+            Position = position,
+            Direction = direction,
+            InheritedVelocity = inheritedVelocity
+        };
+        Network.Lobby.Broadcast(packet);
+    }
+
     public Vector2? GetRemotePosition(int playerId)
     {
         return _remotePositions.TryGetValue(playerId, out var pos) ? pos : null;
@@ -354,9 +382,7 @@ public partial class SteamMatchManager : Node
 
         _remotePositions[packet.PlayerId] = packet.Position;
 
-        Callable.From(() =>
-            OnPlayerTransformReceived?.Invoke(packet)
-        ).CallDeferred();
+        Callable.From(() => OnPlayerTransformReceived?.Invoke(packet)).CallDeferred();
     }
 
     private void HandleTimerSync(CSteamID sender, byte[] data)
@@ -492,5 +518,23 @@ public partial class SteamMatchManager : Node
         var packet = new MatchPlantIgnitePacket();
         packet.Deserialize(reader);
         Callable.From(() => OnPlantIgnited?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleIrrigateVFX(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchIrrigateVFXPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnIrrigateVFX?.Invoke(packet)).CallDeferred();
+    }
+
+    private void HandleProjectileSpawn(CSteamID sender, byte[] data)
+    {
+        var reader = new PacketReader(data);
+        reader.ReadByte();
+        var packet = new MatchProjectileSpawnPacket();
+        packet.Deserialize(reader);
+        Callable.From(() => OnProjectileSpawned?.Invoke(packet)).CallDeferred();
     }
 }

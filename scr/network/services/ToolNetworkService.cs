@@ -10,6 +10,7 @@ public partial class ToolNetworkService : Node
     private NetworkRoot Network => NetworkRoot.Instance;
 
     private readonly Dictionary<ulong, ToolData> _activeTools = new();
+    private Godot.Collections.Array<Player> _players = new();
 
     private bool _initialized = false;
 
@@ -23,14 +24,25 @@ public partial class ToolNetworkService : Node
         if (!_initialized || Match == null) return;
         Match.OnToolBeginUse -= HandleToolBeginUse;
         Match.OnToolEndUse -= HandleToolEndUse;
+        Match.OnIrrigateVFX -= HandleIrrigateVFX;
+        Match.OnProjectileSpawned -= HandleProjectileSpawn;
+
+        foreach(Player p in _players)
+            p.WaterFX.OnPlayWaterFX -= Match.BroadcastIrrigateVFX;
     }
 
-    public void Initialize()
+    public void Initialize(Godot.Collections.Array<Player> players)
     {
         _initialized = true;
+        _players = players;
+
         Match.OnToolBeginUse += HandleToolBeginUse;
         Match.OnToolEndUse += HandleToolEndUse;
-        GD.Print($"[ToolNetworkService] Initialized — IsHost: {Network.Lobby.IsHost}");
+        Match.OnIrrigateVFX += HandleIrrigateVFX;
+        Match.OnProjectileSpawned += HandleProjectileSpawn;
+
+        foreach(Player p in _players)
+            p.WaterFX.OnPlayWaterFX += Match.BroadcastIrrigateVFX;
     }
 
     public void UpdateRemoteToolTransform(Player player)
@@ -45,7 +57,7 @@ public partial class ToolNetworkService : Node
     {
         if (packet.OwnerSteamId == Network.Lobby.LocalSteamId) return;
 
-        Player player = FindPlayerBySteamId(packet.OwnerSteamId);
+        Player player = FindPlayerBySteamId(packet.OwnerSteamId, packet.PlayerId);
         if (player == null)
         {
             GD.PrintErr($"[ToolNetworkService] BeginUse: player not found {packet.OwnerSteamId}");
@@ -70,7 +82,7 @@ public partial class ToolNetworkService : Node
     {
         if (packet.OwnerSteamId == Network.Lobby.LocalSteamId) return;
 
-        Player player = FindPlayerBySteamId(packet.OwnerSteamId);
+        Player player = FindPlayerBySteamId(packet.OwnerSteamId, packet.PlayerId);
         if (player == null) return;
 
         if (_activeTools.TryGetValue(packet.OwnerSteamId, out ToolData tool))
@@ -83,12 +95,54 @@ public partial class ToolNetworkService : Node
         GD.Print($"[ToolNetworkService] Remote EndUse for {packet.OwnerSteamId}");
     }
 
-    private Player FindPlayerBySteamId(ulong steamId)
+    private void HandleIrrigateVFX(MatchIrrigateVFXPacket packet)
     {
-        if (PickupNetworkService.Instance == null) return null;
+        Player player = FindPlayerBySteamId(packet.OwnerSteamId, packet.PlayerId);
+        player.WaterFX?.Play(false);
+    }
 
-        foreach (var node in GetTree().GetNodesInGroup("players"))
-            if (node is Player p && p.OwnerSteamId == steamId)
+    private void HandleProjectileSpawn(MatchProjectileSpawnPacket packet)
+    {
+        if (Network.Lobby.IsHost && packet.OwnerSteamId != Network.Lobby.LocalSteamId)
+        {
+            SpawnProjectileFromPacket(packet);
+            Match.BroadcastProjectileSpawn(
+                packet.PlayerId,
+                packet.OwnerSteamId,
+                packet.Position,
+                packet.Direction,
+                packet.InheritedVelocity
+            );
+            return;
+        }
+
+        if (!Network.Lobby.IsHost && packet.OwnerSteamId != Network.Lobby.LocalSteamId)
+            SpawnProjectileFromPacket(packet);
+    }
+
+    private void SpawnProjectileFromPacket(MatchProjectileSpawnPacket packet)
+    {
+        Player owner = FindPlayerBySteamId(packet.OwnerSteamId, packet.PlayerId);
+        if (owner == null) return;
+
+        var stack = owner.Hotbar.GetCurrentStack();
+        if (stack?.Data is not WaterGunData gun) return;
+
+        var level = SplitScreenManager.Instance?.LevelNode;
+        if (level == null) return;
+
+        var projectile = gun.ProjectileScene.Instantiate<WaterProjectile>();
+        level.AddChild(projectile);
+        projectile.GlobalPosition = packet.Position;
+        projectile.InitializeFromNetwork(packet.Direction, packet.InheritedVelocity);
+
+        GD.Print($"[ToolNetworkService] Spawned remote projectile for {packet.OwnerSteamId}");
+    }
+
+    private Player FindPlayerBySteamId(ulong steamId, int playerId)
+    {
+        foreach (Player p in _players)
+            if (p.OwnerSteamId == steamId && p.PlayerId == playerId)
                 return p;
 
         return null;

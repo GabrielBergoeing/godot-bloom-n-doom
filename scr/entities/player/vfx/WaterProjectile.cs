@@ -45,6 +45,13 @@ public partial class WaterProjectile : Node2D
         Rotation = direction.Angle() + Mathf.Pi / 2f;
     }
 
+    public void InitializeFromNetwork(Vector2 direction, Vector2 inheritedVel)
+    {
+        inheritedVelocity = inheritedVel;
+        this.direction = direction.Normalized();
+        Rotation = direction.Angle() + Mathf.Pi / 2f;
+    }
+
     public override void _PhysicsProcess(double delta)
     {
         Vector2 velocity =
@@ -56,12 +63,17 @@ public partial class WaterProjectile : Node2D
     private void OnAreaEntered(Area2D area)
     {
         Plant plant = area.GetParentOrNull<Plant>();
-
-        if (plant == null)
-            return;
+        if (plant == null) return;
 
         plant.ExtinguishFire();
-        plant.WaterPlant();
+
+        if (NetworkRoot.Instance.IsOnline)
+        {
+            Vector2I cell = FarmManager.Instance.WorldToCell(plant.GlobalPosition);
+            FarmNetworkService.Instance.RequestIrrigatePlant(cell);
+        }
+        else
+            plant.WaterPlant();
     }
     
     private void OnBodyEntered(Node2D body)

@@ -193,7 +193,6 @@ public partial class SplitScreenManager : Node
 
         _toolService = new ToolNetworkService();
         AddChild(_toolService);
-        _toolService.Initialize();
     }
 
     private void FinalizeMatchSetup()
@@ -202,7 +201,10 @@ public partial class SplitScreenManager : Node
         GameManager.Instance.StartMatch(_levelNode);
 
         if (Network.IsOnline)
+        {
             _matchManager.SubscribeToTimerSync();
+            _toolService.Initialize(_matchManager.GetPlayers());
+        }
 
         CreateMatchResultsPanel();
     }
