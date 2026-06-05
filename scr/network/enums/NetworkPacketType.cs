@@ -13,7 +13,7 @@ public enum NetworkPacketType : byte
     MatchPlayerInput = 22,
     MatchPlayerTransform = 23,
     MatchTimerSync = 24,
-    MatchEnd = 25,
+    MatchEndAction = 25,
 
     MatchPlayerHotbar = 26,
     MatchPickupSpawned = 27,

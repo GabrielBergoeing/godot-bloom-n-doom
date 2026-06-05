@@ -12,6 +12,7 @@ public partial class SteamLobbyManager : Node
     public event Action<ulong> OnPlayerLeft;
     public event Action<int> OnStartGame;
     public event Action<LobbyPlayerStatePacket> OnPlayerStateUpdated;
+    public event Action<int> OnResultAction;
 
     public NetworkRoot Network => NetworkRoot.Instance;
     public CSteamID CurrentLobbyId { get; private set; }
@@ -43,21 +44,10 @@ public partial class SteamLobbyManager : Node
 
     public void Initialize(SteamPacketRouter router)
     {
-        router.RegisterHandler(
-            (byte)NetworkPacketType.LobbyPlayerState,
-            HandleLobbyPlayerState
-        );
-
-        router.RegisterHandler(
-            (byte)NetworkPacketType.LobbyPlayerLeft,
-            HandleLobbyPlayerLeft
-        );
-
-        router.RegisterHandler(
-            (byte)NetworkPacketType.LobbyStartGame,
-            HandleLobbyStartGame
-        );
-
+        router.RegisterHandler((byte)NetworkPacketType.LobbyPlayerState, HandleLobbyPlayerState);
+        router.RegisterHandler((byte)NetworkPacketType.LobbyPlayerLeft, HandleLobbyPlayerLeft);
+        router.RegisterHandler((byte)NetworkPacketType.LobbyStartGame, HandleLobbyStartGame);
+        router.RegisterHandler((byte)NetworkPacketType.MatchEndAction, HandleResultAction);
         Network.Steam.OnPeerSessionEstablished += OnPeerSessionEstablished;
     }
 
@@ -196,6 +186,22 @@ public partial class SteamLobbyManager : Node
 
         GD.Print($"[SteamLobbyManager] Start game received, level index: {packet.Seed}");
         Callable.From(() => OnStartGame?.Invoke(packet.Seed)).CallDeferred();
+    }
+
+    public void BroadcastResultAction(int action)
+    {
+        MatchEndActionPacket packet = new() { Action = action };
+        Broadcast(packet);
+    }
+
+    public void HandleResultAction(CSteamID sender, byte[] data)
+    {
+        PacketReader reader = new PacketReader(data);
+        reader.ReadByte();
+        MatchEndActionPacket packet = new();
+        packet.Deserialize(reader);
+        GD.Print($"[SteamLobbyManager] Result action received: {packet.Action}");
+        Callable.From(() => OnResultAction?.Invoke(packet.Action)).CallDeferred();
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
