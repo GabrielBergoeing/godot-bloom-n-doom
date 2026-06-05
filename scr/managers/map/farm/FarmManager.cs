@@ -216,21 +216,16 @@ public partial class FarmManager : TileMapLayer
     {
         Dictionary<int, int> scores = new();
 
-        foreach (Node2D playerRoot in playerPlantRoots.Values)
+        foreach (Node2D node in plantsByCell.Values)
         {
-            foreach (Node child in playerRoot.GetChildren())
-            {
-                if (child is not Plant plant)
-                    continue;
+            if (node is not Plant plant) continue;
+            if (!GodotObject.IsInstanceValid(plant)) continue;
+            if (plant.IsQueuedForDeletion()) continue;
 
-                int score = plant.GetScore();
-                int playerId = plant.OwnerPlayerIndex;
+            int owner = plant.OwnerPlayerIndex;
 
-                if (!scores.ContainsKey(playerId))
-                    scores[playerId] = 0;
-
-                scores[playerId] += score;
-            }
+            scores.TryAdd(owner, 0);
+            scores[owner] += plant.GetScore();
         }
 
         return scores;
