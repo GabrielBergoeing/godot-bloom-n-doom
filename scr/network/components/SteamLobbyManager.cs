@@ -204,6 +204,15 @@ public partial class SteamLobbyManager : Node
         Callable.From(() => OnResultAction?.Invoke(packet.Action)).CallDeferred();
     }
 
+    public void RequestStateResync()
+    {
+        foreach (var kvp in _players)
+        {
+            if (kvp.Key == LocalSteamId)
+                Broadcast(kvp.Value);
+        }
+    }
+
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
         if (callback.m_eResult != EResult.k_EResultOK)

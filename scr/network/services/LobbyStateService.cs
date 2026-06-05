@@ -91,6 +91,20 @@ public partial class LobbyStateService : Node
         _remoteStates.Remove(steamId);
         OnStateChanged?.Invoke();
     }
+
+    public void ClearLocalStates()
+    {
+        _localStates.Clear();
+        OnStateChanged?.Invoke();
+    }
+
+    public void ResetLockedStates()
+    {
+        foreach (var state in _localStates)
+            state.LockedIn = false;
+
+        OnStateChanged?.Invoke();
+    }
 }
 
 public class LocalPlayerState

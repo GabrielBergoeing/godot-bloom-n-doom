@@ -33,7 +33,8 @@ public partial class UILobbyMenu : Control
         Lobby.OnPlayerLeft -= OnRemotePlayerLeft;
         _countdown.OnCountdownComplete -= ExecuteConfirm;
         State.OnAllReady -= ConfirmPlayers;
-        //State.Clear();
+
+        State.ClearLocalStates();
     }
 
     public override void _Ready()
@@ -50,7 +51,10 @@ public partial class UILobbyMenu : Control
 
         SetupSignals();
         if (UI.Network.IsOnline)
+        {
+            State.ResetLockedStates();
             SyncOnlineLobby();
+        }
     }
 
     public override void _Process(double delta)
@@ -178,6 +182,9 @@ public partial class UILobbyMenu : Control
             if (!slot.Occupied || slot.IsRemote) continue;
             Lobby.UpdatePlayerState(slot.Player, slot.Index, slot.SlotIndex);
         }
+
+        if (UI.Network.IsOnline)
+            Lobby.RequestStateResync();
     }
 
     private UICharacterSlot FindFreeSlot()
