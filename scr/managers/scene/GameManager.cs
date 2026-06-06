@@ -66,10 +66,4 @@ public partial class GameManager : Node
         UI.PlayBGMTrack(CurrentLevel.BGMTrack);
         match.StartMatch();
     }
-
-    public void PrepareForRematch()
-    {
-        LobbyPlayers.Clear();
-        GD.Print("[GameManager] Prepared for rematch — lobby players cleared");
-    }
 }
