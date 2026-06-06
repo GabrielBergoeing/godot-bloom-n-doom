@@ -112,6 +112,9 @@ public partial class SteamLobbyManager : Node
         _players.Clear();
         Network.Connection.Clear();
         Network.LobbyService.Clear();
+
+        GameManager.Instance?.ClearLobby();
+        LobbyStateService.Instance?.Clear();
     }
 
     public void InviteFriend(CSteamID friendId)

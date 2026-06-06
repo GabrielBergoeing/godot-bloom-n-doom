@@ -164,10 +164,7 @@ public partial class UIMatchResults : Control
         AudioManager.Instance.StartBGM(UI.Paths.MainMenuBGM);
         
         if (UI.Network.IsOnline)
-        {
-            UI.Game.PrepareForRematch();
             SteamMatchManager.Instance?.ResetMatchScene();
-        }
         
         SceneManager.Instance.ChangeScene(UI.Paths.LobbyMenuScene);
     }
@@ -178,10 +175,7 @@ public partial class UIMatchResults : Control
         AudioManager.Instance.StartBGM(UI.Paths.MainMenuBGM);
         
         if (UI.Network.IsOnline)
-        {
-            UI.Game.PrepareForRematch();
             SteamMatchManager.Instance?.ResetMatchScene();
-        }
         
         SceneManager.Instance.ChangeScene(UI.Paths.LevelSelectScene);
     }
@@ -193,7 +187,6 @@ public partial class UIMatchResults : Control
         
         if (UI.Network.IsOnline)
         {
-            UI.Game.PrepareForRematch();
             LobbyStateService.Instance.Clear();
             SteamMatchManager.Instance?.ResetMatchScene();
         }

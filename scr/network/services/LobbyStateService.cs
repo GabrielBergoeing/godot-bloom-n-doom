@@ -103,6 +103,14 @@ public partial class LobbyStateService : Node
         foreach (var state in _localStates)
             state.LockedIn = false;
 
+        var keys = new List<ulong>(_remoteStates.Keys);
+        foreach (var key in keys)
+        {
+            var packet = _remoteStates[key];
+            packet.LockedIn = false;
+            _remoteStates[key] = packet;
+        }
+
         OnStateChanged?.Invoke();
     }
 }
