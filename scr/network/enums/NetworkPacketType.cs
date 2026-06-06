@@ -33,4 +33,5 @@ public enum NetworkPacketType : byte
     MatchPlantIgnite = 39,
     MatchIrrigateVFX = 40,
     MatchProjectileSpawn = 41,
+    MatchResults = 42
 }

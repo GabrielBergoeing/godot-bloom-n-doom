@@ -17,6 +17,7 @@ public partial class UIMatchResults : Control
     [Export] private TextureButton _mainMenuButton;
 
     [Export] private Label _waitingLabel;
+    [Export] private CharacterDatabase CharacterDatabase;
 
     private bool _initialized;
 
@@ -29,45 +30,55 @@ public partial class UIMatchResults : Control
         Visible = false;
         if (MatchManager.Instance != null)
             MatchManager.Instance.MatchEnded += OnMatchEnded;
+
+        if (UI.Network.IsOnline && !UI.Network.Lobby.IsHost)
+            UI.Network.Lobby.OnMatchResults += OnRemoteResultsReceived;
     }
 
     public override void _ExitTree()
     {
         if (UI.Network.IsOnline)
+        {
             UI.Network.Lobby.OnResultAction -= OnResultActionReceived;
+            UI.Network.Lobby.OnMatchResults -= OnRemoteResultsReceived;
+        }
     }
 
     private void OnMatchEnded()
     {
-        ShowResults(MatchManager.Instance.Results);
+        ShowResults(
+            MatchManager.Instance.Results,
+            MatchManager.Instance.Winner
+        );
     }
 
-    public void ShowResults(List<ScoreResult> results)
+    public void ShowResults(IReadOnlyList<ScoreResult> results, ScoreResult winner)
     {
         if (_initialized) return;
+
         _initialized = true;
-
-        if (results == null || results.Count == 0)
+        if (winner == null)
         {
-            GD.PushError("[UIMatchResults] Empty results.");
+            ShowTie();
             return;
         }
 
-        var sorted = results.OrderByDescending(r => r.Score).ToList();
-        ScoreResult winner = sorted[0];
+        CharacterData character = CharacterDatabase?.GetCharacter(winner.CharacterIndex);
+        _portrait.Texture = character?.Illustration;
+        _scoreLabel.Text = $"{winner.Score} pts";
+        _playerLabel.Text = winner.PlayerName;
 
-        if (winner.PlayerIndex < 0 || winner.PlayerIndex >= UI.Game.LobbyPlayers.Count)
+        if (UI.Network.IsOnline && UI.Network.Lobby.IsHost)
         {
-            GD.PushError($"[UIMatchResults] Invalid winner index {winner.PlayerIndex}");
-            return;
+            UI.Network.Lobby.BroadcastMatchResults(
+                new MatchResultsPacket
+                {
+                    WinnerPlayerIndex = winner.PlayerId,
+                    WinnerScore = winner.Score,
+                    WinnerUsername = winner.PlayerName,
+                    WinnerCharacterIndex = winner.CharacterIndex
+                });
         }
-
-        LobbyPlayerData player = UI.Game.LobbyPlayers[winner.PlayerIndex];
-        CharacterData character = player.SelectedCharacter;
-
-        if (_portrait != null) _portrait.Texture = character?.Illustration;
-        if (_scoreLabel != null) _scoreLabel.Text = $"{winner.Score} pts";
-        if (_playerLabel != null) _playerLabel.Text = $"Player {winner.PlayerIndex + 1}";
 
         Visible = true;
         SetupOnlineState();
@@ -105,6 +116,26 @@ public partial class UIMatchResults : Control
 
             UI.Network.Lobby.OnResultAction += OnResultActionReceived;
         }
+    }
+
+    private void OnRemoteResultsReceived(MatchResultsPacket packet)
+    {
+        CharacterData character = CharacterDatabase?.GetCharacter(packet.WinnerCharacterIndex);
+        if (_portrait != null) _portrait.Texture = character?.Illustration;
+        if (_scoreLabel != null) _scoreLabel.Text = $"{packet.WinnerScore} pts";
+        if (_playerLabel != null) _playerLabel.Text = packet.WinnerUsername;
+
+        Visible = true;
+        SetupOnlineState();
+    }
+
+    private void ShowTie()
+    {
+        if (_portrait != null) _portrait.Texture = null;
+        if (_scoreLabel != null) _scoreLabel.Text = "Tie!";
+        if (_playerLabel != null) _playerLabel.Text = "No winner";
+        Visible = true;
+        SetupOnlineState();
     }
 
     private void RegisterButtons()

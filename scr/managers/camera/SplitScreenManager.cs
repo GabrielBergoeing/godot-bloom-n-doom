@@ -107,7 +107,7 @@ public partial class SplitScreenManager : Node
         Player player = PlayerScene.Instantiate<Player>();
         LevelNode.AddChild(player);
 
-        player.Setup(data.PlayerId, data.DeviceId, data.DeviceType, character.Sprites);
+        player.Setup(data.PlayerId, character, data.DeviceId, data.DeviceType);
         _matchManager.RegisterPlayer(player, spawnIndex);
         CreateLocalViewport(player);
     }
@@ -135,11 +135,11 @@ public partial class SplitScreenManager : Node
             int deviceId = lobbyData?.DeviceId ?? -1;
             string deviceType = lobbyData?.DeviceType ?? "Keyboard";
 
-            InitiateOnlinePlayer(player, data, character.Sprites, deviceId, deviceType);
+            InitiateOnlinePlayer(player, character, data, deviceId, deviceType);
             CreateLocalViewport(player);
         }
         else
-            InitiateOnlinePlayer(player, data, character.Sprites);
+            InitiateOnlinePlayer(player, character, data);
     }
 
     private void CreateLocalViewport(Player player)
@@ -210,9 +210,9 @@ public partial class SplitScreenManager : Node
     }
 
 
-    private void InitiateOnlinePlayer(Player player, PlayerSpawnData data, SpriteFrames sprites, int deviceId=-1, string deviceType="Remote")
+    private void InitiateOnlinePlayer(Player player, CharacterData character, PlayerSpawnData data, int deviceId=-1, string deviceType="Remote")
     {
-        player.Setup(data.PlayerId, deviceId, deviceType, sprites);
+        player.Setup(data.PlayerId, character, deviceId, deviceType);
         player.SetNetworkOwnership(data.SteamId, Network.Lobby.LocalSteamId);
         _matchManager.RegisterPlayer(player, data.SpawnIndex);
         _pickupService.RegisterPlayer(player);

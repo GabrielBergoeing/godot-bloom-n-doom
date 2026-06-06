@@ -4,32 +4,37 @@ using System.Linq;
 
 public class ScoreTally
 {
-    public List<ScoreResult> DeterminePlacements(
-        List<Player> players,
-        FarmManager farmManager)
+    public List<ScoreResult> DeterminePlacements(IReadOnlyList<Player> players, FarmManager farmManager)
     {
-        if (farmManager == null)
-            return new List<ScoreResult>();
+        if (farmManager == null) return new();
 
-        Dictionary<int, int> playerScores = farmManager.GetAllPlantScores();
-        var placements = playerScores.OrderByDescending(p => p.Value);
+        Dictionary<int, Player> playerLookup = players.ToDictionary(p => p.PlayerId);
 
-        List<ScoreResult> results = new();
-        foreach (var pair in placements)
-        {
-            var player = players.FirstOrDefault(
-                    p => p.PlayerId == pair.Key
-            );
-
-            results.Add(new ScoreResult
+        return farmManager
+            .GetAllPlantScores()
+            .OrderByDescending(x => x.Value)
+            .Select(pair =>
             {
-                PlayerIndex = pair.Key,
-                PlayerName = player != null
-                    ? player.Name
-                    : $"Player {pair.Key}",
-                Score = pair.Value
-            });
-        }
-        return results;
+                playerLookup.TryGetValue(pair.Key, out Player player);
+
+                return new ScoreResult
+                {
+                    PlayerId = pair.Key,
+                    PlayerName = player?.Name ?? $"Player {pair.Key}",
+                    CharacterIndex = player?.CharacterIndex ?? -1,
+                    Score = pair.Value
+                };
+            }).ToList();
+    }
+
+    public ScoreResult GetWinner(IReadOnlyList<ScoreResult> results)
+    {
+        if (results == null || results.Count == 0) return null;
+
+        ScoreResult first = results[0];
+        if (results.Count > 1 && results[1].Score == first.Score)
+            return null; // tie
+
+        return first;
     }
 }

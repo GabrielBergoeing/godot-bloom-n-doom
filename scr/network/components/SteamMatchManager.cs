@@ -302,16 +302,17 @@ public partial class SteamMatchManager : Node
             spawnIndex++;
         }
 
-        // Remote players from LobbyStateService
-        foreach (var kvp in LobbyStateService.Instance.RemoteStates)
-        {
-            GD.Print($"[SteamMatchManager] Adding remote -> PlayerId: {kvp.Value.PlayerId}, SteamId: {kvp.Key}, Char: {kvp.Value.CharacterIndex}, Spawn: {spawnIndex}");
+        var remoteSource = LobbyStateService.Instance.RemoteStates.Count > 0
+            ? GetRemoteFromLobbyService()
+            : GetRemoteFromLobbyManager();
 
+        foreach (var kvp in remoteSource)
+        {
             packet.Players.Add(new PlayerSpawnData
             {
-                SteamId = kvp.Key,
+                SteamId = kvp.steamId,
                 PlayerId = spawnIndex,
-                CharacterIndex = kvp.Value.CharacterIndex,
+                CharacterIndex = kvp.charIndex,
                 SpawnIndex = spawnIndex,
                 IsLocalOwner = false
             });
@@ -340,6 +341,21 @@ public partial class SteamMatchManager : Node
     {
         _matchSceneReady = false;
         _pendingMatchPacket = null;
+    }
+
+    private IEnumerable<(ulong steamId, int charIndex, int playerId)> GetRemoteFromLobbyService()
+    {
+        foreach (var kvp in LobbyStateService.Instance.RemoteStates)
+            yield return (kvp.Key, kvp.Value.CharacterIndex, kvp.Value.PlayerId);
+    }
+
+    private IEnumerable<(ulong steamId, int charIndex, int playerId)> GetRemoteFromLobbyManager()
+    {
+        foreach (var kvp in Network.Lobby.Players)
+        {
+            if (kvp.Key == LocalSteamId) continue;
+            yield return (kvp.Key, kvp.Value.CharacterIndex, kvp.Value.PlayerId);
+        }
     }
 
     private void HandleMatchStart(CSteamID sender, byte[] data)

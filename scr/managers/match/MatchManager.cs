@@ -21,6 +21,7 @@ public partial class MatchManager : Node
     private readonly ScoreTally scoreTally = new();
     private List<ScoreResult> _results = new();
     public List<ScoreResult> Results => _results;
+    public ScoreResult Winner { get; private set; }
 
     private bool isPlayingMatch = false;
     private bool hasPrintedResults = false;
@@ -87,7 +88,12 @@ public partial class MatchManager : Node
         hasPrintedResults = true;
         DisablePlayerInput();
 
-        _results = GetResults();
+        _results = scoreTally.DeterminePlacements(
+            players.ToList(),
+            FarmManager.Instance
+        );
+
+        Winner = scoreTally.GetWinner(_results);
         EmitSignal(SignalName.MatchEnded);
     }
 
@@ -154,14 +160,7 @@ public partial class MatchManager : Node
             }
         }
     }
-
-    private List<ScoreResult> GetResults()
-    {
-        List<Player> playerList = players.ToList();
-
-        return scoreTally.DeterminePlacements(playerList, FarmManager.Instance);
-    }
-
+    
     private void DisablePlayerInput()
     {
         foreach (Player player in players)

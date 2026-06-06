@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://qhrmgyovjb3l" path="res://scr/ui/screens/UIMatchResults.cs" id="1_jo835"]
 [ext_resource type="Texture2D" uid="uid://bjhjh5lqfxdqg" path="res://art/ui/screens/SettingsPage.png" id="1_uosau"]
+[ext_resource type="Resource" uid="uid://c187xkokt0o1m" path="res://nodes/entities/character/character_database.tres" id="2_2my2s"]
 [ext_resource type="Texture2D" uid="uid://cwi0vruhqy8c6" path="res://art/ui/buttons/ButtonText_Large_Square.png" id="3_20v2w"]
 [ext_resource type="Texture2D" uid="uid://b1b3wesxwm4cf" path="res://art/ilustrations/characters/Robin.png" id="3_w25pl"]
 [ext_resource type="Texture2D" uid="uid://6lc5bwmsjedu" path="res://art/ui/buttons/ButtonText_Large_Green_Square.png" id="4_w25pl"]
@@ -24,6 +25,7 @@ _characterSelectButton = NodePath("Layout/VBoxContainer/Buttons/CharacterSelectB
 _stageSelectButton = NodePath("Layout/VBoxContainer/Buttons/StageSelectButton")
 _mainMenuButton = NodePath("Layout/VBoxContainer/Buttons/MainMenuButton")
 _waitingLabel = NodePath("Layout/OnlineText/OnlineLabel")
+CharacterDatabase = ExtResource("2_2my2s")
 
 [node name="Layout" type="TextureRect" parent="." unique_id=238476360]
 layout_mode = 1

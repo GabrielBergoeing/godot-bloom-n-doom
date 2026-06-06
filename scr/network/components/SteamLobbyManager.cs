@@ -6,13 +6,14 @@ using System.Collections.Generic;
 
 public partial class SteamLobbyManager : Node
 {
-    public static SteamLobbyManager Instance;
+    public static SteamLobbyManager Instance { get; private set; }
 
     public event Action OnLobbyReady;
     public event Action<ulong> OnPlayerLeft;
     public event Action<int> OnStartGame;
     public event Action<LobbyPlayerStatePacket> OnPlayerStateUpdated;
     public event Action<int> OnResultAction;
+    public event Action<MatchResultsPacket> OnMatchResults;
 
     public NetworkRoot Network => NetworkRoot.Instance;
     public CSteamID CurrentLobbyId { get; private set; }
@@ -21,12 +22,11 @@ public partial class SteamLobbyManager : Node
     public ulong LocalSteamId => SteamUser.GetSteamID().m_SteamID;
     public bool IsHost => LocalSteamId == HostSteamId;
 
-    private readonly Dictionary<ulong, LobbyPlayerStatePacket> _players = new();
     public IReadOnlyDictionary<ulong, LobbyPlayerStatePacket> Players => _players;
+    private readonly Dictionary<ulong, LobbyPlayerStatePacket> _players = new();
 
     // Scene readiness gate
     private bool _sceneReady = false;
-    private bool _emitPending = false;
     private readonly List<LobbyPlayerStatePacket> _pendingPackets = new();
 
     private Callback<LobbyCreated_t> _lobbyCreated;
@@ -48,6 +48,7 @@ public partial class SteamLobbyManager : Node
         router.RegisterHandler((byte)NetworkPacketType.LobbyPlayerLeft, HandleLobbyPlayerLeft);
         router.RegisterHandler((byte)NetworkPacketType.LobbyStartGame, HandleLobbyStartGame);
         router.RegisterHandler((byte)NetworkPacketType.MatchEndAction, HandleResultAction);
+        router.RegisterHandler((byte)NetworkPacketType.MatchResults, HandleMatchResults);
         Network.Steam.OnPeerSessionEstablished += OnPeerSessionEstablished;
     }
 
@@ -148,7 +149,7 @@ public partial class SteamLobbyManager : Node
     {
         if (!Network.IsOnline) return;
 
-        LobbyPlayerStatePacket packet = new LobbyPlayerStatePacket
+        LobbyPlayerStatePacket packet = new()
         {
             SteamId = LocalSteamId,
             Username = SteamFriends.GetPersonaName(),
@@ -254,12 +255,7 @@ public partial class SteamLobbyManager : Node
 
     private void NotifyLobbyReady()
     {
-        if (OnLobbyReady == null)
-        {
-            GD.PrintErr("NO SUBSCRIBERS");
-            return;
-        }
-        OnLobbyReady.Invoke();
+        OnLobbyReady?.Invoke();
     }
 
     private void OnJoinRequested(GameLobbyJoinRequested_t callback)
@@ -282,9 +278,17 @@ public partial class SteamLobbyManager : Node
         }
     }
 
-    private void EmitInitialPlayerState()
+    public void BroadcastMatchResults(MatchResultsPacket packet)
     {
-        foreach (var kvp in _players)
-            Broadcast(kvp.Value);
+        Broadcast(packet);
+    }
+
+    public void HandleMatchResults(CSteamID sender, byte[] data)
+    {
+        PacketReader reader = new PacketReader(data);
+        reader.ReadByte();
+        MatchResultsPacket packet = new();
+        packet.Deserialize(reader);
+        Callable.From(() => OnMatchResults?.Invoke(packet)).CallDeferred();
     }
 }

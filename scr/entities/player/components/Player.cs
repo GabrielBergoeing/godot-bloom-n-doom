@@ -20,6 +20,7 @@ public partial class Player : Entity
 
 	public int SpawnIndex { get; set; }
 	public int PlayerId { get; private set; }
+	public int CharacterIndex { get; private set; }
 	public List<Pickup> PickupsInRange = new();
 
 	public bool IsLocallyControlled => Online?.IsLocallyControlled ?? true;
@@ -51,14 +52,16 @@ public partial class Player : Entity
 	}
 
 	public void Setup(
-		int playerId, 
+		int playerId,
+		CharacterData character,
 		int deviceId, 
-		string deviceType,
-		SpriteFrames sprites)
+		string deviceType
+		)
 	{
 		PlayerId = playerId;
+		CharacterIndex = character.CharacterID;
 		Input.Setup(playerId, deviceId, deviceType);
-		Anim.Setup(sprites);
+		Anim.Setup(character.Sprites);
 	}
 
 	public Vector2 GetFacingDirection() 
