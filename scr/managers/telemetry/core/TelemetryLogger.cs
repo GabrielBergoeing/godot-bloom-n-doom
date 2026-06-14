@@ -101,7 +101,8 @@ public partial class TelemetryLogger : Node
             "memory_mb," +
             "object_count," +
             "node_count," +
-            "draw_calls"
+            "draw_calls," +
+            "latency_ms"
         );
 
         IsCapturing = true;
@@ -220,6 +221,13 @@ public partial class TelemetryLogger : Node
             Performance.Monitor.RenderTotalDrawCallsInFrame
         );
 
+        string latency = "N/A";
+        if (NetworkRoot.Instance?.IsOnline == true && SteamNetworkManager.Instance != null)
+        {
+            float avg = SteamNetworkManager.Instance.AverageLatencyMs;
+            latency = avg >= 0f ? $"{avg:F1}" : "N/A";
+        }
+
         return
             $"{timestamp}," +
             $"{fps}," +
@@ -231,6 +239,7 @@ public partial class TelemetryLogger : Node
             $"{memoryMb:F2}," +
             $"{objectCount}," +
             $"{nodeCount}," +
-            $"{drawCalls}";
+            $"{drawCalls}," +
+            $"{latency}";
     }
 }

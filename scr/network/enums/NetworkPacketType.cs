@@ -1,7 +1,8 @@
 public enum NetworkPacketType : byte
 {
     Ping = 1,
-    ChatMessage = 2,
+    Pong = 2,
+    ChatMessage = 3,
 
     LobbyPlayerState = 10,
     LobbyPlayerJoined = 11,

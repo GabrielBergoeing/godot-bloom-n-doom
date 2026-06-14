@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public partial class SteamPacketRouter : Node
 {
+    public event Action<CSteamID, byte[]> OnPing;
+    public event Action<CSteamID, byte[]> OnPong;
+
     private readonly Dictionary<
         byte,
         Action<CSteamID, byte[]>
@@ -38,20 +41,19 @@ public partial class SteamPacketRouter : Node
 
     private void RegisterBasicHandlers()
     {
-        RegisterHandler(
-            (byte)NetworkPacketType.Ping,
-            HandlePing
-        );
-
-        RegisterHandler(
-            (byte)NetworkPacketType.ChatMessage,
-            HandleChatMessage
-        );
+        RegisterHandler((byte)NetworkPacketType.Ping, HandlePing);
+        RegisterHandler((byte)NetworkPacketType.Pong, HandlePong);
+        RegisterHandler((byte)NetworkPacketType.ChatMessage, HandleChatMessage);
     }
 
     private void HandlePing(CSteamID sender, byte[] data)
     {
-        GD.Print($"[SteamPacketRouter] Ping received from {sender}");
+        OnPing?.Invoke(sender, data);
+    }
+
+    private void HandlePong(CSteamID sender, byte[] data)
+    {
+        OnPong?.Invoke(sender, data);
     }
 
     private void HandleChatMessage(CSteamID sender, byte[] data)
