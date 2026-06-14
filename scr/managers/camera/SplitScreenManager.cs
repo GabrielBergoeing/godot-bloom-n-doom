@@ -125,9 +125,9 @@ public partial class SplitScreenManager : Node
 
         Player player = PlayerScene.Instantiate<Player>();
         LevelNode.AddChild(player);
-        bool isLocalOwner = data.SteamId == Network.Lobby.LocalSteamId;
+        
 
-        if (isLocalOwner)
+        if (data.IsLocalOwner)
         {
             LobbyPlayerData lobbyData = GameManager.Instance.LobbyPlayers
                 .Find(p => p.PlayerId == data.PlayerId);

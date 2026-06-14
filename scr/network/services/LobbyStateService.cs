@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 public partial class LobbyStateService : Node
@@ -10,11 +9,11 @@ public partial class LobbyStateService : Node
     public event Action OnStateChanged;
     public event Action OnAllReady;
 
-    private readonly Dictionary<(ulong steamId, int playerId), LobbyPlayerStatePacket> _remoteStates = new();
+    private readonly Dictionary<ulong, LobbyPlayerStatePacket> _remoteStates = new();
     private readonly List<LocalPlayerState> _localStates = new();
 
     public IReadOnlyList<LocalPlayerState> LocalStates => _localStates;
-    public IReadOnlyDictionary<(ulong steamId, int playerId), LobbyPlayerStatePacket> RemoteStates => _remoteStates;
+    public IReadOnlyDictionary<ulong, LobbyPlayerStatePacket> RemoteStates => _remoteStates;
 
     public int MinimumPlayers { get; set; } = 1;
 
@@ -53,17 +52,9 @@ public partial class LobbyStateService : Node
 
     public void UpdateRemoteState(LobbyPlayerStatePacket packet)
     {
-        _remoteStates[(packet.SteamId, packet.PlayerId)] = packet;
+        _remoteStates[packet.SteamId] = packet;
         OnStateChanged?.Invoke();
         EvaluateReady();
-    }
-
-    public void RemoveRemotePlayer(ulong steamId)
-    {
-        var keys = _remoteStates.Keys.Where(k => k.steamId == steamId).ToList();
-        foreach (var key in keys)
-            _remoteStates.Remove(key);
-        OnStateChanged?.Invoke();
     }
 
     public void Clear()
@@ -95,6 +86,12 @@ public partial class LobbyStateService : Node
             OnAllReady?.Invoke();
     }
 
+    public void RemoveRemotePlayer(ulong steamId)
+    {
+        _remoteStates.Remove(steamId);
+        OnStateChanged?.Invoke();
+    }
+
     public void ClearLocalStates()
     {
         _localStates.Clear();
@@ -106,7 +103,7 @@ public partial class LobbyStateService : Node
         foreach (var state in _localStates)
             state.LockedIn = false;
 
-        var keys = new List<(ulong, int)>(_remoteStates.Keys);
+        var keys = new List<ulong>(_remoteStates.Keys);
         foreach (var key in keys)
         {
             var packet = _remoteStates[key];

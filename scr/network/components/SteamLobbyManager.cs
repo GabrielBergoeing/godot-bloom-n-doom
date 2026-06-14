@@ -22,8 +22,8 @@ public partial class SteamLobbyManager : Node
     public ulong LocalSteamId => SteamUser.GetSteamID().m_SteamID;
     public bool IsHost => LocalSteamId == HostSteamId;
 
-    public IReadOnlyCollection<LobbyPlayerStatePacket> Players => _players.Values;
-    private readonly Dictionary<(ulong steamId, int playerId), LobbyPlayerStatePacket> _players = new();
+    public IReadOnlyDictionary<ulong, LobbyPlayerStatePacket> Players => _players;
+    private readonly Dictionary<ulong, LobbyPlayerStatePacket> _players = new();
 
     // Scene readiness gate
     private bool _sceneReady = false;
@@ -65,7 +65,7 @@ public partial class SteamLobbyManager : Node
     public void HandleLobbyPlayerState(CSteamID sender, byte[] data)
     {
         LobbyPlayerStatePacket packet = LobbyPlayerStatePacket.FromBytes(data);
-        _players[(sender.m_SteamID, packet.PlayerId)] = packet;
+        _players[sender.m_SteamID] = packet;
 
         if (sender.m_SteamID == LocalSteamId)
             return;
@@ -137,12 +137,7 @@ public partial class SteamLobbyManager : Node
     public void HandleLobbyPlayerLeft(CSteamID sender, byte[] data)
     {
         GD.Print($"[SteamLobbyManager] Player left: {sender}");
-        var keysToRemove = _players.Keys
-            .Where(k => k.steamId == sender.m_SteamID)
-            .ToList();
-
-        foreach (var key in keysToRemove)
-            _players.Remove(key);
+        _players.Remove(sender.m_SteamID);
 
         Callable.From(() =>
         {
@@ -164,19 +159,14 @@ public partial class SteamLobbyManager : Node
             SlotIndex = slotIndex
         };
 
-        _players[(packet.SteamId, packet.PlayerId)] = packet;
+        _players[packet.SteamId] = packet;
         Broadcast(packet);
     }
 
     public void BroadcastPlayerLeft()
     {
         ulong localId = LocalSteamId;
-        var keysToRemove = _players.Keys
-            .Where(k => k.steamId == localId)
-            .ToList();
-        
-        foreach (var key in keysToRemove)
-            _players.Remove(key);
+        _players.Remove(localId);
 
         LobbyPlayerLeftPacket packet = new LobbyPlayerLeftPacket
         {
@@ -222,7 +212,7 @@ public partial class SteamLobbyManager : Node
     {
         foreach (var kvp in _players)
         {
-            if (kvp.Key.steamId == LocalSteamId)
+            if (kvp.Key == LocalSteamId)
                 Broadcast(kvp.Value);
         }
     }

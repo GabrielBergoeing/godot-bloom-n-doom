@@ -61,14 +61,12 @@ public partial class UILobbyMenu : Control
     {
         if (!UI.Network.IsOnline || _slots == null) return;
 
-        foreach (var packet in Lobby.Players)
+        foreach (var kvp in Lobby.Players)
         {
-            if (packet.SteamId == Lobby.LocalSteamId) continue;
+            if (kvp.Key == Lobby.LocalSteamId) continue;
+            if (_remoteSlots.ContainsKey(kvp.Key)) continue;
 
-            ulong key = (ulong)((long)packet.SteamId ^ ((long)packet.PlayerId << 32));
-            if (_remoteSlots.ContainsKey(key)) continue;
-
-            OnRemotePlayerUpdated(packet);
+            OnRemotePlayerUpdated(kvp.Value);
         }
     }
 
@@ -116,36 +114,40 @@ public partial class UILobbyMenu : Control
 
     private void OnRemotePlayerUpdated(LobbyPlayerStatePacket packet)
     {
-        if (_slots == null) { GD.PrintErr("[UILobbyMenu] Slots not ready, dropping packet"); return; }
+        if (_slots == null)
+        {
+            GD.PrintErr("[UILobbyMenu] Slots not ready, dropping packet");
+            return;
+        }
+
         if (packet.SteamId == Lobby.LocalSteamId) return;
         State.UpdateRemoteState(packet);
 
-        ulong key = RemoteKey(packet.SteamId, packet.PlayerId);
-        if (_remoteSlots.TryGetValue(key, out var existing))
+        if (_remoteSlots.TryGetValue(packet.SteamId, out var existing))
         {
             existing.AssignRemotePlayer(packet, this);
             return;
         }
 
         var target = ResolveTargetSlot(packet.SlotIndex);
-        if (target == null) { GD.PrintErr("[UILobbyMenu] No slot available for remote player"); return; }
+        if (target == null)
+        {
+            GD.PrintErr("[UILobbyMenu] No slot available for remote player");
+            return;
+        }
 
         target.AssignRemotePlayer(packet, this);
-        _remoteSlots[key] = target;
+        _remoteSlots[packet.SteamId] = target;
     }
 
     private void OnRemotePlayerLeft(ulong steamId)
     {
         State.RemoveRemotePlayer(steamId);
 
-        var keysToRemove = _remoteSlots.Keys
-            .Where(k => (k & 0xFFFFFFFF00000000UL) == (steamId & 0xFFFFFFFF00000000UL))
-            .ToList();
-        foreach (var key in keysToRemove)
-        {
-            _remoteSlots[key].SetEmpty();
-            _remoteSlots.Remove(key);
-        }
+        if (!_remoteSlots.TryGetValue(steamId, out var slot)) return;
+
+        slot.SetEmpty();
+        _remoteSlots.Remove(steamId);
     }
 
     private void ConfirmPlayers()
@@ -168,7 +170,7 @@ public partial class UILobbyMenu : Control
     private void SyncOnlineLobby()
     {
         foreach (var kvp in Lobby.Players)
-            OnRemotePlayerUpdated(kvp);
+            OnRemotePlayerUpdated(kvp.Value);
 
         CallDeferred(nameof(SendInitialStates));
     }
@@ -203,7 +205,4 @@ public partial class UILobbyMenu : Control
     {
         return _slots.Any(s => s.Player == player);
     }
-
-    private static ulong RemoteKey(ulong steamId, int playerId) =>
-        (steamId & 0xFFFFFFFF00000000UL) | ((ulong)(uint)playerId);
 }
