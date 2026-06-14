@@ -346,15 +346,15 @@ public partial class SteamMatchManager : Node
     private IEnumerable<(ulong steamId, int charIndex, int playerId)> GetRemoteFromLobbyService()
     {
         foreach (var kvp in LobbyStateService.Instance.RemoteStates)
-            yield return (kvp.Key, kvp.Value.CharacterIndex, kvp.Value.PlayerId);
+            yield return (kvp.Key.steamId, kvp.Value.CharacterIndex, kvp.Value.PlayerId);
     }
 
     private IEnumerable<(ulong steamId, int charIndex, int playerId)> GetRemoteFromLobbyManager()
     {
         foreach (var kvp in Network.Lobby.Players)
         {
-            if (kvp.Key == LocalSteamId) continue;
-            yield return (kvp.Key, kvp.Value.CharacterIndex, kvp.Value.PlayerId);
+            if (kvp.SteamId == LocalSteamId) continue;
+            yield return (kvp.SteamId, kvp.CharacterIndex, kvp.PlayerId);
         }
     }
 
