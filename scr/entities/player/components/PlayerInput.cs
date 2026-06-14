@@ -42,7 +42,7 @@ public partial class PlayerInput : Node
 
     public void SetMatchStatus(bool status)
     {
-        bool matchActive = status;
+        matchActive = status;
     }
 
     public override void _UnhandledInput(InputEvent @event)

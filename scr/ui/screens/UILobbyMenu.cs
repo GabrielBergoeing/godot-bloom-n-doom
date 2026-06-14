@@ -72,6 +72,7 @@ public partial class UILobbyMenu : Control
 
     private void OnPlayerJoined(LobbyPlayerData player)
     {
+        if (UI.Network.IsOnline && _slots.Any(s => s.Occupied && !s.IsRemote)) return;
         if (HasSlot(player)) return;
 
         var slot = FindFreeSlot();

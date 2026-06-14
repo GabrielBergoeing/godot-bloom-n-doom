@@ -125,14 +125,15 @@ public partial class SplitScreenManager : Node
 
         Player player = PlayerScene.Instantiate<Player>();
         LevelNode.AddChild(player);
-        
+        bool isLocalOwner = data.SteamId == Network.Lobby.LocalSteamId;
 
-        if (data.IsLocalOwner)
+        if (isLocalOwner)
         {
-            LobbyPlayerData lobbyData = GameManager.Instance.LobbyPlayers
-                .Find(p => p.PlayerId == data.PlayerId);
+            LobbyPlayerData lobbyData = GameManager.Instance.LobbyPlayers.Count > 0
+                ? GameManager.Instance.LobbyPlayers[0]
+                : null;
 
-            int deviceId = lobbyData?.DeviceId ?? -1;
+            int deviceId = lobbyData?.DeviceId ?? 0;
             string deviceType = lobbyData?.DeviceType ?? "Keyboard";
 
             InitiateOnlinePlayer(player, character, data, deviceId, deviceType);
