@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="LevelData" format=3 uid="uid://6vxgn054qpt7"]
+
+[ext_resource type="PackedScene" uid="uid://spaier2bibr8" path="res://nodes/scenes/levels/layout/test_scene.tscn" id="1_dgnwn"]
+[ext_resource type="Script" uid="uid://cyqx1ge62a3xs" path="res://scr/managers/map/event/SpawnEntry.cs" id="2_mxcel"]
+[ext_resource type="Resource" uid="uid://chg8u0sbslbsw" path="res://nodes/items/data/fertilizer_data.tres" id="3_31lcd"]
+[ext_resource type="Resource" uid="uid://ctvjba2f6s5nw" path="res://nodes/items/data/watergun_data.tres" id="3_a8xf5"]
+[ext_resource type="Resource" uid="uid://dikswkja8j3k1" path="res://nodes/items/data/redconeflower_data.tres" id="4_w71u7"]
+[ext_resource type="Resource" uid="uid://kvlln78fje0w" path="res://nodes/items/data/scissors_data.tres" id="5_nuw1q"]
+[ext_resource type="Resource" uid="uid://dxbb5ktteyq1p" path="res://nodes/items/data/sunflower_data.tres" id="5_yrga1"]
+[ext_resource type="Resource" uid="uid://777dhwh3do01" path="res://nodes/items/data/reddahlia_data.tres" id="6_5ausr"]
+[ext_resource type="Resource" uid="uid://5vli7hpg6g6p" path="res://nodes/items/data/flamethrower_data.tres" id="6_riql4"]
+[ext_resource type="Script" uid="uid://dmmuxsht6pcr1" path="res://scr/managers/scene/LevelData.cs" id="7_dgnwn"]
+[ext_resource type="Resource" uid="uid://dfef2n5fcp1mj" path="res://nodes/items/data/crown_data.tres" id="7_vb2u8"]
+
+[sub_resource type="Resource" id="Resource_h0f86"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("3_31lcd")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_nyfkv"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("4_w71u7")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_1sr4f"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("5_yrga1")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_xyjrn"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("6_5ausr")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_w8rcx"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("7_vb2u8")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_2qm4h"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("5_nuw1q")
+Weight = 3
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_rdlvd"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("6_riql4")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[sub_resource type="Resource" id="Resource_fh0xo"]
+script = ExtResource("2_mxcel")
+Item = ExtResource("3_a8xf5")
+metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
+
+[resource]
+script = ExtResource("7_dgnwn")
+LevelScene = ExtResource("1_dgnwn")
+LevelName = "DEV: stress_level"
+Description = "Insert description here"
+MatchDuration = 60.0
+BGMTrack = "bgm_level_fierce"
+SeedTable = Array[ExtResource("2_mxcel")]([SubResource("Resource_nyfkv"), SubResource("Resource_1sr4f"), SubResource("Resource_xyjrn"), SubResource("Resource_w8rcx")])
+ToolTable = Array[ExtResource("2_mxcel")]([SubResource("Resource_2qm4h"), SubResource("Resource_rdlvd"), SubResource("Resource_fh0xo")])
+RareTable = Array[ExtResource("2_mxcel")]([SubResource("Resource_h0f86")])
+SeedInterval = 1.0
+ToolInterval = 2.0
+RareInterval = 3.0
+metadata/_custom_type_script = "uid://dmmuxsht6pcr1"

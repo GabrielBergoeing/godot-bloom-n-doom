@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://cw0xe1y4i5ct0" path="res://nodes/scenes/levels/data/level_3_data.tres" id="5_d44x5"]
 [ext_resource type="Resource" uid="uid://dviielasfbkiv" path="res://nodes/scenes/levels/data/level_4_data.tres" id="6_7csds"]
 [ext_resource type="Resource" uid="uid://bqujsj6jqot8k" path="res://nodes/scenes/levels/data/level_5_data.tres" id="7_td8oe"]
+[ext_resource type="Resource" uid="uid://6vxgn054qpt7" path="res://nodes/scenes/levels/data/level_test_data.tres" id="8_7csds"]
 [ext_resource type="PackedScene" uid="uid://0jjnrsim7tui" path="res://nodes/ui/screens/parallax_background.tscn" id="8_l6qla"]
 [ext_resource type="PackedScene" uid="uid://dyk5ny4ge841k" path="res://nodes/ui/screens/ui_level_button.tscn" id="8_w5235"]
 [ext_resource type="Texture2D" uid="uid://bjhjh5lqfxdqg" path="res://art/ui/screens/SettingsPage.png" id="10_d44x5"]
@@ -20,7 +21,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_iwnoe")
-Levels = Array[ExtResource("2_nb3oc")]([ExtResource("3_w5235"), ExtResource("4_7skal"), ExtResource("5_d44x5"), ExtResource("6_7csds"), ExtResource("7_td8oe")])
+Levels = Array[ExtResource("2_nb3oc")]([ExtResource("3_w5235"), ExtResource("4_7skal"), ExtResource("5_d44x5"), ExtResource("6_7csds"), ExtResource("7_td8oe"), ExtResource("8_7csds")])
 _buttonsContainer = NodePath("Levels")
 _descriptionContainer = NodePath("LevelDescription/Label")
 _levelName = NodePath("LevelName/LevelLabel")
@@ -120,6 +121,10 @@ custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 
 [node name="UILevelButton5" parent="Levels" unique_id=451116745 instance=ExtResource("8_w5235")]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+
+[node name="UILevelButton6" parent="Levels" unique_id=1738635800 instance=ExtResource("8_w5235")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 

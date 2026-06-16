@@ -24,4 +24,15 @@ public partial class LevelData : Resource
 	[Export] public float ToolInterval = 15f;
 	[Export] public float RareInterval = 50f;
 	[Export] public int SpawnAttempts = 50;
+
+    public Array<SeedData> GetSeedTableItems()
+    {
+        Array<SeedData> seedItems = new();
+        foreach(SpawnEntry entry in SeedTable)
+        {
+            if(entry.Item is SeedData seed)
+                seedItems.Add(seed);
+        }
+        return seedItems;
+    }
 }
