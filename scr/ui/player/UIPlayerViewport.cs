@@ -149,7 +149,14 @@ public partial class UIPlayerViewport : SubViewportContainer
         foreach (Node child in _layer.GetChildren())
         {
             if (child is Control control)
+            {
+                control.PivotOffset = new Vector2(
+                    control.Size.X * ((control.AnchorLeft + control.AnchorRight) * 0.5f),
+                    control.Size.Y * ((control.AnchorTop + control.AnchorBottom) * 0.5f)
+                );
+
                 control.Scale = new Vector2(scale, scale);
+            }
         }
     }
 }
