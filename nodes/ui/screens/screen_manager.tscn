@@ -2,9 +2,14 @@
 
 [ext_resource type="Script" uid="uid://bsxt3jftt8nxm" path="res://scr/managers/scene/SceneManager.cs" id="1_w3xuo"]
 [ext_resource type="PackedScene" uid="uid://brgahm3bj01cg" path="res://nodes/ui/screens/ui_fade_screen.tscn" id="2_c1i4i"]
+[ext_resource type="Script" uid="uid://dxvs3lop7xryc" path="res://scr/managers/camera/DisplayManager.cs" id="3_c1i4i"]
 
 [node name="ScreenManager" type="Node" unique_id=1216800576 node_paths=PackedStringArray("Fade")]
 script = ExtResource("1_w3xuo")
 Fade = NodePath("UIFadeScreen")
 
 [node name="UIFadeScreen" parent="." unique_id=1399474826 instance=ExtResource("2_c1i4i")]
+
+[node name="DisplayManager" type="Node" parent="." unique_id=2123601708]
+script = ExtResource("3_c1i4i")
+Fullscreen = false

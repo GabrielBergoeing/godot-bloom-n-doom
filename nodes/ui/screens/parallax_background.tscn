@@ -25,6 +25,7 @@ autoscroll = Vector2(-10, 0)
 texture = ExtResource("2_7t7x4")
 
 [node name="NeighbourLayer" type="Parallax2D" parent="." unique_id=1198565231]
+scroll_offset = Vector2(0, 16.5)
 repeat_size = Vector2(576, 0)
 autoscroll = Vector2(-17.5, 0)
 
@@ -32,6 +33,7 @@ autoscroll = Vector2(-17.5, 0)
 texture = ExtResource("3_s7q2y")
 
 [node name="ForegroundLayer" type="Parallax2D" parent="." unique_id=46956532]
+scroll_offset = Vector2(0, 36)
 repeat_size = Vector2(576, 0)
 autoscroll = Vector2(-25, 0)
 
