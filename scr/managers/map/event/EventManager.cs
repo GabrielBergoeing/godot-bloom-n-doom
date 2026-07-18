@@ -79,7 +79,7 @@ public partial class EventManager : Node
 		if (table.Count == 0)
 			return;
 
-		Vector2 spawnPos = GetRandomFreePosition();
+		Vector2? spawnPos = GetRandomFreePosition();
 		if (spawnPos == null)
 			return;
 
@@ -87,7 +87,7 @@ public partial class EventManager : Node
 		if (item == null || item.PickupScene == null)
 			return;
 
-		SpawnItem(item, spawnPos);
+		SpawnItem(item, spawnPos.Value);
 	}
 
 	private ItemData GetWeightedItem(Array<SpawnEntry> table)
@@ -115,49 +115,40 @@ public partial class EventManager : Node
 		return null;
 	}
 
-	private Vector2 GetRandomFreePosition()
+	private Vector2? GetRandomFreePosition()
 	{
 		if (Farm == null)
-			return new Vector2(1, 1);
+			return null;
 
 		Rect2I bounds = Farm.GetUsedRect();
 
-		for (int i = 0; i < _data.SpawnAttempts; i++)
+		for (int i = 0; i < GetScaledSpawnAttempts(); i++)
 		{
-			int x = GD.RandRange(
-				bounds.Position.X,
-				bounds.End.X - 1
-			);
-
-			int y = GD.RandRange(
-				bounds.Position.Y,
-				bounds.End.Y - 1
-			);
+			int x = GD.RandRange(bounds.Position.X, bounds.End.X - 1);
+			int y = GD.RandRange(bounds.Position.Y, bounds.End.Y - 1);
 
 			Vector2I cell = new Vector2I(x, y);
 
 			if (!CanSpawnAt(cell))
-				continue;
+					continue;
 
-			Vector2 worldPos =
-				Farm.ToGlobal(
-					Farm.MapToLocal(cell)
-				);
+			Vector2 worldPos = Farm.ToGlobal(Farm.MapToLocal(cell));
 
 			if (IsPositionFree(worldPos))
-				return worldPos;
+					return worldPos;
 		}
 
-		return new Vector2(1, 1);
+		return null; // no valid tile found this pass — caller should skip, not fall back
 	}
 
 	private bool CanSpawnAt(Vector2I cell)
 	{
-		if (Farm.IsWaterTile(cell))
+		if (!Farm.IsGrass(cell) && !Farm.IsPrepared(cell))
 			return false;
 
 		if (Farm.IsOccupied(cell))
 			return false;
+
 		return true;
 	}
 
@@ -189,5 +180,15 @@ public partial class EventManager : Node
 		}
 
 		return true;
+	}
+
+	private int GetActivePlayerCount()
+	{
+		return Mathf.Max(1, Game.LobbyPlayers.Count);
+	}
+
+	private int GetScaledSpawnAttempts()
+	{
+		return _data.SpawnAttempts * GetActivePlayerCount();
 	}
 }

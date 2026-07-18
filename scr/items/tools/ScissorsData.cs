@@ -14,5 +14,6 @@ public partial class ScissorsData : ItemData
             FarmNetworkService.Instance.RequestSabotagePlant(ctx.Tile.CurrentCell, ctx.PlayerId);
         else
             FarmManager.Instance.RemovePlant(ctx.Tile.CurrentCell);
+        ctx.Player.Hotbar.ConsumeCurrentStack();
     }
 }

@@ -33,7 +33,6 @@ metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 [sub_resource type="Resource" id="Resource_2qm4h"]
 script = ExtResource("2_pr2i7")
 Item = ExtResource("5_u4jbh")
-Weight = 3
 metadata/_custom_type_script = "uid://cyqx1ge62a3xs"
 
 [sub_resource type="Resource" id="Resource_rdlvd"]
@@ -51,4 +50,5 @@ BGMTrack = "bgm_level_grassy"
 SeedTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_nyfkv"), SubResource("Resource_bbq8w")])
 ToolTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_2qm4h"), SubResource("Resource_rdlvd")])
 RareTable = Array[ExtResource("2_pr2i7")]([SubResource("Resource_h0f86"), SubResource("Resource_ywiks")])
+SeedInterval = 6.0
 metadata/_custom_type_script = "uid://dmmuxsht6pcr1"
