@@ -102,7 +102,8 @@ public partial class TelemetryLogger : Node
             "object_count," +
             "node_count," +
             "draw_calls," +
-            "latency_ms"
+            "latency_ms," +
+            "host_status"
         );
 
         IsCapturing = true;
@@ -228,6 +229,10 @@ public partial class TelemetryLogger : Node
             latency = avg >= 0f ? $"{avg:F1}" : "N/A";
         }
 
+        bool isHost = false;
+        if (NetworkRoot.Instance?.IsOnline == true && SteamNetworkManager.Instance != null)
+            isHost = NetworkRoot.Instance.IsHost();
+
         return
             $"{timestamp}," +
             $"{fps}," +
@@ -240,6 +245,7 @@ public partial class TelemetryLogger : Node
             $"{objectCount}," +
             $"{nodeCount}," +
             $"{drawCalls}," +
-            $"{latency}";
+            $"{latency}" +
+            $"{isHost}";
     }
 }
